@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>TeamUp – Find Your Team</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#2563eb; --primary-light:#3b82f6; --primary-glow:rgba(37,99,235,0.15);
+  --accent:#06d6a0; --accent-glow:rgba(6,214,160,0.15);
+  --warn:#f97316; --danger:#ef4444;
+  --bg:#080c14; --bg2:#0d1220; --bg3:#111827;
+  --card:#0f172a; --card2:#131d2e;
+  --border:rgba(255,255,255,0.07); --border-active:rgba(37,99,235,0.4);
+  --text:#f0f4ff; --text2:#94a3b8; --text3:#475569;
+  --sidebar-w:256px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;flex:1;flex-direction:column;}
+.page.active{display:flex;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);
+  height:100vh;padding:28px 20px;display:flex;flex-direction:column;
+  position:sticky;top:0;flex-shrink:0;z-index:50;
+}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:36px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:0 12px;margin-bottom:6px;margin-top:20px;}
+.nav a{display:flex;align-items:center;gap:10px;color:var(--text2);text-decoration:none;padding:10px 12px;border-radius:10px;margin-bottom:2px;font-size:14px;font-weight:500;transition:all 0.2s;cursor:pointer;border:1px solid transparent;}
+.nav a:hover{background:rgba(255,255,255,0.05);color:var(--text);}
+.nav a.active{background:var(--primary-glow);color:var(--primary-light);border-color:var(--border-active);}
+.nav a .nav-icon{font-size:16px;width:20px;text-align:center;}
+.nav a .badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.sidebar-footer{margin-top:auto;padding-top:20px;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;transition:0.2s;}
+.user-chip:hover{border-color:var(--border-active);}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-info{overflow:hidden;}
+.user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-size:11px;color:var(--text3);}
+
+/* ── MAIN ── */
+.main{flex:1;padding:32px 36px;overflow-y:auto;max-width:calc(100vw - var(--sidebar-w));}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
+.header-left h2{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.5px;}
+.header-left p{font-size:14px;color:var(--text2);margin-top:4px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+
+/* ── SEARCH ── */
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;transition:0.2s;}
+.search-bar:focus-within{border-color:var(--border-active);box-shadow:0 0 0 3px var(--primary-glow);}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:200px;font-family:inherit;}
+.search-bar input::placeholder{color:var(--text3);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--primary),#1d4ed8);color:white;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;transition:all 0.2s;box-shadow:0 4px 14px rgba(37,99,235,0.35);white-space:nowrap;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,0.45);}
+.btn:active{transform:translateY(0);}
+.btn-sm{padding:6px 12px;font-size:12px;box-shadow:0 2px 8px rgba(37,99,235,0.3);}
+.btn-ghost{background:var(--bg3);box-shadow:none;border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{background:rgba(255,255,255,0.06);color:var(--text);box-shadow:none;}
+.btn-success{background:linear-gradient(135deg,#059669,#047857);box-shadow:0 2px 10px rgba(5,150,105,0.35);}
+.btn-danger{background:linear-gradient(135deg,var(--danger),#b91c1c);box-shadow:0 2px 10px rgba(239,68,68,0.3);}
+.btn-danger-outline{background:transparent;border:1px solid rgba(239,68,68,0.4);color:var(--danger);box-shadow:none;}
+.btn-danger-outline:hover{background:rgba(239,68,68,0.08);transform:none;box-shadow:none;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px;transition:0.2s;animation:fadeUp 0.4s ease both;}
+.stat-card:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-1px);}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.stat-icon.blue{background:var(--primary-glow);}
+.stat-icon.green{background:var(--accent-glow);}
+.stat-icon.orange{background:rgba(249,115,22,0.12);}
+.stat-icon.purple{background:rgba(139,92,246,0.12);}
+.stat-icon.red{background:rgba(239,68,68,0.12);}
+.stat-value{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;line-height:1;}
+.stat-label{font-size:12px;color:var(--text2);margin-top:3px;}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeUp 0.4s ease both;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 16px;border-bottom:1px solid var(--border);}
+.card-header h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.card-body{padding:18px 22px;}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-sidebar{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+
+/* ── TAGS ── */
+.tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+.tag.blue{background:var(--primary-glow);color:var(--primary-light);border-color:var(--border-active);}
+.tag.green{background:var(--accent-glow);color:var(--accent);border-color:rgba(6,214,160,0.25);}
+
+/* ── FORM ── */
+.form-group{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block;letter-spacing:0.3px;}
+.form-input{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13.5px;font-family:inherit;transition:0.2s;outline:none;}
+.form-input::placeholder{color:var(--text3);}
+.form-input:focus{border-color:var(--border-active);box-shadow:0 0 0 3px var(--primary-glow);}
+.form-input:disabled{opacity:0.5;cursor:not-allowed;}
+textarea.form-input{resize:none;}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+.form-hint{font-size:11.5px;color:var(--text3);margin-top:5px;line-height:1.5;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.save-row{display:flex;justify-content:flex-end;gap:10px;padding-top:16px;border-top:1px solid var(--border);margin-top:4px;}
+
+/* ── FILTER ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:0.15s;font-family:inherit;}
+.filter-btn:hover{border-color:var(--text3);color:var(--text);}
+.filter-btn.active{background:var(--primary-glow);border-color:var(--border-active);color:var(--primary-light);}
+.filter-chip{padding:5px 13px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:0.15s;font-family:inherit;}
+.filter-chip:hover{border-color:var(--text3);color:var(--text);}
+.filter-chip.active{background:var(--primary-glow);border-color:var(--border-active);color:var(--primary-light);}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:var(--bg);border:1px solid var(--border);border-radius:24px;cursor:pointer;transition:0.3s;}
+.slider:before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--text3);top:2px;left:2px;transition:0.3s;}
+input:checked + .slider{background:var(--accent-glow);border-color:rgba(6,214,160,0.4);}
+input:checked + .slider:before{transform:translateX(20px);background:var(--accent);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border:none;padding-bottom:0;}
+.toggle-info{flex:1;padding-right:20px;}
+.toggle-label{font-size:14px;font-weight:600;margin-bottom:3px;}
+.toggle-desc{font-size:12.5px;color:var(--text3);line-height:1.5;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:20px;width:fit-content;}
+.tab{padding:8px 18px;border-radius:9px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;}
+.tab.active{background:var(--primary-glow);color:var(--primary-light);border:1px solid var(--border-active);}
+.tab .count{background:var(--primary);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;margin-left:5px;vertical-align:middle;}
+
+/* ── POST TYPE TOGGLE ── */
+.post-type-toggle{display:flex;gap:8px;margin-bottom:14px;}
+.toggle-btn{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;}
+.toggle-btn.active{background:var(--primary-glow);border-color:var(--border-active);color:var(--primary-light);}
+
+/* ── SKILL CHIPS ── */
+.skill-chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;transition:0.15s;}
+.skill-chip:hover,.skill-chip.selected{background:var(--primary-glow);border-color:var(--border-active);color:var(--primary-light);}
+.skill-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:500;background:var(--primary-glow);color:var(--primary-light);border:1px solid var(--border-active);cursor:pointer;transition:0.15s;}
+.skill-tag:hover{background:rgba(37,99,235,0.25);}
+.remove-skill{opacity:0;transition:0.15s;font-size:13px;cursor:pointer;}
+.skill-tag:hover .remove-skill{opacity:0.7;}
+
+/* ── TEAMMATE ── */
+.teammate{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
+.teammate:last-child{border:none;padding-bottom:0;}
+.t-avatar{width:42px;height:42px;border-radius:50%;font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.t-info{flex:1;min-width:0;}
+.t-name{font-size:14px;font-weight:600;margin-bottom:4px;}
+.t-meta{font-size:12px;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.t-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.t-actions{display:flex;gap:6px;margin-top:10px;}
+.match-bar-wrap{flex-shrink:0;width:44px;text-align:center;}
+.match-bar{position:relative;width:44px;height:44px;}
+.match-bar svg{transform:rotate(-90deg);}
+.match-bar .pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;font-weight:700;color:var(--accent);}
+
+/* ── POST ITEMS ── */
+.post-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.post-item:last-child{border:none;padding-bottom:0;}
+.post-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
+.post-desc{font-size:12.5px;color:var(--text2);margin-bottom:8px;line-height:1.5;}
+.post-meta{display:flex;align-items:center;gap:12px;font-size:11.5px;color:var(--text3);}
+.post-status{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.post-status.open{background:var(--accent-glow);color:var(--accent);}
+.post-status.closed{background:rgba(100,116,139,0.15);color:var(--text3);}
+.post-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* ── REQUEST ITEMS ── */
+.request-item{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
+.request-item:last-child{border:none;padding-bottom:0;}
+.req-info{flex:1;}
+.req-name{font-size:14px;font-weight:600;margin-bottom:3px;}
+.req-text{font-size:12.5px;color:var(--text2);margin-bottom:4px;}
+.req-post{font-size:11.5px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:3px 9px;border-radius:6px;display:inline-block;margin-bottom:10px;}
+.req-actions{display:flex;gap:8px;}
+.req-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.req-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+.req-status.pending{background:rgba(249,115,22,0.12);color:var(--warn);}
+.req-status.accepted{background:var(--accent-glow);color:var(--accent);}
+.req-status.declined{background:rgba(239,68,68,0.1);color:var(--danger);}
+.req-note{font-size:12.5px;color:var(--text2);background:var(--bg3);border-left:2px solid var(--primary);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;font-style:italic;line-height:1.5;}
+
+/* ── USERS GRID (BROWSE) ── */
+.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.user-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;transition:all 0.2s;cursor:pointer;animation:fadeUp 0.4s ease both;}
+.user-card:hover{border-color:rgba(255,255,255,0.14);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,0.3);}
+.uc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.uc-avatar{width:52px;height:52px;border-radius:50%;font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.uc-match{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.match-pct{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
+.match-label{font-size:10px;color:var(--text3);font-weight:500;}
+.uc-name{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px;}
+.uc-role{font-size:12.5px;color:var(--text2);margin-bottom:4px;}
+.uc-loc{font-size:12px;color:var(--text3);margin-bottom:12px;}
+.uc-bio{font-size:12.5px;color:var(--text2);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.uc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.uc-actions{display:flex;gap:8px;}
+.avail-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
+.avail-dot.open{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.avail-dot.busy{background:var(--warn);}
+
+/* ── PROFILE PAGE ── */
+.profile-hero-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:24px;animation:fadeUp 0.4s ease;}
+.profile-banner{height:120px;background:linear-gradient(135deg,#0f2460,#0a3d62,#0d1b4b);position:relative;}
+.banner-pattern{position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(37,99,235,0.3) 0%,transparent 60%),radial-gradient(circle at 70% 30%,rgba(6,214,160,0.2) 0%,transparent 50%);}
+.profile-body{padding:0 28px 28px;position:relative;}
+.profile-avatar-wrap{position:relative;width:90px;margin-top:-45px;margin-bottom:14px;}
+.profile-avatar-lg{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;border:4px solid var(--card);}
+.avail-badge{position:absolute;bottom:4px;right:4px;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--card);box-shadow:0 0 8px var(--accent);}
+.profile-top-row{display:flex;align-items:flex-start;justify-content:space-between;}
+.profile-name{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;}
+.profile-role-text{font-size:14px;color:var(--text2);margin-bottom:8px;}
+.profile-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.profile-meta-item{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text3);}
+.profile-actions{display:flex;gap:10px;margin-top:4px;}
+.stat-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.stat-item:last-child{border:none;}
+.stat-label-s{font-size:13px;color:var(--text2);}
+.stat-val{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--accent);}
+.link-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.link-item:last-child{border:none;}
+.link-icon{font-size:18px;width:28px;text-align:center;}
+.link-url{font-size:13px;color:var(--primary-light);text-decoration:none;}
+.link-url:hover{text-decoration:underline;}
+.link-label{font-size:11px;color:var(--text3);}
+.avail-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);margin-bottom:12px;}
+.avail-label{font-size:13px;font-weight:600;}
+.connection-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.connection-item:last-child{border:none;}
+.c-avatar{width:36px;height:36px;border-radius:50%;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;}
+.c-name{font-size:13px;font-weight:600;}
+.c-role{font-size:11.5px;color:var(--text3);}
+.skills-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.add-skill-input{display:flex;gap:8px;margin-top:12px;}
+.project-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.project-item:last-child{border:none;}
+.project-name{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.project-desc{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:8px;}
+.project-link{font-size:12px;color:var(--primary-light);text-decoration:none;}
+.project-link:hover{text-decoration:underline;}
+
+/* ── SETTINGS PAGE ── */
+.settings-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+.settings-nav{display:flex;flex-direction:column;gap:3px;position:sticky;top:32px;}
+.snav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);cursor:pointer;transition:0.2s;border:1px solid transparent;}
+.snav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.snav-item.active{background:var(--primary-glow);color:var(--primary-light);border-color:var(--border-active);}
+.snav-icon{font-size:16px;width:20px;text-align:center;}
+.snav-divider{height:1px;background:var(--border);margin:10px 0;}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeUp 0.4s ease both;margin-bottom:20px;}
+.scard-header{padding:20px 24px;border-bottom:1px solid var(--border);}
+.scard-header h3{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.scard-header p{font-size:13px;color:var(--text3);}
+.scard-body{padding:24px;}
+.settings-section{display:none;}
+.settings-section.active{display:block;}
+.avatar-editor{display:flex;align-items:center;gap:20px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.avatar-lg{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;flex-shrink:0;}
+.avatar-actions{display:flex;flex-direction:column;gap:6px;}
+.avatar-hint{font-size:12px;color:var(--text3);}
+.pw-strength{height:4px;border-radius:4px;margin-top:8px;transition:0.3s;}
+.pw-strength.weak{background:var(--danger);width:25%;}
+.pw-strength.medium{background:var(--warn);width:60%;}
+.pw-strength.strong{background:var(--accent);width:100%;}
+.connected-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.connected-row:last-child{border:none;}
+.service-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0;}
+.service-name{font-size:13.5px;font-weight:600;}
+.service-status{font-size:12px;margin-top:2px;}
+.service-status.connected{color:var(--accent);}
+.service-status.disconnected{color:var(--text3);}
+.danger-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.danger-row:last-child{border:none;}
+.danger-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.danger-desc{font-size:12.5px;color:var(--text3);}
+.activity-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border:none;}
+.act-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.act-dot.green{background:var(--accent);}
+.act-dot.blue{background:var(--primary-light);}
+.act-dot.red{background:var(--danger);}
+.act-dot.orange{background:var(--warn);}
+.act-text{font-size:12.5px;color:var(--text2);line-height:1.5;}
+.act-time{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* ── FILTERS SECTION (BROWSE) ── */
+.filters-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:24px;}
+.filters-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.filter-group{display:flex;flex-direction:column;gap:8px;}
+.filter-group-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+.filter-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.filter-divider{width:1px;height:50px;background:var(--border);flex-shrink:0;}
+.results-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.results-count{font-size:13px;color:var(--text2);}
+.sort-select{background:var(--card);border:1px solid var(--border);color:var(--text2);font-size:12px;padding:7px 12px;border-radius:9px;outline:none;cursor:pointer;font-family:inherit;}
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:32px;}
+.page-btn{width:36px;height:36px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:0.15s;font-family:inherit;display:flex;align-items:center;justify-content:center;}
+.page-btn:hover{border-color:var(--text3);color:var(--text);}
+.page-btn.active{background:var(--primary-glow);border-color:var(--border-active);color:var(--primary-light);}
+
+/* ── DRAWER OVERLAY ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:89;opacity:0;pointer-events:none;transition:0.3s;}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.profile-drawer{position:fixed;right:-400px;top:0;bottom:0;width:380px;background:var(--bg2);border-left:1px solid var(--border);z-index:90;transition:right 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;padding:28px 24px;}
+.profile-drawer.open{right:0;}
+.drawer-header{display:flex;justify-content:flex-end;margin-bottom:20px;}
+.profile-hero-drawer{text-align:center;padding-bottom:24px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.profile-avatar-drawer{width:80px;height:80px;border-radius:50%;font-size:28px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.profile-name-drawer{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.profile-role-drawer{font-size:13.5px;color:var(--text2);margin-bottom:6px;}
+.profile-match-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-glow);border:1px solid rgba(6,214,160,0.25);color:var(--accent);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;margin-top:20px;}
+.profile-bio-drawer{font-size:13px;color:var(--text2);line-height:1.65;}
+.drawer-actions{display:flex;gap:10px;margin-top:24px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:0.2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;width:500px;max-width:95vw;transform:scale(0.96) translateY(10px);transition:0.2s;}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.modal-header h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;}
+.modal-sm .modal{width:400px;text-align:center;}
+.modal-icon{font-size:44px;margin-bottom:14px;}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+.modal-desc{font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:22px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;justify-content:center;}
+.close-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:0.15s;}
+.close-btn:hover{background:rgba(255,255,255,0.08);color:var(--text);}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:toastIn 0.3s ease;max-width:320px;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.toast.success{border-color:rgba(6,214,160,0.3);}
+.toast.error{border-color:rgba(239,68,68,0.3);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);grid-column:1/-1;}
+.empty-state .e-icon{font-size:36px;margin-bottom:10px;}
+.empty-state p{font-size:13px;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{to{transform:translateX(40px);opacity:0}}
+.card:nth-child(1){animation-delay:0.05s}.card:nth-child(2){animation-delay:0.1s}.card:nth-child(3){animation-delay:0.15s}.card:nth-child(4){animation-delay:0.2s}
+.stat-card:nth-child(1){animation-delay:0s}.stat-card:nth-child(2){animation-delay:0.06s}.stat-card:nth-child(3){animation-delay:0.12s}.stat-card:nth-child(4){animation-delay:0.18s}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}::-webkit-scrollbar-thumb:hover{background:var(--text3);}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<div class="sidebar">
+  <div class="logo" onclick="navigate('dashboard')">
+    <div class="logo-icon">🔗</div>TeamUp
+  </div>
+
+  <div class="nav-label">Menu</div>
+  <div class="nav" id="mainNav">
+    <a onclick="navigate('dashboard')" href="/dashboard" class="active" data-page="dashboard"><span class="nav-icon">⚡</span> Dashboard</a>
+    <a onclick="navigate('browse')" href="/brow"data-page="browse"><span class="nav-icon">🔍</span> Browse Users <span class="badge" id="badgeBrowse">24</span></a>
+    <a onclick="navigate('posts')" href="/posts" data-page="posts"><span class="nav-icon">📋</span> My Posts</a>
+    <a onclick="navigate('requests')" href="/requests" data-page="requests"><span class="nav-icon">📬</span> Requests <span class="badge" id="badgeRequests">2</span></a>
+  </div>
+
+  <div class="nav-label">Account</div>
+  <div class="nav">
+    <a onclick="navigate('profile')" href="/profile"data-page="profile"><span class="nav-icon">👤</span> Profile</a>
+    <a onclick="navigate('settings')" href="/settings data-page="settings"><span class="nav-icon">⚙️</span> Settings</a>
+    <a href="#" onclick="handleLogout(event)"><span class="nav-icon">🚪</span> Logout</a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-chip" onclick="navigate('profile')">
+      <div class="user-avatar" id="sidebarInitials">A</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarName">Aryan Kumar</div>
+        <div class="user-role" id="sidebarRole">Frontend Dev</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: DASHBOARD ════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="main">
+    <div class="header">
+      <div class="header-left">
+        <h2 id="dashWelcome">Welcome back, Aryan 👋</h2>
+        <p>Find teammates, post projects, build something great.</p>
+      </div>
+      <div class="header-right">
+        <div class="search-bar">
+          <span style="color:var(--text3)">🔍</span>
+          <input type="text" id="dashSearch" placeholder="Search by skill, name…" oninput="dashFilter()">
+        </div>
+        <button class="btn" onclick="openModal('newPostModal')">＋ New Post</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-icon blue">📝</div><div><div class="stat-value" id="statPosts">3</div><div class="stat-label">Active Posts</div></div></div>
+      <div class="stat-card"><div class="stat-icon green">🤝</div><div><div class="stat-value" id="statConns">12</div><div class="stat-label">Connections</div></div></div>
+      <div class="stat-card"><div class="stat-icon orange">📬</div><div><div class="stat-value" id="statReqs">2</div><div class="stat-label">Pending Requests</div></div></div>
+      <div class="stat-card"><div class="stat-icon purple">👁️</div><div><div class="stat-value" id="statViews">47</div><div class="stat-label">Profile Views</div></div></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- CREATE POST -->
+      <div class="card">
+        <div class="card-header"><h3><span>✏️</span> Create Post</h3></div>
+        <div class="card-body">
+          <div class="post-type-toggle" id="dashPostTypeToggle">
+            <button class="toggle-btn active" onclick="setToggle(this,'dashPostTypeToggle')">Looking for Team</button>
+            <button class="toggle-btn" onclick="setToggle(this,'dashPostTypeToggle')">Join a Team</button>
+            <button class="toggle-btn" onclick="setToggle(this,'dashPostTypeToggle')">Hackathon</button>
+          </div>
+          <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="dashPostTitle" type="text" placeholder="e.g. Need a React developer for SaaS project"></div>
+          <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="dashPostDesc" rows="3" placeholder="What's your project about?"></textarea></div>
+          <div class="form-group">
+            <label class="form-label">Skills Required</label>
+            <input class="form-input" id="dashSkillInput" type="text" placeholder="Type and press Enter…" onkeydown="addSkillChip(event,'dashSkillInput','dashSelectedSkills')">
+            <div id="dashSelectedSkills" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+            <div style="margin-top:10px;"><span style="font-size:11px;color:var(--text3);margin-right:6px;">Quick add:</span>
+              <span class="skill-chip" onclick="quickSkill('React','dashSelectedSkills')">React</span>
+              <span class="skill-chip" onclick="quickSkill('Python','dashSelectedSkills')">Python</span>
+              <span class="skill-chip" onclick="quickSkill('Node.js','dashSelectedSkills')">Node.js</span>
+              <span class="skill-chip" onclick="quickSkill('UI/UX','dashSelectedSkills')">UI/UX</span>
+              <span class="skill-chip" onclick="quickSkill('Flutter','dashSelectedSkills')">Flutter</span>
+            </div>
+          </div>
+          <button class="btn" style="width:100%;justify-content:center;" onclick="submitDashPost()">Post</button>
+        </div>
+      </div>
+
+      <!-- SUGGESTED TEAMMATES -->
+      <div class="card">
+        <div class="card-header"><h3><span>✨</span> Suggested Teammates</h3><button class="btn btn-ghost btn-sm" onclick="renderDashTeammates()">↻ Refresh</button></div>
+        <div class="card-body" style="padding-top:12px;">
+          <div class="filter-bar" id="dashFilterBar">
+            <button class="filter-btn active" onclick="dashFilterSkill('all',this)">All</button>
+            <button class="filter-btn" onclick="dashFilterSkill('Frontend',this)">Frontend</button>
+            <button class="filter-btn" onclick="dashFilterSkill('Backend',this)">Backend</button>
+            <button class="filter-btn" onclick="dashFilterSkill('UI/UX',this)">UI/UX</button>
+            <button class="filter-btn" onclick="dashFilterSkill('Mobile',this)">Mobile</button>
+            <button class="filter-btn" onclick="dashFilterSkill('AI/ML',this)">AI/ML</button>
+          </div>
+          <div id="dashTeammatesList"></div>
+        </div>
+      </div>
+
+      <!-- YOUR POSTS -->
+      <div class="card">
+        <div class="card-header"><h3><span>📋</span> Your Posts</h3><span id="dashPostCount" style="font-size:12px;color:var(--text3);"></span></div>
+        <div class="card-body" id="dashPostsList"></div>
+      </div>
+
+      <!-- TEAM REQUESTS -->
+      <div class="card">
+        <div class="card-header"><h3><span>📬</span> Team Requests</h3><span id="dashReqBadge" style="font-size:12px;background:var(--primary-glow);color:var(--primary-light);padding:2px 9px;border-radius:20px;border:1px solid var(--border-active);"></span></div>
+        <div class="card-body" id="dashRequestsList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: BROWSE ════════════════ -->
+<div class="page" id="page-browse">
+  <div class="main">
+    <div class="header">
+      <div class="header-left"><h2>Browse Users 🔍</h2><p>Discover talented developers, designers, and builders.</p></div>
+      <div class="header-right">
+        <div class="search-bar"><span>🔍</span><input type="text" id="browseSearch" placeholder="Search by name, skill, role…" oninput="applyBrowseFilters()"></div>
+      </div>
+    </div>
+    <div class="filters-section">
+      <div class="filters-row">
+        <div class="filter-group"><div class="filter-group-label">Role</div><div class="filter-chips" id="roleFilters">
+          <button class="filter-chip active" onclick="setBrowseFilter('role','all',this)">All</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','Frontend',this)">Frontend</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','Backend',this)">Backend</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','UI/UX',this)">UI/UX</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','Mobile',this)">Mobile</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','AI/ML',this)">AI/ML</button>
+          <button class="filter-chip" onclick="setBrowseFilter('role','DevOps',this)">DevOps</button>
+        </div></div>
+        <div class="filter-divider"></div>
+        <div class="filter-group"><div class="filter-group-label">Availability</div><div class="filter-chips" id="availFilters">
+          <button class="filter-chip active" onclick="setBrowseFilter('avail','all',this)">All</button>
+          <button class="filter-chip" onclick="setBrowseFilter('avail','open',this)">🟢 Open</button>
+          <button class="filter-chip" onclick="setBrowseFilter('avail','busy',this)">🟡 Busy</button>
+        </div></div>
+        <div class="filter-divider"></div>
+        <div class="filter-group"><div class="filter-group-label">Location</div><div class="filter-chips" id="locFilters">
+          <button class="filter-chip active" onclick="setBrowseFilter('loc','all',this)">All India</button>
+          <button class="filter-chip" onclick="setBrowseFilter('loc','Bengaluru',this)">Bengaluru</button>
+          <button class="filter-chip" onclick="setBrowseFilter('loc','Delhi',this)">Delhi</button>
+          <button class="filter-chip" onclick="setBrowseFilter('loc','Pune',this)">Pune</button>
+          <button class="filter-chip" onclick="setBrowseFilter('loc','Mumbai',this)">Mumbai</button>
+        </div></div>
+      </div>
+    </div>
+    <div class="results-bar">
+      <div class="results-count" id="browseResultsCount">Showing 8 users</div>
+      <select class="sort-select" id="browseSort" onchange="applyBrowseFilters()">
+        <option value="match">Sort by: Best Match</option>
+        <option value="name">Sort by: Name</option>
+        <option value="newest">Sort by: Newest</option>
+      </select>
+    </div>
+    <div class="users-grid" id="browseGrid"></div>
+    <div class="pagination">
+      <button class="page-btn" style="font-size:16px">←</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn" style="font-size:16px">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: MY POSTS ════════════════ -->
+<div class="page" id="page-posts">
+  <div class="main">
+    <div class="header">
+      <div class="header-left"><h2>My Posts 📋</h2><p>Manage all your active and past posts.</p></div>
+      <div class="header-right"><button class="btn" onclick="openModal('newPostModal')">＋ New Post</button></div>
+    </div>
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-value" id="postsOpenCount">2</div><div class="stat-label">Open Posts</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue">📬</div><div><div class="stat-value" id="postsTotalReqs">11</div><div class="stat-label">Total Requests</div></div></div>
+      <div class="stat-card"><div class="stat-icon purple">👁️</div><div><div class="stat-value" id="postsTotalViews">51</div><div class="stat-label">Total Views</div></div></div>
+    </div>
+    <div class="card" style="margin-top:0;"><div class="card-body" id="fullPostsList"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: REQUESTS ════════════════ -->
+<div class="page" id="page-requests">
+  <div class="main">
+    <div class="header"><div class="header-left"><h2>Requests 📬</h2><p>Manage collaboration requests and connections.</p></div></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-icon orange">📬</div><div><div class="stat-value" id="reqPendingCount">2</div><div class="stat-label">Pending</div></div></div>
+      <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-value" id="reqAcceptedCount">3</div><div class="stat-label">Accepted</div></div></div>
+      <div class="stat-card"><div class="stat-icon red">✕</div><div><div class="stat-value" id="reqDeclinedCount">1</div><div class="stat-label">Declined</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue">📤</div><div><div class="stat-value">4</div><div class="stat-label">Sent by Me</div></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;">
+      <div>
+        <div class="tabs">
+          <button class="tab active" onclick="setReqTab('pending',this)">Pending <span class="count" id="reqPendingBadge">2</span></button>
+          <button class="tab" onclick="setReqTab('accepted',this)">Accepted</button>
+          <button class="tab" onclick="setReqTab('declined',this)">Declined</button>
+          <button class="tab" onclick="setReqTab('sent',this)">Sent by Me</button>
+        </div>
+        <div class="card"><div class="card-header"><h3 id="reqCardTitle">📬 Incoming Requests</h3><span id="reqCardCount" style="font-size:12px;color:var(--text3);"></span></div><div class="card-body" id="reqBody"></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-header"><h3>📊 Recent Activity</h3></div>
+          <div class="card-body" style="padding-top:8px;">
+            <div class="activity-item"><div class="act-dot green"></div><div><div class="act-text">Rahul Sharma accepted your connection request</div><div class="act-time">2 hours ago</div></div></div>
+            <div class="activity-item"><div class="act-dot blue"></div><div><div class="act-text">New request on "Looking for Frontend Developer"</div><div class="act-time">5 hours ago</div></div></div>
+            <div class="activity-item"><div class="act-dot orange"></div><div><div class="act-text">Meera Joshi sent you a collaboration request</div><div class="act-time">1 day ago</div></div></div>
+            <div class="activity-item"><div class="act-dot green"></div><div><div class="act-text">You accepted Anjali Mehta's request</div><div class="act-time">2 days ago</div></div></div>
+            <div class="activity-item"><div class="act-dot red"></div><div><div class="act-text">You declined a request from Vikram D.</div><div class="act-time">3 days ago</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>🎯 Your Stats</h3></div>
+          <div class="card-body" style="padding-top:14px;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;color:var(--text2)">Acceptance Rate</span><span style="font-size:14px;font-weight:700;color:var(--accent)">75%</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;color:var(--text2)">Response Time</span><span style="font-size:14px;font-weight:700;color:var(--primary-light)">&lt; 2h</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;color:var(--text2)">Active Posts</span><span style="font-size:14px;font-weight:700;color:var(--warn)" id="reqStatsActivePosts">2</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;color:var(--text2)">Total Connections</span><span style="font-size:14px;font-weight:700;color:var(--text2)" id="reqStatsConns">12</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: PROFILE ════════════════ -->
+<div class="page" id="page-profile">
+  <div class="main">
+    <div class="profile-hero-card">
+      <div class="profile-banner"><div class="banner-pattern"></div></div>
+      <div class="profile-body">
+        <div class="profile-top-row">
+          <div>
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-lg" id="profileAvatarLg">A</div>
+              <div class="avail-badge"></div>
+            </div>
+            <div class="profile-name" id="profileName">Aryan Kumar</div>
+            <div class="profile-role-text" id="profileHeadline">Frontend Developer · Open to Collaborate</div>
+            <div class="profile-meta">
+              <div class="profile-meta-item" id="profileLocation">📍 Bengaluru, India</div>
+              <div class="profile-meta-item">🎓 NIT Karnataka</div>
+              <div class="profile-meta-item">⏰ Joined March 2024</div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('bioModal')">✏️ Edit Profile</button>
+            <button class="btn btn-sm" onclick="showToast('🔗 Profile link copied!','success')">🔗 Share Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-sidebar">
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-header"><h3>👤 About</h3><button class="btn btn-ghost btn-sm" onclick="openModal('bioModal')">Edit</button></div>
+          <div class="card-body"><p style="font-size:14px;color:var(--text2);line-height:1.7;" id="profileBio">I'm a frontend developer passionate about building fast, accessible, and delightful web experiences. Currently pursuing my B.Tech in CS and actively looking for project collaborators and hackathon teammates.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>⚡ Skills</h3><button class="btn btn-ghost btn-sm" onclick="toggleSkillEdit()">Edit</button></div>
+          <div class="card-body">
+            <div class="skills-grid" id="profileSkillsGrid"></div>
+            <div class="add-skill-input" id="skillEditRow" style="display:none;">
+              <input class="form-input" id="newSkillInput" placeholder="Add a skill…" style="flex:1" onkeydown="if(event.key==='Enter')addProfileSkill()">
+              <button class="btn btn-sm" onclick="addProfileSkill()">Add</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>🚀 Projects</h3><button class="btn btn-ghost btn-sm" onclick="showToast('🚧 Project editor coming soon!','success')">+ Add</button></div>
+          <div class="card-body">
+            <div class="project-item"><div class="project-name">SaaS Dashboard Template <a href="#" class="project-link">↗ GitHub</a></div><div class="project-desc">A fully responsive admin dashboard built with React, TypeScript, and Tailwind CSS.</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag blue">React</span><span class="tag blue">TypeScript</span><span class="tag blue">Tailwind</span></div></div>
+            <div class="project-item"><div class="project-name">Weather PWA <a href="#" class="project-link">↗ Live Demo</a></div><div class="project-desc">Progressive web app for real-time weather with offline support.</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag blue">Next.js</span><span class="tag blue">PWA</span></div></div>
+            <div class="project-item"><div class="project-name">Open-source CLI Tool</div><div class="project-desc">Command-line productivity tool for developers with file scaffolding.</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag">Python</span><span class="tag">Click</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-header"><h3>🟢 Availability</h3></div>
+          <div class="card-body">
+            <div class="avail-toggle"><div><div class="avail-label">Open to Collaborate</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">Visible to all users</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="showToast('✅ Availability updated!','success')"><span class="slider"></span></label></div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span style="color:var(--text2)">Hackathons</span><label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span style="color:var(--text2)">Startups</span><label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span style="color:var(--text2)">Open Source</span><label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>📊 Profile Stats</h3></div>
+          <div class="card-body">
+            <div class="stat-item"><span class="stat-label-s">👁 Profile Views</span><span class="stat-val" id="profileStatViews">47</span></div>
+            <div class="stat-item"><span class="stat-label-s">🤝 Connections</span><span class="stat-val" id="profileStatConns">12</span></div>
+            <div class="stat-item"><span class="stat-label-s">📬 Requests Received</span><span class="stat-val">11</span></div>
+            <div class="stat-item"><span class="stat-label-s">📋 Active Posts</span><span class="stat-val" id="profileStatPosts">3</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>🔗 Links</h3><button class="btn btn-ghost btn-sm" onclick="openModal('linksModal')">Edit</button></div>
+          <div class="card-body">
+            <div class="link-item"><div class="link-icon">💻</div><div><a href="#" class="link-url">github.com/aryan-kumar</a><div class="link-label">GitHub</div></div></div>
+            <div class="link-item"><div class="link-icon">💼</div><div><a href="#" class="link-url">linkedin.com/in/aryan-kumar</a><div class="link-label">LinkedIn</div></div></div>
+            <div class="link-item"><div class="link-icon">🌐</div><div><a href="#" class="link-url">aryan.dev</a><div class="link-label">Portfolio</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>🤝 Connections</h3><span style="font-size:12px;color:var(--text3)" id="profileConnCount">12 total</span></div>
+          <div class="card-body" id="profileConnections"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PAGE: SETTINGS ════════════════ -->
+<div class="page" id="page-settings">
+  <div class="main">
+    <div class="header"><div class="header-left"><h2>Settings ⚙️</h2><p>Manage your account, notifications, and privacy.</p></div></div>
+    <div class="settings-layout">
+      <div class="settings-nav">
+        <div class="snav-item active" onclick="switchSettingSection('account',this)"><span class="snav-icon">👤</span> Account</div>
+        <div class="snav-item" onclick="switchSettingSection('security',this)"><span class="snav-icon">🔒</span> Security</div>
+        <div class="snav-item" onclick="switchSettingSection('notifications',this)"><span class="snav-icon">🔔</span> Notifications</div>
+        <div class="snav-item" onclick="switchSettingSection('privacy',this)"><span class="snav-icon">🛡️</span> Privacy</div>
+        <div class="snav-item" onclick="switchSettingSection('connections',this)"><span class="snav-icon">🔗</span> Connections</div>
+        <div class="snav-divider"></div>
+        <div class="snav-item" onclick="switchSettingSection('danger',this)" style="color:var(--danger)"><span class="snav-icon">⚠️</span> Danger Zone</div>
+      </div>
+      <div>
+        <!-- ACCOUNT -->
+        <div class="settings-section active" id="section-account">
+          <div class="scard"><div class="scard-header"><h3>👤 Account Information</h3><p>Update your basic profile details.</p></div>
+          <div class="scard-body">
+            <div class="avatar-editor"><div class="avatar-lg">A</div><div class="avatar-actions"><button class="btn btn-ghost btn-sm" onclick="showToast('📤 Upload feature coming soon!','success')">📷 Change Photo</button><button class="btn btn-ghost btn-sm" onclick="showToast('🗑️ Photo removed','success')">Remove</button><div class="avatar-hint">JPG, PNG, WebP. Max 5MB.</div></div></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="settFirstName" type="text" value="Aryan"></div><div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="settLastName" type="text" value="Kumar"></div></div>
+            <div class="form-group"><label class="form-label">Username</label><input class="form-input" type="text" value="aryan-kumar"><div class="form-hint">teamup.dev/@aryan-kumar</div></div>
+            <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="settEmail" type="email" value="aryan@example.com"></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Role / Headline</label><input class="form-input" id="settRole" type="text" value="Frontend Developer"></div><div class="form-group"><label class="form-label">Location</label><input class="form-input" id="settLocation" type="text" value="Bengaluru, India"></div></div>
+            <div class="form-group"><label class="form-label">College / University</label><input class="form-input" type="text" value="NIT Karnataka"></div>
+            <div class="form-group"><label class="form-label">Year of Study</label><select class="form-input form-select"><option>1st Year</option><option>2nd Year</option><option selected>3rd Year</option><option>4th Year</option><option>Graduated</option><option>Working Professional</option></select></div>
+            <div class="save-row"><button class="btn btn-ghost" onclick="showToast('Changes discarded.','error')">Discard</button><button class="btn" onclick="saveAccountSettings()">Save Changes</button></div>
+          </div></div>
+        </div>
+        <!-- SECURITY -->
+        <div class="settings-section" id="section-security">
+          <div class="scard"><div class="scard-header"><h3>🔒 Change Password</h3><p>Keep your account secure with a strong password.</p></div>
+          <div class="scard-body">
+            <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="Enter current password"></div>
+            <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="Minimum 8 characters" id="newPw" oninput="checkPwStrength()"><div class="pw-strength" id="pwBar" style="display:none"></div><div class="form-hint" id="pwHint" style="display:none"></div></div>
+            <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="Repeat new password"></div>
+            <div class="save-row"><button class="btn" onclick="showToast('🔒 Password updated successfully!','success')">Update Password</button></div>
+          </div></div>
+          <div class="scard"><div class="scard-header"><h3>🛡️ Two-Factor Authentication</h3><p>Add an extra layer of security.</p></div>
+          <div class="scard-body">
+            <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Enable 2FA</div><div class="toggle-desc">Require OTP on each login via email or authenticator app.</div></div><label class="toggle-switch"><input type="checkbox" onchange="showToast('🛡️ 2FA setting saved!','success')"><span class="slider"></span></label></div>
+            <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Login Alerts</div><div class="toggle-desc">Get notified by email when a new device logs in.</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="showToast('🔔 Login alerts updated!','success')"><span class="slider"></span></label></div>
+          </div></div>
+        </div>
+        <!-- NOTIFICATIONS -->
+        <div class="settings-section" id="section-notifications">
+          <div class="scard"><div class="scard-header"><h3>📧 Email Notifications</h3><p>Choose what emails you'd like to receive.</p></div>
+          <div class="scard-body" id="emailNotifToggles"></div></div>
+          <div class="scard"><div class="scard-header"><h3>🔔 In-App Notifications</h3><p>Real-time alerts within the dashboard.</p></div>
+          <div class="scard-body" id="inappNotifToggles"></div></div>
+        </div>
+        <!-- PRIVACY -->
+        <div class="settings-section" id="section-privacy">
+          <div class="scard"><div class="scard-header"><h3>🛡️ Profile Visibility</h3><p>Control who can see your profile.</p></div>
+          <div class="scard-body">
+            <div class="form-group"><label class="form-label">Profile Visibility</label><select class="form-input form-select"><option selected>Public – Anyone on TeamUp</option><option>Connections Only</option><option>Private – Hidden from browse</option></select></div>
+            <div class="form-group"><label class="form-label">Who can send you requests?</label><select class="form-input form-select"><option selected>Everyone</option><option>Only users with matching skills</option><option>Nobody – Pause requests</option></select></div>
+            <div id="privacyToggles"></div>
+            <div class="save-row"><button class="btn" onclick="showToast('🛡️ Privacy settings saved!','success')">Save Privacy Settings</button></div>
+          </div></div>
+        </div>
+        <!-- CONNECTIONS -->
+        <div class="settings-section" id="section-connections">
+          <div class="scard"><div class="scard-header"><h3>🔗 Connected Accounts</h3><p>Link external accounts to enrich your profile.</p></div>
+          <div class="scard-body" id="connectedAccounts"></div></div>
+        </div>
+        <!-- DANGER -->
+        <div class="settings-section" id="section-danger">
+          <div class="scard" style="border-color:rgba(239,68,68,0.2)"><div class="scard-header" style="border-color:rgba(239,68,68,0.15)"><h3 style="color:var(--danger)">⚠️ Danger Zone</h3><p>Irreversible actions. Proceed with caution.</p></div>
+          <div class="scard-body">
+            <div class="danger-row"><div><div class="danger-title">Deactivate Account</div><div class="danger-desc">Temporarily hide your profile from TeamUp. Reactivate anytime.</div></div><button class="btn btn-danger-outline btn-sm" onclick="openDangerModal('deactivate')">Deactivate</button></div>
+            <div class="danger-row"><div><div class="danger-title">Clear All Posts</div><div class="danger-desc">Permanently delete all posts and associated requests.</div></div><button class="btn btn-danger-outline btn-sm" onclick="openDangerModal('clear')">Clear Posts</button></div>
+            <div class="danger-row"><div><div class="danger-title" style="color:var(--danger)">Delete Account</div><div class="danger-desc">Permanently delete your account and all data. Cannot be undone.</div></div><button class="btn btn-danger btn-sm" onclick="openDangerModal('delete')">Delete Account</button></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ PROFILE DRAWER ════════ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="profile-drawer" id="profileDrawer">
+  <div class="drawer-header"><button class="close-btn" onclick="closeDrawer()">✕</button></div>
+  <div id="drawerContent"></div>
+</div>
+
+<!-- ════════ MODALS ════════ -->
+<!-- NEW POST MODAL -->
+<div class="modal-overlay" id="newPostModal" onclick="closeModalOutside(event,'newPostModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>✏️ Create New Post</h3><button class="close-btn" onclick="closeModal('newPostModal')">✕</button></div>
+    <div class="post-type-toggle" id="modalPostTypeToggle">
+      <button class="toggle-btn active" onclick="setToggle(this,'modalPostTypeToggle')">Looking for Team</button>
+      <button class="toggle-btn" onclick="setToggle(this,'modalPostTypeToggle')">Join a Team</button>
+      <button class="toggle-btn" onclick="setToggle(this,'modalPostTypeToggle')">Hackathon</button>
+    </div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="modalPostTitle" type="text" placeholder="e.g. Need a React developer for SaaS project"></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="modalPostDesc" rows="3" placeholder="Describe your project and team needs…"></textarea></div>
+    <div class="form-group"><label class="form-label">Skills Required</label><input class="form-input" id="modalSkillInput" type="text" placeholder="React, Node.js, Python…" onkeydown="addSkillChip(event,'modalSkillInput','modalSelectedSkills')"><div id="modalSelectedSkills" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div></div>
+    <div style="display:flex;gap:10px;margin-top:6px;"><button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="closeModal('newPostModal')">Cancel</button><button class="btn" style="flex:1;justify-content:center;" onclick="submitNewPost()">Post</button></div>
+  </div>
+</div>
+
+<!-- EDIT BIO MODAL -->
+<div class="modal-overlay" id="bioModal" onclick="closeModalOutside(event,'bioModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>✏️ Edit Profile</h3><button class="close-btn" onclick="closeModal('bioModal')">✕</button></div>
+    <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="editName" type="text" value="Aryan Kumar" style="width:100%"></div>
+    <div class="form-group"><label class="form-label">Role / Headline</label><input class="form-input" id="editHeadline" type="text" value="Frontend Developer · Open to Collaborate" style="width:100%"></div>
+    <div class="form-group"><label class="form-label">Bio</label><textarea class="form-input" id="editBio" rows="5" style="width:100%">I'm a frontend developer passionate about building fast, accessible, and delightful web experiences. Currently pursuing my B.Tech in CS and actively looking for project collaborators and hackathon teammates.</textarea></div>
+    <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="editLocation" type="text" value="Bengaluru, India" style="width:100%"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('bioModal')">Cancel</button><button class="btn" onclick="saveBio()">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- EDIT LINKS MODAL -->
+<div class="modal-overlay" id="linksModal" onclick="closeModalOutside(event,'linksModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>🔗 Edit Links</h3><button class="close-btn" onclick="closeModal('linksModal')">✕</button></div>
+    <div class="form-group"><label class="form-label">GitHub</label><input class="form-input" value="github.com/aryan-kumar" style="width:100%"></div>
+    <div class="form-group"><label class="form-label">LinkedIn</label><input class="form-input" value="linkedin.com/in/aryan-kumar" style="width:100%"></div>
+    <div class="form-group"><label class="form-label">Portfolio / Website</label><input class="form-input" value="aryan.dev" style="width:100%"></div>
+    <div class="form-group"><label class="form-label">Twitter / X</label><input class="form-input" placeholder="twitter.com/yourhandle" style="width:100%"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('linksModal')">Cancel</button><button class="btn" onclick="saveLinks()">Save Links</button></div>
+  </div>
+</div>
+
+<!-- DANGER MODAL -->
+<div class="modal-overlay modal-sm" id="dangerModal" onclick="closeModalOutside(event,'dangerModal')">
+  <div class="modal" style="text-align:center;">
+    <div id="dangerIcon" style="font-size:44px;margin-bottom:14px;">⚠️</div>
+    <div class="modal-title" id="dangerTitle">Confirm Action</div>
+    <div class="modal-desc" id="dangerDesc" style="font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:22px;">Are you sure?</div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('dangerModal')">Cancel</button><button class="btn btn-danger" id="dangerConfirmBtn" onclick="confirmDanger()">Confirm</button></div>
+  </div>
+</div>
+
+<!-- ════════ TOAST ════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// ── SHARED STATE (Backend Simulation) ──────────────
+// ═══════════════════════════════════════════════════
+const STATE = {
+  user: {
+    name: 'Aryan Kumar', firstName: 'Aryan', lastName: 'Kumar',
+    role: 'Frontend Dev', headline: 'Frontend Developer · Open to Collaborate',
+    bio: "I'm a frontend developer passionate about building fast, accessible, and delightful web experiences. Currently pursuing my B.Tech in CS and actively looking for project collaborators and hackathon teammates.",
+    location: 'Bengaluru, India', initials: 'A',
+    connections: 12, views: 47,
+  },
+  skills: ['React','TypeScript','Tailwind CSS','Next.js','JavaScript','HTML/CSS','Git','Figma (Basic)'],
+  skillEditMode: false,
+  dashSelectedSkills: [],
+  modalSelectedSkills: [],
+  dashFilter: 'all',
+  dashSearch: '',
+  browseFilters: { role:'all', avail:'all', loc:'all' },
+  reqTab: 'pending',
+  dangerAction: '',
+  posts: [
+    { id:1, title:'Looking for Frontend Developer', type:'Looking for Team', desc:'Need someone with React and Tailwind skills for a SaaS dashboard project.', skills:['React','Tailwind','TypeScript'], status:'open', views:14, reqs:3, time:'2 days ago' },
+    { id:2, title:'Hackathon Team — Devhack 2025', type:'Hackathon', desc:'Looking for a UI/UX designer and a backend dev for a 48h hackathon.', skills:['UI/UX','Node.js'], status:'open', views:28, reqs:7, time:'5 days ago' },
+    { id:3, title:'Open-source CLI Tool', type:'Looking for Team', desc:'Need Python contributor for an open-source CLI project.', skills:['Python'], status:'closed', views:9, reqs:1, time:'2 weeks ago' },
+  ],
+  teammates: [
+    { id:1, name:'Rahul Sharma', initials:'RS', color:'#2563eb', role:'Frontend Developer', category:'Frontend', skills:['React','TypeScript','Tailwind'], bio:'Passionate about building accessible and performant web apps. Open to hackathons and startups.', match:85, location:'Bengaluru', avail:'open' },
+    { id:2, name:'Anjali Mehta', initials:'AM', color:'#06d6a0', role:'Full-Stack Developer', category:'Backend', skills:['Python','Flask','PostgreSQL','Redis'], bio:'Love building REST APIs and data pipelines. Looking for a frontend partner for SaaS ideas.', match:78, location:'Pune', avail:'open' },
+    { id:3, name:'Karan Singh', initials:'KS', color:'#f97316', role:'UI/UX Designer', category:'UI/UX', skills:['Figma','UI/UX','Prototyping','Framer'], bio:'Design-focused thinker who codes. Loves turning complex problems into clean interfaces.', match:73, location:'Delhi', avail:'busy' },
+    { id:4, name:'Priya Nair', initials:'PN', color:'#8b5cf6', role:'Mobile Developer', category:'Mobile', skills:['Flutter','Firebase','Dart','iOS'], bio:'Building mobile-first apps. Interested in health-tech and edtech.', match:68, location:'Bengaluru', avail:'open' },
+    { id:5, name:'Dev Patel', initials:'DP', color:'#ec4899', role:'ML Engineer', category:'AI/ML', skills:['Python','TensorFlow','NLP','PyTorch'], bio:'ML researcher who loves turning models into products. Hackathon enthusiast.', match:62, location:'Ahmedabad', avail:'open' },
+    { id:6, name:'Meera Joshi', initials:'MJ', color:'#14b8a6', role:'Backend Developer', category:'Backend', skills:['Node.js','MongoDB','Docker','AWS'], bio:'DevOps-aware backend engineer. Love scaling systems.', match:71, location:'Mumbai', avail:'open' },
+    { id:7, name:'Rohan Verma', initials:'RV', color:'#f43f5e', role:'DevOps Engineer', category:'DevOps', skills:['Kubernetes','Docker','CI/CD','Terraform'], bio:'Infrastructure nerd. Love deploying at scale.', match:55, location:'Delhi', avail:'busy' },
+    { id:8, name:'Sneha Gupta', initials:'SG', color:'#a78bfa', role:'AI/ML Engineer', category:'AI/ML', skills:['Python','Scikit-learn','LangChain','OpenAI'], bio:'Building LLM-powered apps. Excited about AI x product use cases.', match:80, location:'Bengaluru', avail:'open' },
+  ],
+  requests: [
+    { id:1, name:'Rahul Sharma', initials:'RS', color:'#2563eb', time:'3h ago', actionText:'wants to join your team', post:'Looking for Frontend Developer', skills:['React','TypeScript'], note:'Hey Aryan! I saw your post and I\'d love to help. I have 2 years of React experience.', status:'pending' },
+    { id:2, name:'Meera Joshi', initials:'MJ', color:'#f97316', time:'1d ago', actionText:'sent a collaboration request', post:'Hackathon Team — Devhack 2025', skills:['UI/UX','Figma'], note:'I\'m super excited about this hackathon! I specialize in rapid prototyping and have won 3 previous hackathons.', status:'pending' },
+    { id:3, name:'Anjali Mehta', initials:'AM', color:'#06d6a0', time:'2d ago', actionText:'joined your team', post:'Looking for Frontend Developer', skills:['Python','Flask'], note:'Thanks for accepting! Can\'t wait to start building.', status:'accepted' },
+    { id:4, name:'Priya Nair', initials:'PN', color:'#8b5cf6', time:'3d ago', actionText:'requested to collaborate', post:'Hackathon Team — Devhack 2025', skills:['Flutter','Firebase'], note:'I\'d bring strong mobile skills to the team.', status:'accepted' },
+    { id:5, name:'Dev Patel', initials:'DP', color:'#ec4899', time:'4d ago', actionText:'requested to join', post:'Open-source CLI Tool', skills:['Python','NLP'], note:'', status:'accepted' },
+    { id:6, name:'Vikram D.', initials:'VD', color:'#64748b', time:'5d ago', actionText:'requested to join', post:'Looking for Frontend Developer', skills:['Angular','CSS'], note:'Looking for a frontend role in your project.', status:'declined' },
+  ],
+  sentRequests: [
+    { id:1, name:'Rohan Verma', initials:'RV', color:'#f43f5e', post:'DevOps Help Needed', status:'pending', time:'1d ago' },
+    { id:2, name:'Sneha Gupta', initials:'SG', color:'#a78bfa', post:'AI Hackathon Team', status:'accepted', time:'2d ago' },
+    { id:3, name:'Karan Singh', initials:'KS', color:'#f97316', post:'Open-source Design', status:'pending', time:'3d ago' },
+    { id:4, name:'Dev Patel', initials:'DP', color:'#ec4899', post:'ML Project', status:'declined', time:'5d ago' },
+  ],
+  connections: [
+    { initials:'RS', color:'#2563eb', name:'Rahul Sharma', role:'Frontend Dev' },
+    { initials:'AM', color:'#06d6a0', name:'Anjali Mehta', role:'Full-Stack' },
+    { initials:'KS', color:'#f97316', name:'Karan Singh', role:'UI/UX' },
+    { initials:'PN', color:'#8b5cf6', name:'Priya Nair', role:'Mobile Dev' },
+  ],
+};
+
+// Computed helpers
+const getPendingCount = () => STATE.requests.filter(r => r.status === 'pending').length;
+const getOpenPostsCount = () => STATE.posts.filter(p => p.status === 'open').length;
+
+// ═══════════════════════════════════════════════════
+// ── NAVIGATION ─────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav a[data-page]').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const link = document.querySelector(`.nav a[data-page="${page}"]`);
+  if (link) link.classList.add('active');
+  closeDrawer();
+
+  // Render page-specific content
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'browse') applyBrowseFilters();
+  if (page === 'posts') renderPostsPage();
+  if (page === 'requests') renderRequestsPage();
+  if (page === 'profile') renderProfilePage();
+  if (page === 'settings') renderSettingsPage();
+
+  // Update global badges
+  updateGlobalBadges();
+}
+
+function updateGlobalBadges() {
+  const p = getPendingCount();
+  document.getElementById('badgeRequests').textContent = p;
+  document.getElementById('badgeRequests').style.display = p > 0 ? '' : 'none';
+  updateSidebarUser();
+}
+
+function updateSidebarUser() {
+  document.getElementById('sidebarName').textContent = STATE.user.name;
+  document.getElementById('sidebarRole').textContent = STATE.user.role;
+  document.getElementById('sidebarInitials').textContent = STATE.user.initials;
+}
+
+function handleLogout() {
+  showToast('👋 Logged out. Redirecting…', 'error');
+  setTimeout(() => { showToast('(Demo: Would redirect to /login)','success'); }, 1500);
+}
+
+// ═══════════════════════════════════════════════════
+// ── DASHBOARD ──────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderDashboard() {
+  const u = STATE.user;
+  document.getElementById('dashWelcome').textContent = `Welcome back, ${u.firstName} 👋`;
+  document.getElementById('statPosts').textContent = getOpenPostsCount();
+  document.getElementById('statConns').textContent = u.connections;
+  document.getElementById('statReqs').textContent = getPendingCount();
+  document.getElementById('statViews').textContent = u.views;
+
+  renderDashTeammates();
+  renderDashPosts();
+  renderDashRequests();
+}
+
+let dashCurrentFilter = 'all';
+function dashFilter() {
+  STATE.dashSearch = document.getElementById('dashSearch').value.toLowerCase();
+  renderDashTeammates();
+}
+function dashFilterSkill(skill, btn) {
+  dashCurrentFilter = skill;
+  document.querySelectorAll('#dashFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDashTeammates();
+}
+function renderDashTeammates() {
+  const list = document.getElementById('dashTeammatesList');
+  const q = STATE.dashSearch || '';
+  const filtered = STATE.teammates.filter(t => {
+    const mf = dashCurrentFilter === 'all' || t.category === dashCurrentFilter;
+    const ms = !q || t.name.toLowerCase().includes(q) || t.skills.some(s => s.toLowerCase().includes(q)) || t.role.toLowerCase().includes(q);
+    return mf && ms;
+  }).slice(0, 4);
+
+  if (!filtered.length) { list.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div><p>No teammates match your filter.</p></div>`; return; }
+  list.innerHTML = filtered.map(t => `
+    <div class="teammate" style="cursor:pointer;" onclick="openDrawer(${t.id})">
+      <div class="t-avatar" style="background:${t.color}">${t.initials}</div>
+      <div class="t-info">
+        <div class="t-name">${t.name}</div>
+        <div class="t-meta"><span>${t.role}</span><span style="color:var(--text3)">·</span><span>📍 ${t.location}</span></div>
+        <div class="t-tags">${t.skills.slice(0,3).map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        <div class="t-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-sm" onclick="sendConnect(${t.id},'${t.name}')">Connect</button>
+          <button class="btn btn-ghost btn-sm" onclick="openDrawer(${t.id})">Profile</button>
+        </div>
+      </div>
+      <div class="match-bar-wrap">${renderMatchCircle(t.match)}</div>
+    </div>`).join('');
+}
+
+function renderDashPosts() {
+  const list = document.getElementById('dashPostsList');
+  const cnt = document.getElementById('dashPostCount');
+  const open = getOpenPostsCount();
+  cnt.textContent = `${open} active`;
+  list.innerHTML = STATE.posts.map(p => `
+    <div class="post-item">
+      <div class="post-title">${p.title}<span class="post-status ${p.status}">${p.status==='open'?'Open':'Closed'}</span></div>
+      <div class="post-desc">${p.desc}</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">${p.skills.map(s=>`<span class="tag blue">${s}</span>`).join('')}</div>
+      <div class="post-meta"><span>👁 ${p.views} views</span><span>📬 ${p.reqs} requests</span><span>⏰ ${p.time}</span></div>
+    </div>`).join('');
+}
+
+function renderDashRequests() {
+  const list = document.getElementById('dashRequestsList');
+  const badge = document.getElementById('dashReqBadge');
+  const pending = STATE.requests.filter(r => r.status === 'pending');
+  badge.textContent = `${pending.length} new`;
+  if (!pending.length) { list.innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><p>No pending requests right now.</p></div>`; return; }
+  list.innerHTML = pending.map(r => `
+    <div class="request-item" id="dreq-${r.id}">
+      <div class="t-avatar" style="background:${r.color};width:40px;height:40px;border-radius:50%;font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${r.initials}</div>
+      <div class="req-info">
+        <div class="req-name">${r.name}</div>
+        <div class="req-text">${r.actionText}</div>
+        <div class="req-post">📋 ${r.post}</div>
+        <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;">${r.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        <div class="req-actions">
+          <button class="btn btn-success btn-sm" onclick="handleDashReq(${r.id},'accepted')">✓ Accept</button>
+          <button class="btn btn-danger btn-sm" onclick="handleDashReq(${r.id},'declined')">✕ Reject</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function handleDashReq(id, action) {
+  const el = document.getElementById(`dreq-${id}`);
+  if (el) {
+    el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; el.style.transition = 'all 0.3s';
+    setTimeout(() => {
+      const r = STATE.requests.find(x => x.id === id);
+      if (r) r.status = action;
+      updateGlobalBadges();
+      renderDashRequests();
+      renderDashboard();
+      showToast(action==='accepted' ? '✅ Request accepted! You\'re now connected.' : 'Request declined.', action==='accepted'?'success':'error');
+    }, 300);
+  }
+}
+
+function submitDashPost() {
+  const title = document.getElementById('dashPostTitle').value.trim();
+  if (!title) { showToast('⚠️ Please add a title.', 'error'); return; }
+  const skills = [...STATE.dashSelectedSkills];
+  STATE.posts.unshift({ id: Date.now(), title, type:'Looking for Team', desc: document.getElementById('dashPostDesc').value || 'No description.', skills, status:'open', views:0, reqs:0, time:'just now' });
+  STATE.dashSelectedSkills = [];
+  document.getElementById('dashPostTitle').value = '';
+  document.getElementById('dashPostDesc').value = '';
+  document.getElementById('dashSelectedSkills').innerHTML = '';
+  renderDashPosts();
+  renderPostsPage();
+  showToast('🎉 Post published successfully!', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// ── BROWSE ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function setBrowseFilter(type, val, btn) {
+  STATE.browseFilters[type] = val;
+  const groupId = { role:'roleFilters', avail:'availFilters', loc:'locFilters' }[type];
+  document.querySelectorAll(`#${groupId} .filter-chip`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyBrowseFilters();
+}
+
+function applyBrowseFilters() {
+  const q = (document.getElementById('browseSearch')?.value || '').toLowerCase();
+  const sort = document.getElementById('browseSort')?.value || 'match';
+  const { role, avail, loc } = STATE.browseFilters;
+
+  let result = STATE.teammates.filter(u => {
+    const mr = role === 'all' || u.category === role;
+    const ma = avail === 'all' || u.avail === avail;
+    const ml = loc === 'all' || u.location === loc;
+    const ms = !q || u.name.toLowerCase().includes(q) || u.role.toLowerCase().includes(q) || u.skills.some(s => s.toLowerCase().includes(q));
+    return mr && ma && ml && ms;
+  });
+
+  if (sort === 'match') result.sort((a,b) => b.match - a.match);
+  else if (sort === 'name') result.sort((a,b) => a.name.localeCompare(b.name));
+
+  const cnt = document.getElementById('browseResultsCount');
+  if (cnt) cnt.textContent = `Showing ${result.length} user${result.length!==1?'s':''}`;
+  renderBrowseGrid(result);
+}
+
+function renderBrowseGrid(list) {
+  const grid = document.getElementById('browseGrid');
+  if (!grid) return;
+  if (!list.length) { grid.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div><p>No users match your filters.<br>Try adjusting your criteria.</p></div>`; return; }
+  grid.innerHTML = list.map((u, i) => `
+    <div class="user-card" style="animation-delay:${i*0.05}s" onclick="openDrawer(${u.id})">
+      <div class="uc-top"><div class="uc-avatar" style="background:${u.color}">${u.initials}</div><div class="uc-match"><div class="match-pct">${u.match}%</div><div class="match-label">match</div></div></div>
+      <div class="uc-name">${u.name}</div>
+      <div class="uc-role">${u.role}</div>
+      <div class="uc-loc"><span class="avail-dot ${u.avail}"></span>${u.avail==='open'?'Available':'Busy'} · 📍 ${u.location}</div>
+      <div class="uc-bio">${u.bio}</div>
+      <div class="uc-tags">${u.skills.slice(0,3).map(s=>`<span class="tag">${s}</span>`).join('')}${u.skills.length>3?`<span class="tag">+${u.skills.length-3}</span>`:''}</div>
+      <div class="uc-actions" onclick="event.stopPropagation()">
+        <button class="btn" onclick="sendConnect(${u.id},'${u.name}')">Connect</button>
+        <button class="btn btn-ghost" onclick="openDrawer(${u.id})">View Profile</button>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ── MY POSTS ───────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderPostsPage() {
+  const open = getOpenPostsCount();
+  const totalReqs = STATE.posts.reduce((s, p) => s + p.reqs, 0);
+  const totalViews = STATE.posts.reduce((s, p) => s + p.views, 0);
+  const el = document.getElementById('postsOpenCount');
+  if (el) { el.textContent = open; document.getElementById('postsTotalReqs').textContent = totalReqs; document.getElementById('postsTotalViews').textContent = totalViews; }
+
+  const list = document.getElementById('fullPostsList');
+  if (!list) return;
+  list.innerHTML = STATE.posts.map(p => `
+    <div class="post-item" id="fpost-${p.id}">
+      <div class="post-title">${p.title}<span class="post-status ${p.status}">${p.status==='open'?'Open':'Closed'}</span></div>
+      <div style="font-size:11.5px;color:var(--primary-light);margin-bottom:6px;font-weight:600;">${p.type}</div>
+      <div class="post-desc">${p.desc}</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">${p.skills.map(s=>`<span class="tag blue">${s}</span>`).join('')}</div>
+      <div class="post-meta" style="margin-bottom:12px;"><span>👁 ${p.views} views</span><span>📬 ${p.reqs} requests</span><span>⏰ ${p.time}</span></div>
+      <div style="display:flex;gap:8px;">
+        ${p.status==='open'?`<button class="btn btn-ghost btn-sm" onclick="togglePostStatus(${p.id})">Close Post</button>`:`<button class="btn btn-success btn-sm" onclick="togglePostStatus(${p.id})">Reopen Post</button>`}
+        <button class="btn btn-danger btn-sm" onclick="deletePost(${p.id})">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function togglePostStatus(id) {
+  const p = STATE.posts.find(x => x.id === id);
+  if (p) { p.status = p.status === 'open' ? 'closed' : 'open'; renderPostsPage(); renderDashPosts(); showToast(`Post ${p.status === 'open' ? 'reopened' : 'closed'}.`, 'success'); }
+}
+function deletePost(id) {
+  STATE.posts = STATE.posts.filter(x => x.id !== id);
+  renderPostsPage(); renderDashPosts();
+  showToast('🗑️ Post deleted.', 'error');
+}
+
+function submitNewPost() {
+  const title = document.getElementById('modalPostTitle').value.trim();
+  if (!title) { showToast('⚠️ Please add a title.', 'error'); return; }
+  const skills = [...STATE.modalSelectedSkills];
+  STATE.posts.unshift({ id: Date.now(), title, type:'Looking for Team', desc: document.getElementById('modalPostDesc').value || 'No description.', skills, status:'open', views:0, reqs:0, time:'just now' });
+  STATE.modalSelectedSkills = [];
+  document.getElementById('modalPostTitle').value = '';
+  document.getElementById('modalPostDesc').value = '';
+  document.getElementById('modalSelectedSkills').innerHTML = '';
+  closeModal('newPostModal');
+  renderDashPosts(); renderPostsPage();
+  showToast('🎉 Post published!', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// ── REQUESTS PAGE ──────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderRequestsPage() {
+  const pending = getPendingCount();
+  const accepted = STATE.requests.filter(r => r.status === 'accepted').length;
+  const declined = STATE.requests.filter(r => r.status === 'declined').length;
+  document.getElementById('reqPendingCount').textContent = pending;
+  document.getElementById('reqAcceptedCount').textContent = accepted;
+  document.getElementById('reqDeclinedCount').textContent = declined;
+  const badge = document.getElementById('reqPendingBadge');
+  badge.textContent = pending; badge.style.display = pending > 0 ? '' : 'none';
+  document.getElementById('reqStatsActivePosts').textContent = getOpenPostsCount();
+  document.getElementById('reqStatsConns').textContent = STATE.user.connections;
+  renderReqBody();
+}
+
+let currentReqTab = 'pending';
+function setReqTab(tab, btn) {
+  currentReqTab = tab;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReqBody();
+}
+
+function renderReqBody() {
+  const body = document.getElementById('reqBody');
+  const title = document.getElementById('reqCardTitle');
+  const cnt = document.getElementById('reqCardCount');
+  if (!body) return;
+
+  if (currentReqTab === 'sent') {
+    title.textContent = '📤 Sent Requests'; cnt.textContent = `${STATE.sentRequests.length} requests`;
+    body.innerHTML = STATE.sentRequests.map(r => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:50%;background:${r.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">${r.initials}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${r.name}</div><div style="font-size:11.5px;color:var(--text3)">📋 ${r.post} · ${r.time}</div></div>
+        <span class="req-status ${r.status}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>
+      </div>`).join('');
+    return;
+  }
+
+  const filtered = STATE.requests.filter(r => r.status === currentReqTab);
+  const tabTitles = { pending:'📬 Incoming Requests', accepted:'✅ Accepted Requests', declined:'✕ Declined Requests' };
+  title.textContent = tabTitles[currentReqTab]; cnt.textContent = `${filtered.length} request${filtered.length!==1?'s':''}`;
+
+  if (!filtered.length) {
+    const msgs = { pending:'No pending requests right now.', accepted:'No accepted requests yet.', declined:'No declined requests.' };
+    const icons = { pending:'📭', accepted:'🤝', declined:'🙅' };
+    body.innerHTML = `<div class="empty-state"><div class="e-icon">${icons[currentReqTab]}</div><p>${msgs[currentReqTab]}</p></div>`; return;
+  }
+
+  body.innerHTML = filtered.map((r, i) => `
+    <div class="request-item" id="ritem-${r.id}" style="animation-delay:${i*0.08}s">
+      <div class="t-avatar" style="background:${r.color};width:46px;height:46px;border-radius:50%;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${r.initials}</div>
+      <div class="req-info">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div class="req-name">${r.name}</div><div style="font-size:11.5px;color:var(--text3)">${r.time}</div></div>
+        <div class="req-text">${r.actionText}</div>
+        <div class="req-post">📋 ${r.post}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:${r.note?'10px':'12px'}">${r.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        ${r.note ? `<div class="req-note">"${r.note}"</div>` : ''}
+        ${currentReqTab==='pending' ? `
+        <div class="req-actions">
+          <button class="btn btn-success btn-sm" onclick="handlePageReq(${r.id},'accepted')">✓ Accept</button>
+          <button class="btn btn-danger btn-sm" onclick="handlePageReq(${r.id},'declined')">✕ Decline</button>
+          <button class="btn btn-ghost btn-sm" onclick="openDrawerById(${r.id})">View Profile</button>
+        </div>` : `
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="req-status ${r.status}">${r.status==='accepted'?'Accepted':'Declined'}</span>
+          ${r.status==='accepted'?`<button class="btn btn-ghost btn-sm">💬 Message</button>`:''}
+        </div>`}
+      </div>
+    </div>`).join('');
+}
+
+function handlePageReq(id, action) {
+  const el = document.getElementById(`ritem-${id}`);
+  if (el) {
+    el.style.opacity='0'; el.style.transform='translateX(20px)'; el.style.transition='all 0.3s';
+    setTimeout(() => {
+      const r = STATE.requests.find(x => x.id === id);
+      if (r) r.status = action;
+      updateGlobalBadges();
+      renderRequestsPage();
+      renderDashRequests();
+      showToast(action==='accepted'?'✅ Request accepted! Connected.':'✕ Request declined.',action==='accepted'?'success':'error');
+    }, 300);
+  }
+}
+
+function openDrawerById(reqId) {
+  const req = STATE.requests.find(r => r.id === reqId);
+  if (!req) return;
+  const t = STATE.teammates.find(x => x.name === req.name);
+  if (t) openDrawer(t.id);
+  else {
+    document.getElementById('drawerContent').innerHTML = `<div class="profile-hero-drawer"><div class="profile-avatar-drawer" style="background:${req.color}">${req.initials}</div><div class="profile-name-drawer">${req.name}</div></div>`;
+    document.getElementById('profileDrawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('open');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ── PROFILE PAGE ───────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderProfilePage() {
+  const u = STATE.user;
+  document.getElementById('profileName').textContent = u.name;
+  document.getElementById('profileHeadline').textContent = u.headline;
+  document.getElementById('profileLocation').textContent = '📍 ' + u.location;
+  document.getElementById('profileBio').textContent = u.bio;
+  document.getElementById('profileAvatarLg').textContent = u.initials;
+  document.getElementById('profileStatViews').textContent = u.views;
+  document.getElementById('profileStatConns').textContent = u.connections;
+  document.getElementById('profileStatPosts').textContent = getOpenPostsCount();
+  document.getElementById('profileConnCount').textContent = `${u.connections} total`;
+
+  renderProfileSkills();
+
+  const conns = document.getElementById('profileConnections');
+  conns.innerHTML = STATE.connections.map(c => `
+    <div class="connection-item">
+      <div class="c-avatar" style="background:${c.color}">${c.initials}</div>
+      <div><div class="c-name">${c.name}</div><div class="c-role">${c.role}</div></div>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:5px 10px;font-size:11px;" onclick="showToast('💬 Message feature coming soon!','success')">Message</button>
+    </div>`).join('') + `<button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:10px;font-size:12.5px;" onclick="navigate('browse')">View All ${u.connections} →</button>`;
+}
+
+function renderProfileSkills() {
+  const grid = document.getElementById('profileSkillsGrid');
+  if (!grid) return;
+  grid.innerHTML = STATE.skills.map(s => `
+    <span class="skill-tag">
+      ${s}
+      ${STATE.skillEditMode ? `<span class="remove-skill" onclick="removeSkill('${s}')">✕</span>` : ''}
+    </span>`).join('');
+}
+
+let skillEditMode = false;
+function toggleSkillEdit() {
+  skillEditMode = !skillEditMode;
+  STATE.skillEditMode = skillEditMode;
+  document.getElementById('skillEditRow').style.display = skillEditMode ? 'flex' : 'none';
+  renderProfileSkills();
+}
+function addProfileSkill() {
+  const input = document.getElementById('newSkillInput');
+  const val = input.value.trim();
+  if (val && !STATE.skills.includes(val)) { STATE.skills.push(val); renderProfileSkills(); showToast(`⚡ "${val}" added!`, 'success'); }
+  input.value = '';
+}
+function removeSkill(s) { STATE.skills = STATE.skills.filter(x => x !== s); renderProfileSkills(); }
+
+function saveBio() {
+  STATE.user.name = document.getElementById('editName').value;
+  STATE.user.headline = document.getElementById('editHeadline').value;
+  STATE.user.bio = document.getElementById('editBio').value;
+  STATE.user.location = document.getElementById('editLocation').value;
+  STATE.user.initials = STATE.user.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+  closeModal('bioModal');
+  updateSidebarUser();
+  renderProfilePage();
+  showToast('✅ Profile updated!', 'success');
+}
+function saveLinks() { closeModal('linksModal'); showToast('🔗 Links saved!', 'success'); }
+
+// ═══════════════════════════════════════════════════
+// ── SETTINGS PAGE ──────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderSettingsPage() {
+  // Pre-fill account form
+  const fn = document.getElementById('settFirstName'); if (fn) fn.value = STATE.user.firstName;
+  const ln = document.getElementById('settLastName'); if (ln) ln.value = STATE.user.lastName;
+  const rl = document.getElementById('settRole'); if (rl) rl.value = STATE.user.role;
+  const lc = document.getElementById('settLocation'); if (lc) lc.value = STATE.user.location;
+
+  // Notification toggles
+  const emailToggleData = [
+    ['New team request','When someone requests to join your post',true],
+    ['Request accepted','When someone accepts your connection request',true],
+    ['New message','When you receive a new direct message',true],
+    ['Post activity','Weekly summary of post views and requests',false],
+    ['Platform updates','News, tips, and feature announcements',false],
+  ];
+  const inappToggleData = [
+    ['Team requests','Instant alert when someone applies to your post',true],
+    ['Connection accepted','When a connection is confirmed',true],
+    ['Profile views','Notify when someone views your profile',false],
+    ['Suggested teammates','Weekly smart teammate suggestions',true],
+  ];
+  const mkToggle = ([title,desc,checked]) => `
+    <div class="toggle-row">
+      <div class="toggle-info"><div class="toggle-label">${title}</div><div class="toggle-desc">${desc}</div></div>
+      <label class="toggle-switch"><input type="checkbox" ${checked?'checked':''} onchange="showToast('🔔 Setting saved!','success')"><span class="slider"></span></label>
+    </div>`;
+  const et = document.getElementById('emailNotifToggles'); if (et) et.innerHTML = emailToggleData.map(mkToggle).join('');
+  const it = document.getElementById('inappNotifToggles'); if (it) it.innerHTML = inappToggleData.map(mkToggle).join('');
+
+  // Privacy toggles
+  const privacyData = [
+    ['Show email on profile','Let others see your email address',false],
+    ['Show college/university','Display your institution on your profile',true],
+    ['Show profile in search','Appear in Browse Users results',true],
+    ['Show last active status','Let others see when you were last online',false],
+  ];
+  const pt = document.getElementById('privacyToggles'); if (pt) pt.innerHTML = privacyData.map(mkToggle).join('');
+
+  // Connected accounts
+  const connData = [
+    ['💻','GitHub','Connect to showcase your repos','connected'],
+    ['💼','LinkedIn','Sync your professional experience','disconnected'],
+    ['🐦','Twitter / X','Share your TeamUp activity','disconnected'],
+    ['📧','Google','Sign in faster and sync calendar','connected'],
+  ];
+  const ca = document.getElementById('connectedAccounts');
+  if (ca) ca.innerHTML = connData.map(([icon,name,desc,status]) => `
+    <div class="connected-row">
+      <div class="service-icon">${icon}</div>
+      <div style="flex:1"><div class="service-name">${name}</div><div class="service-status ${status}">${status==='connected'?'✓ Connected':'Not connected'}</div><div style="font-size:12px;color:var(--text3);margin-top:2px">${desc}</div></div>
+      ${status==='connected'?`<button class="btn btn-ghost btn-sm" onclick="showToast('🔌 ${name} disconnected.','error')">Disconnect</button>`:`<button class="btn btn-sm" onclick="showToast('🔗 Redirecting to ${name}…','success')">Connect</button>`}
+    </div>`).join('');
+}
+
+function saveAccountSettings() {
+  STATE.user.firstName = document.getElementById('settFirstName').value;
+  STATE.user.lastName = document.getElementById('settLastName').value;
+  STATE.user.name = `${STATE.user.firstName} ${STATE.user.lastName}`;
+  STATE.user.role = document.getElementById('settRole').value;
+  STATE.user.location = document.getElementById('settLocation').value;
+  STATE.user.initials = STATE.user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+  updateSidebarUser();
+  showToast('✅ Account updated!', 'success');
+}
+
+function switchSettingSection(id, el) {
+  document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.snav-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+function checkPwStrength() {
+  const pw = document.getElementById('newPw')?.value || '';
+  const bar = document.getElementById('pwBar'); const hint = document.getElementById('pwHint');
+  if (!pw) { bar.style.display='none'; hint.style.display='none'; return; }
+  bar.style.display='block'; hint.style.display='block';
+  if (pw.length<6) { bar.className='pw-strength weak'; hint.textContent='Weak – too short'; hint.style.color='var(--danger)'; }
+  else if (pw.length<10||!/[A-Z]/.test(pw)||!/[0-9]/.test(pw)) { bar.className='pw-strength medium'; hint.textContent='Medium – add numbers, uppercase'; hint.style.color='var(--warn)'; }
+  else { bar.className='pw-strength strong'; hint.textContent='Strong password ✓'; hint.style.color='var(--accent)'; }
+}
+
+let dangerAction = '';
+function openDangerModal(action) {
+  dangerAction = action;
+  const cfg = {
+    deactivate: { icon:'😴', title:'Deactivate Account?', desc:'Your profile and posts will be hidden. You can reactivate anytime.', btn:'Deactivate' },
+    clear: { icon:'🗑️', title:'Clear All Posts?', desc:'This will permanently delete all your posts and requests. Cannot be undone.', btn:'Clear All Posts' },
+    delete: { icon:'💀', title:'Delete Account?', desc:'Permanently delete your account, posts, connections, and all data. Irreversible.', btn:'Delete Forever' },
+  }[action];
+  document.getElementById('dangerIcon').textContent = cfg.icon;
+  document.getElementById('dangerTitle').textContent = cfg.title;
+  document.getElementById('dangerDesc').textContent = cfg.desc;
+  document.getElementById('dangerConfirmBtn').textContent = cfg.btn;
+  openModal('dangerModal');
+}
+function confirmDanger() {
+  closeModal('dangerModal');
+  const msgs = { deactivate:'😴 Account deactivated.', clear:'🗑️ All posts deleted.', delete:'💀 Account deleted.' };
+  showToast(msgs[dangerAction], 'error');
+  if (dangerAction === 'clear') { STATE.posts = []; renderPostsPage(); renderDashPosts(); }
+}
+
+// ═══════════════════════════════════════════════════
+// ── SKILL CHIPS ────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function addSkillChip(e, inputId, containerId) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const input = document.getElementById(inputId);
+  const val = input.value.trim();
+  const key = containerId === 'dashSelectedSkills' ? 'dashSelectedSkills' : 'modalSelectedSkills';
+  if (val && !STATE[key].includes(val)) { STATE[key].push(val); renderSkillChips(containerId, key); }
+  input.value = '';
+}
+function quickSkill(skill, containerId) {
+  if (!STATE.dashSelectedSkills.includes(skill)) { STATE.dashSelectedSkills.push(skill); renderSkillChips(containerId, 'dashSelectedSkills'); }
+}
+function removeSkillChip(skill, containerId, key) {
+  STATE[key] = STATE[key].filter(s => s !== skill);
+  renderSkillChips(containerId, key);
+}
+function renderSkillChips(containerId, key) {
+  const c = document.getElementById(containerId); if (!c) return;
+  c.innerHTML = STATE[key].map(s => `<span class="skill-chip selected">${s}<span style="margin-left:4px;opacity:0.6;cursor:pointer" onclick="removeSkillChip('${s}','${containerId}','${key}')">✕</span></span>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ── DRAWER ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function openDrawer(id) {
+  const t = STATE.teammates.find(x => x.id === id); if (!t) return;
+  document.getElementById('drawerContent').innerHTML = `
+    <div class="profile-hero-drawer">
+      <div class="profile-avatar-drawer" style="background:${t.color}">${t.initials}</div>
+      <div class="profile-name-drawer">${t.name}</div>
+      <div class="profile-role-drawer">${t.role}</div>
+      <div style="font-size:12.5px;color:var(--text3);margin-bottom:14px">📍 ${t.location} · <span class="avail-dot ${t.avail}" style="vertical-align:middle"></span>${t.avail==='open'?'Open to collaborate':'Currently busy'}</div>
+      <div class="profile-match-pill">⚡ ${t.match}% match</div>
+    </div>
+    <div class="section-title">About</div>
+    <p class="profile-bio-drawer">${t.bio}</p>
+    <div class="section-title">Skills</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;">${t.skills.map(s=>`<span class="tag blue">${s}</span>`).join('')}</div>
+    <div class="drawer-actions">
+      <button class="btn" style="flex:1;justify-content:center;" onclick="sendConnect(${t.id},'${t.name}')">✉️ Connect</button>
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="showToast('💬 Messaging coming soon!','success')">💬 Message</button>
+    </div>`;
+  document.getElementById('profileDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('profileDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════
+// ── MODALS ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+// ═══════════════════════════════════════════════════
+// ── HELPERS ────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function setToggle(btn, groupId) {
+  document.getElementById(groupId).querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function sendConnect(id, name) { showToast(`✉️ Request sent to ${name}!`, 'success'); }
+
+function renderMatchCircle(pct) {
+  const r=18, circ=2*Math.PI*r, dash=(pct/100)*circ;
+  const color = pct>=80?'#06d6a0':pct>=65?'#3b82f6':'#f97316';
+  return `<div class="match-bar"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/><circle cx="22" cy="22" r="${r}" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/></svg><div class="pct">${pct}%</div></div>`;
+}
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`; t.innerHTML = msg; c.appendChild(t);
+  setTimeout(() => { t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+// ═══════════════════════════════════════════════════
+// ── INIT ───────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+navigate('dashboard');
+function handleLogout(event) {
+    event.preventDefault();
+
+    // OPTIONAL: Clear frontend session (if using localStorage)
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to backend logout OR login page
+    window.location.href = "/login"; 
+}
+</script>
+</body>
+</html>

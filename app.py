@@ -1,70 +1,31 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, session
 
 app = Flask(__name__)
+app.secret_key = "secret"
 
-# Temporary storage (replace with MongoDB later)
 users = []
 
-# ================= HOME =================
+# HOME
 @app.route('/')
 def home():
-    return redirect('/register')
+    return redirect('/login')
 
 
-# ================= REGISTER PAGE =================
+# REGISTER
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-
-        # Step 1 data
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        # Save basic data temporarily
         user = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "username": username,
-            "email": email,
-            "password": password
+            "username": request.form.get('username'),
+            "password": request.form.get('password')
         }
-
         users.append(user)
-
-        print("User Registered:", user)
-
         return redirect('/dashboard')
 
     return render_template('register.html')
 
 
-# ================= PROFILE STEP =================
-@app.route('/register/profile', methods=['POST'])
-def register_profile():
-
-    job_title = request.form.get('job_title')
-    role = request.form.get('role')
-    timezone = request.form.get('timezone')
-    phone = request.form.get('phone')
-    bio = request.form.get('bio')
-
-    profile = {
-        "job_title": job_title,
-        "role": role,
-        "timezone": timezone,
-        "phone": phone,
-        "bio": bio
-    }
-
-    print("Profile Data:", profile)
-
-    return redirect('/dashboard')
-
-
-# ================= LOGIN =================
+# LOGIN
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -73,6 +34,7 @@ def login():
 
         for user in users:
             if user['username'] == username and user['password'] == password:
+                session["user"] = username
                 return redirect('/dashboard')
 
         return "Invalid Credentials ❌"
@@ -80,12 +42,32 @@ def login():
     return render_template('login.html')
 
 
-# ================= DASHBOARD =================
+# DASHBOARD
 @app.route('/dashboard')
-def dashboard():
+def dashboard_page():
     return render_template('dashboard.html')
 
+@app.route('/settings')
+def settings_page():
+    return render_template('settings.html')
 
-# ================= RUN =================
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/brow')
+def browse():
+    return render_template('brow.html')
+
+@app.route('/post')
+def posts():
+    return render_template('post.html')
+
+@app.route('/request')
+def requests_page():
+    return render_template('request.html')
+
+
+# RUN
 if __name__ == '__main__':
     app.run(debug=True)

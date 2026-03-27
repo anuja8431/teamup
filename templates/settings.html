@@ -165,7 +165,7 @@
     <div class="nav">
         <a href="profile.html"><span class="nav-icon">👤</span> Profile</a>
         <a href="settings.html" class="active"><span class="nav-icon">⚙️</span> Settings</a>
-        <a href="/login"><span class="nav-icon">🚪</span> Logout</a>
+        <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
     <div class="sidebar-footer">
         <div class="user-chip">
@@ -511,6 +511,16 @@ function showToast(msg, type='success') {
     t.innerHTML = msg;
     c.appendChild(t);
     setTimeout(()=>{ t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); },3000);
+}
+function handleLogout(event) {
+    event.preventDefault();
+
+    // OPTIONAL: Clear frontend session (if using localStorage)
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to backend logout OR login page
+    window.location.href = "/login";
 }
 </script>
 </body>

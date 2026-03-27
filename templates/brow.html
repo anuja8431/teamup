@@ -159,16 +159,16 @@
     <div class="logo"><div class="logo-icon">🔗</div> TeamUp</div>
     <div class="nav-label">Menu</div>
     <div class="nav">
-        <a href="dashboard.html"><span class="nav-icon">⚡</span> Dashboard</a>
-        <a href="browse-users.html" class="active"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
-        <a href="my-posts.html"><span class="nav-icon">📋</span> My Posts</a>
-        <a href="requests.html"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+        <a href="/dashboard"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="/brow" class="active"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="/post"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="/request"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
     </div>
     <div class="nav-label">Account</div>
     <div class="nav">
-        <a href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-        <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
-        <a href="/login"><span class="nav-icon">🚪</span> Logout</a>
+        <a href="/profile"><span class="nav-icon">👤</span> Profile</a>
+        <a href="/settings"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
     <div class="sidebar-footer">
         <div class="user-chip">
@@ -386,6 +386,15 @@ function showToast(msg, type='success') {
 }
 
 applyFilters();
+function handleLogout(event) {
+    event.preventDefault();
+
+    // OPTIONAL: Clear frontend session (if using localStorage)
+    localStorage.clear();
+    sessionStorage.clear();
+
+
+}
 </script>
 </body>
 </html>

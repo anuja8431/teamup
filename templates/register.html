@@ -711,6 +711,7 @@
                         <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <select id="role" name="role" required>
                             <option value="" disabled selected>Select your primary role</option>
+                            <option value="other">Student</option>
                             <option value="founder">Founder / Co-founder</option>
                             <option value="product">Product Manager</option>
                             <option value="designer">Designer</option>
@@ -771,14 +772,11 @@
                     <button type="button" class="btn-back" onclick="goToStep1()" title="Go back">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                     </button>
-                    <button type="submit" class="btn-signup" style="flex:1;">
-                        <span class="btn-shine"></span>
-                        Create My Account
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
+                    <button type="button" class="btn-signup" onclick="goDashboard()" style="flex:1;">
                 </div>
 
             </form>
+            <form action="/register" method="POST"></form>
 
             <div class="login-cta">Already have an account? <a href="C:\Users\patil\Desktop\ninja coder\templates\login.html">Sign in</a></div>
             <div class="trust-badge">
@@ -786,7 +784,7 @@
                 Secured with 256-bit encryption
             </div>
         </div>
-
+<form action="/register" method="POST"></form>
     </div><!-- /form-card -->
 </div>
 
@@ -968,6 +966,9 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3200);
     }
+function goDashboard() {
+    window.location.href = "/dashboard";
+}
 </script>
 
 </body>
