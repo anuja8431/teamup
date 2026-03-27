@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login – TeamUp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+</head>
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --ink: #0d0f14;
+        --primary: #0077b6;
+        --primary-dark: #005a8a;
+        --accent: #00c9a7;
+        --muted: #6b7280;
+        --surface: #ffffff;
+        --border: #e5e7eb;
+        --bg: #f0f4f8;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+    }
+
+    /* ── LEFT PANEL ── */
+    .panel-left {
+        background: var(--ink);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 48px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .panel-left::before {
+        content: '';
+        position: absolute;
+        width: 520px; height: 520px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0,201,167,.25) 0%, transparent 70%);
+        top: -120px; left: -120px;
+        animation: pulse 6s ease-in-out infinite alternate;
+    }
+    .panel-left::after {
+        content: '';
+        position: absolute;
+        width: 380px; height: 380px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0,119,182,.3) 0%, transparent 70%);
+        bottom: -80px; right: -80px;
+        animation: pulse 8s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes pulse {
+        from { transform: scale(1); opacity: .6; }
+        to   { transform: scale(1.15); opacity: 1; }
+    }
+
+    .brand { position: relative; z-index: 2; }
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 64px;
+    }
+    .logo-icon {
+        width: 40px; height: 40px;
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        color: #fff;
+        letter-spacing: -1px;
+    }
+    .logo-text {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        color: #fff;
+        letter-spacing: -.5px;
+    }
+
+    .panel-headline {
+        position: relative; z-index: 2;
+    }
+    .panel-headline h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(36px, 3.5vw, 52px);
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        margin-bottom: 20px;
+    }
+    .panel-headline h1 span {
+        background: linear-gradient(90deg, var(--accent), #7ef9c8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .panel-headline p {
+        color: rgba(255,255,255,.55);
+        font-size: 15px;
+        line-height: 1.7;
+        max-width: 320px;
+        font-weight: 300;
+    }
+
+    .panel-stats {
+        position: relative; z-index: 2;
+        display: flex; gap: 32px;
+    }
+    .stat { }
+    .stat-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -1px;
+    }
+    .stat-label {
+        font-size: 12px;
+        color: rgba(255,255,255,.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2px;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .panel-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px;
+        background: var(--surface);
+        position: relative;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .form-header {
+        margin-bottom: 40px;
+    }
+    .form-header .eyebrow {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent);
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .form-header h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--ink);
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+    }
+    .form-header p {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 300;
+    }
+
+    .field {
+        margin-bottom: 20px;
+    }
+    .field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        margin-bottom: 7px;
+        letter-spacing: .2px;
+    }
+    .input-wrap {
+        position: relative;
+    }
+    .input-icon {
+        position: absolute;
+        left: 14px; top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        pointer-events: none;
+    }
+    .input-wrap input {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--bg);
+        outline: none;
+        transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .input-wrap input:focus {
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(0,119,182,.08);
+    }
+    .input-wrap input::placeholder { color: #c0c8d0; }
+
+    .field-meta {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
+    .forgot-link {
+        font-size: 12px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        opacity: .85;
+        transition: opacity .15s;
+    }
+    .forgot-link:hover { opacity: 1; text-decoration: underline; }
+
+    .btn-login {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: transform .15s, box-shadow .15s;
+        box-shadow: 0 4px 18px rgba(0,119,182,.3);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-login::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,.1), transparent);
+        opacity: 0;
+        transition: opacity .2s;
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,119,182,.4); }
+    .btn-login:hover::after { opacity: 1; }
+    .btn-login:active { transform: translateY(0); }
+
+    .divider {
+        display: flex; align-items: center; gap: 12px;
+        margin: 28px 0;
+        color: var(--border);
+        font-size: 12px;
+        color: #c0c8d0;
+        letter-spacing: .5px;
+    }
+    .divider::before, .divider::after {
+        content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .signup-cta {
+        text-align: center;
+        font-size: 13.5px;
+        color: var(--muted);
+    }
+    .signup-cta a {
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+        margin-left: 4px;
+    }
+    .signup-cta a:hover { text-decoration: underline; }
+
+    /* Avatar stack for social proof */
+    .proof {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 36px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+    }
+    .avatars { display: flex; }
+    .avatars span {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        margin-left: -8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+    }
+    .avatars span:first-child { margin-left: 0; }
+    .proof-text { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .proof-text strong { color: var(--ink); font-weight: 500; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        body { grid-template-columns: 1fr; }
+        .panel-left { display: none; }
+        .panel-right { padding: 32px 24px; }
+    }
+
+    /* Entrance animations */
+    .form-card { animation: slideUp .5s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .panel-headline { animation: fadeIn .8s ease both .2s; }
+    .panel-stats    { animation: fadeIn .8s ease both .4s; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<body>
+
+<!-- LEFT PANEL -->
+<div class="panel-left">
+    <div class="brand">
+        <div class="brand-logo">
+            <div class="logo-icon">Tu</div>
+            <span class="logo-text">TeamUp</span>
+        </div>
+    </div>
+
+    <div class="panel-headline">
+        <h1>Where great<br>teams <span>connect</span><br>&amp; collaborate.</h1>
+        <p>Streamline your workflow, manage projects, and keep everyone aligned — all in one place.</p>
+    </div>
+
+    <div class="panel-stats">
+        <div class="stat">
+            <div class="stat-num">12k+</div>
+            <div class="stat-label">Teams</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">98%</div>
+            <div class="stat-label">Satisfaction</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">4.9★</div>
+            <div class="stat-label">Rating</div>
+        </div>
+    </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="panel-right">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="eyebrow">Welcome back</div>
+            <h2>Sign in to TeamUp</h2>
+            <p>Enter your credentials to access your workspace</p>
+        </div>
+
+        <form action="/login" method="POST">
+            <div class="field">
+                <label for="username">Username</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input type="text" id="username" name="username" placeholder="Enter your username">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                </div>
+                <div class="field-meta">
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In →</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="signup-cta">
+            Don't have an account? <a href="/register">Create one free</a>
+        </div>
+
+        <div class="proof">
+            <div class="avatars">
+                <span style="background:#0077b6">AK</span>
+                <span style="background:#00c9a7">MR</span>
+                <span style="background:#f97316">SL</span>
+                <span style="background:#8b5cf6">JP</span>
+            </div>
+            <div class="proof-text">
+                <strong>2,400+ people</strong> joined TeamUp this week
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

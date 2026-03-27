@@ -1,37 +1,56 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from db import users_collection
+from flask import Flask, render_template, request, redirect
+import sqlite3
 
 app = Flask(__name__)
-CORS(app)
 
+# ---------- DB CONNECT ----------
+def get_db():
+    return sqlite3.connect("database.db")
+
+# LOGIN PAGE
 @app.route('/')
-def home():
-    return "Backend is running!"
-    @app.route('/signup', methods=['POST'])
-def signup():
-    data = request.json
+def login_page():
+    return render_template("login.html")
 
-    user = {
-        "name": data.get("name"),
-        "email": data.get("email"),
-        "password": data.get("password"),
-        "skills": data.get("skills", [])
-    }
-
-    users_collection.insert_one(user)
-
-    return jsonify({"message": "User created successfully"})
+# LOGIN
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
+    username = request.form['username']
+    password = request.form['password']
 
-    user = users_collection.find_one({
-        "email": data.get("email"),
-        "password": data.get("password")
-    })
-
-    if user:
-        return jsonify({"message": "Login successful"})
+    # SAME logic (no change)
+    if username == "admin" and password == "1234":
+        return redirect('/dashboard')
     else:
-        return jsonify({"message": "Invalid credentials"}), 401
+        return "Invalid"
+
+# DASHBOARD
+@app.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
+
+# CREATE PAGE
+@app.route('/create')
+def create_post():
+    return render_template("create_post.html")
+
+# ✅ ADD POST (NOW CONNECTED)
+@app.route('/add_post', methods=['POST'])
+def add_post():
+    title = request.form['title']
+    content = request.form['content']
+
+    db = get_db()
+    db.execute("INSERT INTO posts (title, content) VALUES (?, ?)", (title, content))
+    db.commit()
+
+    return redirect('/posts')
+
+# ✅ SHOW POSTS (NOW CONNECTED)
+@app.route('/posts')
+def posts():
+    db = get_db()
+    all_posts = db.execute("SELECT * FROM posts").fetchall()
+    return render_template("posts.html", posts=all_posts)
+
+app.run(debug=True)
