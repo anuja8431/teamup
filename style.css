@@ -1,0 +1,228 @@
+/* Reset */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Headings */
+h2 {
+  color: #333;
+  margin-top: 20px;
+}
+
+/* Inputs */
+input {
+  width: 250px;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Buttons */
+button {
+  padding: 8px 12px;
+  margin-top: 5px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* Cards (for posts & users) */
+#posts p,
+#req p {
+  background: white;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Layout */
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
+/* Sections */
+section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Buttons inside posts */
+#posts button,
+#req button {
+  margin-left: 10px;
+  background: #28a745;
+}
+
+#req button:last-child {
+  background: #dc3545;
+}
+
+/* Hover effects */
+#posts button:hover {
+  background: #218838;
+}
+
+#req button:hover {
+  opacity: 0.8;
+}
+/* Background */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #333;
+}
+
+/* Center container */
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  color: white;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #eee;
+  margin-bottom: 30px;
+}
+
+/* Card style */
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 5px #667eea;
+}
+
+/* Buttons */
+button {
+  width: 95%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background: #667eea;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #5a67d8;
+  transform: scale(1.05);
+}
+/* Background */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+/* Container */
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  color: white;
+}
+
+.subtitle {
+  color: #e0f7ff;
+  margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+  background: white;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+button {
+  padding: 8px 12px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 6px;
+  background: #4facfe;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #007bff;
+  transform: scale(1.05);
+}
+
+/* Reject button */
+.reject {
+  background: #ff4d4d;
+}
+
+.reject:hover {
+  background: #cc0000;
+}
+
+/* Items (cards inside sections) */
+.item {
+  background: #f9f9f9;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+}

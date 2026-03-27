@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamUp — Create Post</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+
+    /* LEFT - FORM */
+    .create-form-card { background: #fff; border: 1px solid var(--li-border); border-radius: 8px; overflow: hidden; }
+    .create-header { padding: 20px 24px; border-bottom: 1px solid var(--li-border); display: flex; align-items: center; gap: 12px; }
+    .create-header-info h2 { font-size: 1.1rem; font-weight: 700; }
+    .create-header-info p { font-size: 0.8rem; color: var(--li-text-secondary); margin-top: 2px; }
+    .create-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 18px; }
+
+    /* TYPE SELECTOR */
+    .type-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .type-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 16px; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--li-border); background: #fff;
+      color: var(--li-text-secondary); transition: all 0.15s; font-family: inherit;
+    }
+    .type-btn:hover { border-color: rgba(0,0,0,0.3); color: var(--li-text); }
+    .type-btn.sel { background: rgba(10,102,194,0.1); border-color: var(--li-blue); color: var(--li-blue); }
+
+    /* SKILLS */
+    .skills-box {
+      border: 1px solid rgba(0,0,0,0.4); border-radius: 4px;
+      padding: 8px 12px; min-height: 44px;
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      cursor: text; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .skills-box:focus-within { border-color: var(--li-blue); box-shadow: 0 0 0 1px var(--li-blue); }
+    .sk-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(10,102,194,0.08); color: var(--li-blue);
+      border: 1px solid rgba(10,102,194,0.2);
+      padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600;
+    }
+    .sk-rm { cursor: pointer; opacity: 0.6; font-size: 0.9rem; }
+    .sk-rm:hover { opacity: 1; }
+    .sk-input {
+      border: none; background: none; color: var(--li-text);
+      font-size: 0.875rem; outline: none; min-width: 100px;
+      padding: 2px 0; font-family: inherit;
+    }
+    .quick-skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .qs-btn {
+      padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; border: 1px solid rgba(10,102,194,0.2); background: rgba(10,102,194,0.05);
+      color: var(--li-blue); transition: all 0.15s; font-family: inherit;
+    }
+    .qs-btn:hover { background: rgba(10,102,194,0.1); }
+
+    /* TEAM SIZE */
+    .ts-row { display: flex; align-items: center; gap: 12px; }
+    .ts-btn {
+      width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--li-border);
+      background: #fff; font-size: 1.1rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .ts-btn:hover { border-color: var(--li-blue); color: var(--li-blue); }
+    .ts-val { font-size: 1.1rem; font-weight: 700; min-width: 24px; text-align: center; }
+
+    /* CHAR COUNTER */
+    .field-wrap { position: relative; }
+    .char-cnt { position: absolute; bottom: 10px; right: 12px; font-size: 0.72rem; color: var(--li-text-tertiary); pointer-events: none; }
+
+    /* FOOTER */
+    .create-footer { padding: 16px 24px; border-top: 1px solid var(--li-border); display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* PREVIEW CARD */
+    .preview-sticky { position: sticky; top: 68px; }
+    .preview-card-inner { background: #fff; border: 1px solid var(--li-border); border-radius: 8px; overflow: hidden; }
+    .preview-header-bar { padding: 12px 16px; border-bottom: 1px solid var(--li-border); font-size: 0.82rem; font-weight: 700; color: var(--li-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .preview-body { padding: 16px; }
+    .prev-author-row { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .prev-name { font-weight: 700; font-size: 0.875rem; }
+    .prev-sub { font-size: 0.75rem; color: var(--li-text-secondary); }
+    .prev-title-txt { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; line-height: 1.3; }
+    .prev-desc-txt { font-size: 0.82rem; color: var(--li-text-secondary); line-height: 1.5; margin-bottom: 10px; }
+    .prev-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+    .prev-meta { font-size: 0.75rem; color: var(--li-text-secondary); display: flex; gap: 12px; }
+    .prev-divider { height: 1px; background: var(--li-border); margin: 10px 0; }
+    .prev-actions { display: flex; }
+    .prev-action { flex: 1; text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--li-text-secondary); padding: 8px 0; border-radius: 4px; cursor: default; }
+
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    @media (max-width: 700px) { .page-wrap { grid-template-columns: 1fr; } .preview-sticky { position: static; } }
+  </style>
+</head>
+<body>
+<script src="shared.js"></script>
+<script>renderNav('create');</script>
+
+<div class="page-wrap">
+  <!-- FORM -->
+  <div>
+    <div class="create-form-card">
+      <div class="create-header">
+        <div class="li-avatar av-lg">AC</div>
+        <div class="create-header-info">
+          <h2>Create a post</h2>
+          <p>Post publicly · Anyone on TeamUp</p>
+        </div>
+      </div>
+      <div class="create-body">
+
+        <!-- Type -->
+        <div>
+          <div class="li-field" style="margin-bottom:8px;"><label>Opportunity type</label></div>
+          <div class="type-row">
+            <button class="type-btn sel" onclick="selType(this,'hackathon')">🏆 Hackathon</button>
+            <button class="type-btn" onclick="selType(this,'project')">🚀 Project</button>
+            <button class="type-btn" onclick="selType(this,'study')">📚 Study Group</button>
+            <button class="type-btn" onclick="selType(this,'research')">🔬 Research</button>
+            <button class="type-btn" onclick="selType(this,'startup')">💡 Startup</button>
+            <button class="type-btn" onclick="selType(this,'other')">✨ Other</button>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="li-field">
+          <label>Post title *</label>
+          <div class="field-wrap">
+            <input type="text" id="cp-title" maxlength="80" placeholder="e.g. Need a UI designer for MLH Hack Week" oninput="updPrev();cc('cp-title','cc1',80)" />
+            <span class="char-cnt" id="cc1">0/80</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="li-field">
+          <label>Description</label>
+          <div class="field-wrap">
+            <textarea id="cp-desc" maxlength="500" rows="5" placeholder="Describe your project, what you're building, timeline, commitment level, and what you're looking for in a teammate..." oninput="updPrev();cc('cp-desc','cc2',500)"></textarea>
+            <span class="char-cnt" id="cc2">0/500</span>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="li-field">
+          <label>Skills needed</label>
+          <div class="skills-box" id="sk-box" onclick="document.getElementById('sk-inp').focus()">
+            <input class="sk-input" id="sk-inp" placeholder="Type a skill and press Enter..." onkeydown="addSk(event)" />
+          </div>
+          <div class="quick-skills">
+            <span style="font-size:0.75rem;color:var(--li-text-secondary);align-self:center;">Quick add:</span>
+            <button class="qs-btn" onclick="qadd('React')">React</button>
+            <button class="qs-btn" onclick="qadd('Python')">Python</button>
+            <button class="qs-btn" onclick="qadd('ML')">ML</button>
+            <button class="qs-btn" onclick="qadd('UI/UX')">UI/UX</button>
+            <button class="qs-btn" onclick="qadd('Node.js')">Node.js</button>
+            <button class="qs-btn" onclick="qadd('Backend')">Backend</button>
+            <button class="qs-btn" onclick="qadd('Data Science')">Data Science</button>
+          </div>
+        </div>
+
+        <!-- Team size + Deadline -->
+        <div class="form-row2">
+          <div class="li-field">
+            <label>Spots needed</label>
+            <div class="ts-row" style="margin-top:6px;">
+              <button class="ts-btn" onclick="chTS(-1)">−</button>
+              <span class="ts-val" id="ts-v">2</span>
+              <button class="ts-btn" onclick="chTS(1)">+</button>
+              <span style="font-size:0.82rem;color:var(--li-text-secondary);">members</span>
+            </div>
+          </div>
+          <div class="li-field">
+            <label>Application deadline</label>
+            <input type="date" id="cp-dl" />
+          </div>
+        </div>
+
+        <!-- Mode -->
+        <div class="li-field">
+          <label>Collaboration mode</label>
+          <select id="cp-mode" onchange="updPrev()">
+            <option value="Remote">🌐 Remote</option>
+            <option value="In-Person">🏫 In-Person</option>
+            <option value="Hybrid">🔀 Hybrid</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="create-footer">
+        <button class="btn-li-ghost" onclick="window.location.href='browse.html'">Cancel</button>
+        <button class="btn-li-primary" onclick="submitPost()">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div>
+    <div class="preview-sticky">
+      <div class="preview-card-inner">
+        <div class="preview-header-bar">Live Preview</div>
+        <div class="preview-body">
+          <div class="prev-author-row">
+            <div class="li-avatar av-md">AC</div>
+            <div>
+              <div class="prev-name">Alex Chen</div>
+              <div class="prev-sub" id="pv-type-line">🏆 Hackathon · Just now</div>
+            </div>
+          </div>
+          <div class="prev-title-txt" id="pv-title" style="color:var(--li-text-secondary);">Your post title will appear here</div>
+          <div class="prev-desc-txt" id="pv-desc">Your description will show here...</div>
+          <div class="prev-tags" id="pv-tags"><span class="li-tag">Add skills above</span></div>
+          <div class="prev-meta">
+            <span>👥 <span id="pv-size">2</span> spots</span>
+            <span id="pv-mode">🌐 Remote</span>
+            <span>📅 Set deadline</span>
+          </div>
+          <div class="prev-divider"></div>
+          <div class="prev-actions">
+            <div class="prev-action">👍 Interested</div>
+            <div class="prev-action">🔗 Share</div>
+            <div class="prev-action" style="color:var(--li-blue);">🚀 Apply</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div style="background:#fff;border:1px solid var(--li-border);border-radius:8px;padding:16px;margin-top:8px;">
+        <div style="font-size:0.875rem;font-weight:700;margin-bottom:10px;">💡 Tips for a great post</div>
+        <div style="font-size:0.78rem;color:var(--li-text-secondary);line-height:1.6;">
+          <p style="margin-bottom:6px;">✓ Be specific about skills needed</p>
+          <p style="margin-bottom:6px;">✓ Mention time commitment expected</p>
+          <p style="margin-bottom:6px;">✓ Describe what success looks like</p>
+          <p>✓ Add a deadline to create urgency</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let pType = 'hackathon', tSize = 2, skills = [];
+const typeE = { hackathon:'🏆', project:'🚀', study:'📚', research:'🔬', startup:'💡', other:'✨' };
+const typeLabel = { hackathon:'Hackathon', project:'Project', study:'Study Group', research:'Research', startup:'Startup', other:'Other' };
+
+function selType(el, t) {
+  pType = t;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  updPrev();
+}
+
+function addSk(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const v = e.target.value.trim().replace(/,$/,'');
+    if (v && !skills.includes(v)) { skills.push(v); renderSk(); updPrev(); }
+    e.target.value = '';
+  }
+}
+
+function qadd(s) {
+  if (!skills.includes(s)) { skills.push(s); renderSk(); updPrev(); }
+}
+
+function rmSk(s) {
+  skills = skills.filter(x => x !== s); renderSk(); updPrev();
+}
+
+function renderSk() {
+  const box = document.getElementById('sk-box');
+  const inp = document.getElementById('sk-inp');
+  box.innerHTML = '';
+  skills.forEach(s => {
+    const sp = document.createElement('span');
+    sp.className = 'sk-chip';
+    sp.innerHTML = `${s} <span class="sk-rm" onclick="rmSk('${s}')">×</span>`;
+    box.appendChild(sp);
+  });
+  box.appendChild(inp);
+}
+
+function chTS(d) {
+  tSize = Math.max(1, Math.min(20, tSize + d));
+  document.getElementById('ts-v').textContent = tSize;
+  document.getElementById('pv-size').textContent = tSize;
+}
+
+function updPrev() {
+  const t = document.getElementById('cp-title').value;
+  const d = document.getElementById('cp-desc').value;
+  const mode = document.getElementById('cp-mode').value;
+  const em = typeE[pType] || '✨';
+
+  document.getElementById('pv-type-line').textContent = `${em} ${typeLabel[pType]} · Just now`;
+  const titleEl = document.getElementById('pv-title');
+  titleEl.textContent = t || 'Your post title will appear here';
+  titleEl.style.color = t ? 'var(--li-text)' : 'var(--li-text-secondary)';
+  document.getElementById('pv-desc').textContent = d || 'Your description will show here...';
+  document.getElementById('pv-size').textContent = tSize;
+
+  const modeIcons = { Remote:'🌐', 'In-Person':'🏫', Hybrid:'🔀' };
+  document.getElementById('pv-mode').textContent = `${modeIcons[mode]||''} ${mode}`;
+
+  const tagsEl = document.getElementById('pv-tags');
+  tagsEl.innerHTML = skills.length
+    ? skills.map(s => `<span class="li-tag">${s}</span>`).join('')
+    : '<span class="li-tag">Add skills above</span>';
+}
+
+function cc(inp, el, max) {
+  const l = document.getElementById(inp).value.length;
+  document.getElementById(el).textContent = l + '/' + max;
+}
+
+function submitPost() {
+  const t = document.getElementById('cp-title').value.trim();
+  if (!t) { toast('Please add a title to your post'); return; }
+  toast('Post published successfully! 🚀');
+  setTimeout(() => { window.location.href = 'browse.html'; }, 1500);
+}
+
+// Set default deadline to 7 days from now
+const dl = document.getElementById('cp-dl');
+const d = new Date(); d.setDate(d.getDate() + 7);
+dl.value = d.toISOString().split('T')[0];
+</script>
+</body>
+</html>

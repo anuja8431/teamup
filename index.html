@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamUp</title>
+  <style>
+    body { font-family: Arial; margin: 0; background: #f4f6f8; }
+    header { background: #0077b6; color: white; padding: 15px; text-align: center; }
+    .container { padding: 20px; }
+    input, select, button { margin: 5px 0; padding: 10px; width: 100%; }
+    button { background: #0077b6; color: white; border: none; cursor: pointer; }
+    .card { background: white; padding: 15px; margin: 10px 0; border-radius: 10px; }
+    .flex { display: flex; gap: 10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>TeamUp Platform</h2>
+</header>
+
+<div class="container">
+
+  <!-- AUTH -->
+  <div class="card">
+    <h3>Signup</h3>
+    <input id="name" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="signup()">Signup</button>
+
+    <h3>Login</h3>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="card">
+    <h3>Profile</h3>
+    <input id="pname" placeholder="Name">
+    <input id="skills" placeholder="Skills (comma separated)">
+    <input id="interests" placeholder="Interests">
+    <button onclick="updateProfile()">Update Profile</button>
+  </div>
+
+  <!-- CREATE POST -->
+  <div class="card">
+    <h3>Create Post</h3>
+    <select id="type">
+      <option value="join">Looking to Join</option>
+      <option value="hire">Looking for Team</option>
+    </select>
+    <input id="postSkills" placeholder="Required Skills">
+    <input id="desc" placeholder="Description">
+    <button onclick="createPost()">Create</button>
+  </div>
+
+  <!-- BROWSE POSTS -->
+  <div class="card">
+    <h3>Browse Posts</h3>
+    <input id="searchSkill" placeholder="Search by skill">
+    <button onclick="loadPosts()">Search</button>
+    <div id="posts"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="card">
+    <h3>Dashboard</h3>
+    <button onclick="loadDashboard()">Load Dashboard</button>
+    <div id="dashboard"></div>
+  </div>
+
+</div>
+
+<script>
+const BASE = "http://127.0.0.1:5000";
+let userId = "";
+
+async function signup() {
+  await fetch(BASE + "/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      password: password.value
+    })
+  });
+  alert("Signup done");
+}
+
+async function login() {
+  let res = await fetch(BASE + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: loginEmail.value,
+      password: loginPassword.value
+    })
+  });
+
+  let data = await res.json();
+  userId = data.user_id;
+  alert("Logged in");
+}
+
+async function updateProfile() {
+  await fetch(BASE + "/profile/" + userId, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: pname.value,
+      skills: skills.value.split(","),
+      interests: interests.value
+    })
+  });
+  alert("Profile updated");
+}
+
+async function createPost() {
+  await fetch(BASE + "/post", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: userId,
+      type: type.value,
+      skills_required: postSkills.value,
+      description: desc.value
+    })
+  });
+  alert("Post created");
+}
+
+async function loadPosts() {
+  let skill = searchSkill.value;
+  let res = await fetch(BASE + "/posts?skill=" + skill);
+  let data = await res.json();
+
+  posts.innerHTML = "";
+
+  data.forEach(p => {
+    posts.innerHTML += `
+      <div class="card">
+        <p>${p.description}</p>
+        <p>Skill: ${p.skills_required}</p>
+        <button onclick="sendRequest('${p.user_id}', '${p._id}')">Request</button>
+      </div>
+    `;
+  });
+}
+
+async function sendRequest(toUser, postId) {
+  await fetch(BASE + "/request", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from_user: userId,
+      to_user: toUser,
+      post_id: postId
+    })
+  });
+  alert("Request sent");
+}
+
+async function loadDashboard() {
+  let res = await fetch(BASE + "/dashboard/" + userId);
+  let data = await res.json();
+
+  dashboard.innerHTML = "<h4>Your Posts</h4>";
+
+  data.posts.forEach(p => {
+    dashboard.innerHTML += `<p>${p.description}</p>`;
+  });
+
+  dashboard.innerHTML += "<h4>Incoming Requests</h4>";
+
+  data.incoming_requests.forEach(r => {
+    dashboard.innerHTML += `
+      <div>
+        <p>Request from ${r.from_user}</p>
+        <button onclick="updateRequest('${r._id}', 'accepted')">Accept</button>
+        <button onclick="updateRequest('${r._id}', 'rejected')">Reject</button>
+      </div>
+    `;
+  });
+}
+
+async function updateRequest(id, status) {
+  await fetch(BASE + "/request/" + id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status })
+  });
+  alert("Updated");
+}
+</script>
+
+</body>
+</html>

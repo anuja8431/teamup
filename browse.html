@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamUp — Browse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-wrap { max-width: 1128px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 226px 1fr 300px; gap: 24px; }
+
+    /* LEFT PANEL */
+    .left-panel {}
+    .me-card { text-align: center; padding-bottom: 0; overflow: hidden; }
+    .me-banner { height: 60px; background: linear-gradient(135deg, #0a66c2, #7b5ce5); margin: -1px -1px 0; }
+    .me-av-wrap { margin-top: -28px; display: flex; justify-content: center; margin-bottom: 8px; }
+    .me-name { font-weight: 700; font-size: 0.95rem; }
+    .me-sub { color: var(--li-text-secondary); font-size: 0.8rem; margin-top: 2px; margin-bottom: 12px; }
+    .me-stat-row { display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--li-border); font-size: 0.8rem; cursor: pointer; }
+    .me-stat-row:hover { background: var(--li-hover); }
+    .me-stat-label { color: var(--li-text-secondary); }
+    .me-stat-val { font-weight: 700; color: var(--li-blue); }
+    .sidebar-section { padding: 12px 16px; }
+    .sidebar-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 10px; }
+    .sidebar-link { display: block; font-size: 0.8rem; color: var(--li-text-secondary); padding: 4px 0; cursor: pointer; transition: color 0.1s; }
+    .sidebar-link:hover { color: var(--li-blue); text-decoration: underline; }
+
+    /* CENTER FEED */
+    .feed {}
+    .feed-top {
+      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+    .feed-inp {
+      flex: 1; border: 1px solid rgba(0,0,0,0.4); border-radius: 24px;
+      padding: 10px 16px; font-size: 0.875rem; background: #fff; cursor: pointer;
+      transition: border-color 0.15s; color: var(--li-text-secondary);
+    }
+    .feed-inp:hover { border-color: var(--li-text); }
+    .feed-actions { display: flex; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--li-border); }
+    .feed-action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 4px; border-radius: 4px; border: none; background: none;
+      font-size: 0.82rem; font-weight: 600; color: var(--li-text-secondary); cursor: pointer;
+      transition: background 0.15s;
+    }
+    .feed-action-btn:hover { background: var(--li-hover); color: var(--li-text); }
+
+    /* FILTER BAR */
+    .filter-bar {
+      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
+      padding: 12px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+      margin-bottom: 16px;
+    }
+    .filter-label { font-size: 0.8rem; font-weight: 600; color: var(--li-text-secondary); margin-right: 4px; }
+    .fchip {
+      padding: 5px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--li-border); background: #fff;
+      color: var(--li-text-secondary); transition: all 0.15s;
+    }
+    .fchip:hover { color: var(--li-text); border-color: rgba(0,0,0,0.3); }
+    .fchip.on { background: rgba(10,102,194,0.1); border-color: var(--li-blue); color: var(--li-blue); }
+
+    /* POST CARD */
+    .post-card {
+      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
+      margin-bottom: 8px; overflow: hidden; cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .post-card:hover { box-shadow: 0 0 0 1px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08); }
+    .pc-header { padding: 16px 16px 0; display: flex; gap: 10px; }
+    .pc-meta-info { flex: 1; }
+    .pc-author { font-weight: 700; font-size: 0.875rem; }
+    .pc-sub { font-size: 0.78rem; color: var(--li-text-secondary); }
+    .pc-time { font-size: 0.75rem; color: var(--li-text-tertiary); }
+    .pc-body { padding: 10px 16px 14px; }
+    .pc-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; line-height: 1.3; }
+    .pc-desc { font-size: 0.875rem; color: var(--li-text-secondary); line-height: 1.5; margin-bottom: 10px; }
+    .pc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .pc-stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--li-border); font-size: 0.78rem; color: var(--li-text-secondary); }
+    .pc-fill-bar { height: 2px; background: rgba(0,0,0,0.08); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
+    .pc-fill-inner { height: 100%; background: var(--li-green); border-radius: 2px; }
+    .pc-actions { display: flex; border-top: 1px solid var(--li-border); }
+    .pc-action {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px; border: none; background: none; font-size: 0.82rem; font-weight: 600;
+      color: var(--li-text-secondary); cursor: pointer; transition: background 0.15s;
+    }
+    .pc-action:hover { background: var(--li-hover); color: var(--li-text); }
+    .pc-action.apply-btn { color: var(--li-blue); }
+    .pc-action.apply-btn:hover { background: rgba(10,102,194,0.08); }
+
+    /* RIGHT PANEL */
+    .right-panel {}
+    .news-card {}
+    .news-title { font-size: 0.875rem; font-weight: 700; padding: 12px 16px 8px; }
+    .news-item { padding: 8px 16px; cursor: pointer; transition: background 0.1s; }
+    .news-item:hover { background: var(--li-hover); }
+    .news-item-title { font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
+    .news-item-sub { font-size: 0.73rem; color: var(--li-text-secondary); margin-top: 2px; }
+    .news-bullet { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--li-text); margin-right: 6px; vertical-align: middle; }
+    .promoted-label { font-size: 0.7rem; color: var(--li-text-tertiary); padding: 0 16px 8px; }
+
+    @media (max-width: 1024px) { .page-wrap { grid-template-columns: 226px 1fr; } .right-panel { display: none; } }
+    @media (max-width: 700px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } }
+  </style>
+</head>
+<body>
+<script src="shared.js"></script>
+<script>renderNav('browse');</script>
+
+<div class="page-wrap">
+  <!-- LEFT -->
+  <aside class="left-panel">
+    <div class="li-card me-card" style="margin-bottom:8px;">
+      <div class="me-banner"></div>
+      <div class="me-av-wrap"><div class="li-avatar av-xl" style="border:3px solid #fff;">AC</div></div>
+      <div style="padding:0 16px 12px;">
+        <div class="me-name">Alex Chen</div>
+        <div class="me-sub">Computer Science, Year 3</div>
+        <div class="me-sub" style="margin-bottom:0;">University of Technology</div>
+      </div>
+      <div class="me-stat-row">
+        <span class="me-stat-label">Profile views</span>
+        <span class="me-stat-val">248</span>
+      </div>
+      <div class="me-stat-row">
+        <span class="me-stat-label">Post impressions</span>
+        <span class="me-stat-val">1,240</span>
+      </div>
+    </div>
+
+    <div class="li-card" style="margin-bottom:8px;">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Browse by type</div>
+        <a class="sidebar-link" onclick="fType(this,'all')">🏠 All posts</a>
+        <a class="sidebar-link" onclick="fType(this,'hackathon')">🏆 Hackathons</a>
+        <a class="sidebar-link" onclick="fType(this,'project')">🚀 Projects</a>
+        <a class="sidebar-link" onclick="fType(this,'study')">📚 Study Groups</a>
+        <a class="sidebar-link" onclick="fType(this,'research')">🔬 Research</a>
+        <a class="sidebar-link" onclick="fType(this,'startup')">💡 Startups</a>
+      </div>
+    </div>
+
+    <div class="li-card">
+      <div class="sidebar-section">
+        <a class="sidebar-link" href="profile.html">👤 My Profile</a>
+        <a class="sidebar-link" href="dashboard.html">📊 Dashboard</a>
+        <a class="sidebar-link" href="create.html">➕ Create Post</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER -->
+  <main class="feed">
+    <!-- Create Post Bar -->
+    <div class="li-card feed-top" style="flex-direction:column;align-items:stretch;gap:0;">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div class="li-avatar av-md">AC</div>
+        <div class="feed-inp" onclick="window.location.href='create.html'">Start a post or find teammates...</div>
+      </div>
+      <div class="feed-actions">
+        <button class="feed-action-btn" onclick="window.location.href='create.html'">🏆 Hackathon</button>
+        <button class="feed-action-btn" onclick="window.location.href='create.html'">🚀 Project</button>
+        <button class="feed-action-btn" onclick="window.location.href='create.html'">📚 Study Group</button>
+        <button class="feed-action-btn" onclick="window.location.href='create.html'">💡 Startup</button>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="fchip on" onclick="fType(this,'all')">All</button>
+      <button class="fchip" onclick="fType(this,'hackathon')">🏆 Hackathon</button>
+      <button class="fchip" onclick="fType(this,'project')">🚀 Project</button>
+      <button class="fchip" onclick="fType(this,'study')">📚 Study</button>
+      <button class="fchip" onclick="fType(this,'research')">🔬 Research</button>
+      <button class="fchip" onclick="fType(this,'startup')">💡 Startup</button>
+    </div>
+
+    <div id="posts-feed"></div>
+  </main>
+
+  <!-- RIGHT -->
+  <aside class="right-panel">
+    <div class="li-card news-card" style="margin-bottom:8px;">
+      <div class="news-title">TeamUp News &nbsp;•&nbsp; <span style="font-size:0.75rem;font-weight:400;color:var(--li-text-secondary);">top opportunities</span></div>
+      <div class="news-item">
+        <div class="news-item-title"><span class="news-bullet"></span>MLH Hack Week spots filling fast</div>
+        <div class="news-item-sub">1 day ago · 128 readers</div>
+      </div>
+      <div class="news-item">
+        <div class="news-item-title"><span class="news-bullet"></span>InnovateSG 2025 opens registration</div>
+        <div class="news-item-sub">2 days ago · 87 readers</div>
+      </div>
+      <div class="news-item">
+        <div class="news-item-title"><span class="news-bullet"></span>NLP research collaboration call</div>
+        <div class="news-item-sub">3 days ago · 54 readers</div>
+      </div>
+      <div class="news-item">
+        <div class="news-item-title"><span class="news-bullet"></span>FinTech startup seeks co-founder</div>
+        <div class="news-item-sub">4 days ago · 203 readers</div>
+      </div>
+      <div class="news-item">
+        <div class="news-item-title"><span class="news-bullet"></span>DSA interview prep group forming</div>
+        <div class="news-item-sub">5 days ago · 310 readers</div>
+      </div>
+    </div>
+
+    <div class="li-card">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Add to your feed</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">SK</div>
+          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Sara Kim</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">Backend Developer</div></div>
+          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#f093fb,#f5576c);">MJ</div>
+          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Marcus Johnson</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">ML Engineer</div></div>
+          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">PL</div>
+          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Priya Lakhani</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">UI Designer</div></div>
+          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- APPLY MODAL -->
+<div class="li-modal-ov" id="m-apply">
+  <div class="li-modal">
+    <div class="li-modal-header">
+      <h3 id="m-apply-title">Apply to Team</h3>
+      <button class="li-modal-close" onclick="closeModal('m-apply')">✕</button>
+    </div>
+    <div class="li-modal-body">
+      <div class="li-form">
+        <div class="li-field">
+          <label>Why do you want to join?</label>
+          <textarea rows="4" placeholder="Briefly explain your motivation and what you bring to the team..."></textarea>
+        </div>
+        <div class="li-field">
+          <label>Relevant links (GitHub, portfolio...)</label>
+          <input type="text" placeholder="https://github.com/yourhandle" />
+        </div>
+      </div>
+    </div>
+    <div class="li-modal-footer">
+      <button class="btn-li-ghost" onclick="closeModal('m-apply')">Cancel</button>
+      <button class="btn-li-primary" onclick="submitApp()">Send Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- POST DETAIL MODAL -->
+<div class="li-modal-ov" id="m-detail">
+  <div class="li-modal" style="max-width:540px;">
+    <div class="li-modal-header">
+      <h3>Opportunity Details</h3>
+      <button class="li-modal-close" onclick="closeModal('m-detail')">✕</button>
+    </div>
+    <div class="li-modal-body" id="m-detail-body"></div>
+    <div class="li-modal-footer">
+      <button class="btn-li-ghost" onclick="closeModal('m-detail')">Close</button>
+      <button class="btn-li-primary" id="m-detail-apply-btn">Apply Now</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const typeE = { hackathon:'🏆', project:'🚀', study:'📚', research:'🔬', startup:'💡', other:'✨' };
+const gradMap = {
+  1:'linear-gradient(135deg,#43e97b,#38f9d7)',
+  2:'linear-gradient(135deg,#f093fb,#f5576c)',
+  3:'linear-gradient(135deg,#4facfe,#00f2fe)',
+  4:'linear-gradient(135deg,#fa709a,#fee140)',
+  5:'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+  6:'linear-gradient(135deg,#96fbc4,#f9f586)',
+};
+
+const POSTS = [
+  { id:1, type:'hackathon', title:'MLH Global Hack Week — Need UI/UX Designer', desc:'Building a mental health app for students. Need someone with Figma skills and a good eye for design. 48h hackathon, fully remote. Backend is covered.', author:'Sara K.', major:'Backend Dev · Year 2', ini:'SK', time:'2h ago', spots:1, total:3, tags:['Figma','UI/UX','React'], mode:'Remote', dl:'Mar 30', views:89, apps:6 },
+  { id:2, type:'research', title:'NLP Research Paper — Co-author Needed', desc:'Transformer models in low-resource languages study. Looking for NLP + academic writing experience. Professor-supervised project with publication goal.', author:'Marcus J.', major:'ML Engineer · Year 4', ini:'MJ', time:'4h ago', spots:2, total:4, tags:['Python','NLP','PyTorch','LaTeX'], mode:'Hybrid', dl:'Apr 5', views:54, apps:3 },
+  { id:3, type:'startup', title:'FinTech Startup — Full Stack Developer', desc:'Early-stage fintech startup building a savings app for Gen Z. Equity + stipend. Looking for a passionate dev who wants to own the frontend completely.', author:'Priya L.', major:'CS + Business · Year 3', ini:'PL', time:'6h ago', spots:1, total:5, tags:['React','Node.js','MongoDB','TypeScript'], mode:'Remote', dl:'Apr 10', views:142, apps:11 },
+  { id:4, type:'project', title:'Open-Source Campus Navigation App', desc:'Indoor AR navigation for our university. Need mobile devs and someone who knows computer vision. Great portfolio project with real-world impact.', author:'David T.', major:'Software Eng · Year 3', ini:'DT', time:'1d ago', spots:3, total:5, tags:['React Native','OpenCV','ARCore'], mode:'In-Person', dl:'Mar 28', views:76, apps:5 },
+  { id:5, type:'study', title:'Data Structures & Algorithms Study Circle', desc:'Preparing for technical interviews together. Weekly sessions, LeetCode problems, mock interviews. Looking for 4 dedicated students at similar levels.', author:'Lena P.', major:'Computer Science · Year 2', ini:'LP', time:'1d ago', spots:4, total:4, tags:['DSA','Python','Java'], mode:'Remote', dl:'Apr 1', views:203, apps:18 },
+  { id:6, type:'hackathon', title:'InnovateSG 2025 — Sustainability Track', desc:'National hackathon focused on sustainability tech. Strong idea around carbon footprint tracking. Need 1 more dev with ML experience. Team of 3 so far.', author:'Raj M.', major:'Data Science · Year 4', ini:'RM', time:'2d ago', spots:1, total:4, tags:['Python','Machine Learning','React'], mode:'In-Person', dl:'Mar 27', views:115, apps:9 },
+];
+
+let aFilter = 'all', fPosts = [...POSTS], cPostId = null;
+
+function renderPosts() {
+  const feed = document.getElementById('posts-feed');
+  if (!fPosts.length) {
+    feed.innerHTML = `<div class="li-card" style="padding:40px;text-align:center;color:var(--li-text-secondary);">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div>
+      <div style="font-weight:700;margin-bottom:4px;">No posts found</div>
+      <div style="font-size:0.875rem;">Try a different filter</div>
+    </div>`;
+    return;
+  }
+  feed.innerHTML = fPosts.map(p => {
+    const em = typeE[p.type] || '✨';
+    const fill = p.total - p.spots;
+    const pct = Math.round((fill/p.total)*100);
+    const grad = gradMap[p.id] || gradMap[1];
+    return `<div class="post-card li-card" onclick="openDetail(${p.id})">
+      <div class="pc-header">
+        <div class="li-avatar av-lg" style="background:${grad};">${p.ini}</div>
+        <div class="pc-meta-info">
+          <div class="pc-author">${p.author}</div>
+          <div class="pc-sub">${p.major}</div>
+          <div class="pc-time">${p.time} · <span class="li-badge li-badge-blue">${em} ${cap(p.type)}</span></div>
+        </div>
+        <div style="margin-left:auto;"><span class="li-badge ${p.mode==='Remote'?'li-badge-green':p.mode==='Hybrid'?'li-badge-orange':'li-badge-blue'}">${p.mode}</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-title">${p.title}</div>
+        <div class="pc-desc">${p.desc.length>140?p.desc.slice(0,140)+'…':p.desc}</div>
+        <div class="pc-tags">
+          ${p.tags.slice(0,4).map(t=>`<span class="li-tag">${t}</span>`).join('')}
+          ${p.tags.length>4?`<span class="li-tag">+${p.tags.length-4} more</span>`:''}
+        </div>
+        <div style="font-size:0.78rem;color:var(--li-text-secondary);display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span>${fill} of ${p.total} spots filled</span>
+          <span>${p.spots} spot${p.spots!==1?'s':''} remaining</span>
+        </div>
+        <div class="pc-fill-bar"><div class="pc-fill-inner" style="width:${pct}%;"></div></div>
+        <div class="pc-stats-bar">
+          <span>👁 ${p.views} views · 📝 ${p.apps} applied · 📅 Closes ${p.dl}</span>
+        </div>
+      </div>
+      <div class="pc-actions">
+        <button class="pc-action" onclick="event.stopPropagation();toast('👍 Interested!')">👍 Interested</button>
+        <button class="pc-action" onclick="event.stopPropagation();toast('🔗 Link copied!')">🔗 Share</button>
+        <button class="pc-action apply-btn" onclick="event.stopPropagation();openApply(${p.id})">🚀 Apply</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fType(el, t) {
+  aFilter = t;
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
+  if(el && el.classList) el.classList.add('on');
+  fPosts = t==='all' ? [...POSTS] : POSTS.filter(p=>p.type===t);
+  renderPosts();
+}
+
+function openDetail(id) {
+  cPostId = id;
+  const p = POSTS.find(x=>x.id===id);
+  const em = typeE[p.type]||'✨';
+  const fill = p.total - p.spots;
+  const pct = Math.round((fill/p.total)*100);
+  document.getElementById('m-detail-body').innerHTML = `
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+      <div class="li-avatar av-lg" style="background:${gradMap[p.id]||gradMap[1]};">${p.ini}</div>
+      <div><div style="font-weight:700;">${p.author}</div><div style="font-size:0.8rem;color:var(--li-text-secondary);">${p.major}</div><div style="font-size:0.75rem;color:var(--li-text-tertiary);">${p.time}</div></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+      <span class="li-badge li-badge-blue">${em} ${cap(p.type)}</span>
+      <span class="li-badge ${p.mode==='Remote'?'li-badge-green':p.mode==='Hybrid'?'li-badge-orange':'li-badge-blue'}">${p.mode}</span>
+    </div>
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">${p.title}</div>
+    <div style="font-size:0.875rem;color:var(--li-text-secondary);line-height:1.6;margin-bottom:12px;">${p.desc}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${p.tags.map(t=>`<span class="li-tag">${t}</span>`).join('')}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#f3f2ee;border-radius:4px;padding:12px;text-align:center;">
+        <div style="font-size:0.72rem;color:var(--li-text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Spots Left</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--li-blue);">${p.spots}</div>
+      </div>
+      <div style="background:#f3f2ee;border-radius:4px;padding:12px;text-align:center;">
+        <div style="font-size:0.72rem;color:var(--li-text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Deadline</div>
+        <div style="font-size:1.1rem;font-weight:700;">${p.dl}</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:0.78rem;color:var(--li-text-secondary);display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span>${fill} of ${p.total} filled</span><span>${pct}%</span>
+      </div>
+      <div class="li-progress"><div class="li-progress-fill" style="width:${pct}%;"></div></div>
+    </div>
+  `;
+  document.getElementById('m-detail-apply-btn').onclick = () => { closeModal('m-detail'); openApply(id); };
+  document.getElementById('m-detail').classList.add('open');
+}
+
+function openApply(id) {
+  cPostId = id;
+  const p = POSTS.find(x=>x.id===id);
+  if(p) document.getElementById('m-apply-title').textContent = 'Apply — ' + p.title;
+  document.getElementById('m-apply').classList.add('open');
+}
+
+function submitApp() { closeModal('m-apply'); toast('Application sent! Good luck 🚀'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+document.querySelectorAll('.li-modal-ov').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
+});
+
+renderPosts();
+</script>
+</body>
+</html>

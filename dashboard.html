@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamUp — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-wrap { max-width: 1128px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 226px 1fr 300px; gap: 16px; }
+
+    /* LEFT */
+    .dash-left {}
+    .me-mini-card { text-align: center; padding: 0 0 8px; overflow: hidden; }
+    .me-banner-sm { height: 48px; background: linear-gradient(135deg, #0a66c2, #7b5ce5); margin: -1px -1px 0; }
+    .me-av-center { margin-top: -24px; display: flex; justify-content: center; margin-bottom: 8px; }
+    .me-card-name { font-weight: 700; font-size: 0.9rem; }
+    .me-card-sub { color: var(--li-text-secondary); font-size: 0.75rem; margin-top: 2px; }
+    .dash-stat-row { display: flex; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--li-border); font-size: 0.78rem; cursor: pointer; }
+    .dash-stat-row:hover { background: var(--li-hover); }
+    .dash-stat-label { color: var(--li-text-secondary); }
+    .dash-stat-val { font-weight: 700; color: var(--li-blue); }
+    .sidebar-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 0.875rem; cursor: pointer; border-radius: 4px; transition: background 0.1s; }
+    .sidebar-nav-item:hover { background: var(--li-hover); }
+    .sidebar-nav-item.active { font-weight: 700; }
+    .sidebar-nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    /* CENTER */
+    .dash-center {}
+    .section-card { background: #fff; border: 1px solid var(--li-border); border-radius: 8px; margin-bottom: 8px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--li-border); }
+    .section-title { font-size: 1rem; font-weight: 700; }
+
+    /* STATS GRID */
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px; }
+    .stat-card { background: #fff; border: 1px solid var(--li-border); border-radius: 8px; padding: 16px; }
+    .stat-icon { font-size: 1.1rem; margin-bottom: 8px; }
+    .stat-val { font-size: 1.8rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 0.78rem; color: var(--li-text-secondary); }
+    .stat-change { font-size: 0.72rem; color: var(--li-green); margin-top: 4px; }
+
+    /* MY POSTS TABLE */
+    .post-row { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--li-border); transition: background 0.1s; }
+    .post-row:last-child { border-bottom: none; }
+    .post-row:hover { background: var(--li-hover); }
+    .post-row-icon { font-size: 1.4rem; width: 32px; text-align: center; flex-shrink: 0; }
+    .post-row-title { font-weight: 600; font-size: 0.875rem; margin-bottom: 3px; }
+    .post-row-meta { font-size: 0.75rem; color: var(--li-text-secondary); display: flex; gap: 12px; }
+
+    /* APPLICATIONS */
+    .app-row { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--li-border); }
+    .app-row:last-child { border-bottom: none; }
+    .app-name { font-weight: 600; font-size: 0.875rem; }
+    .app-sub { font-size: 0.75rem; color: var(--li-text-secondary); }
+    .app-actions { display: flex; gap: 6px; margin-left: auto; }
+
+    /* RIGHT */
+    .dash-right {}
+    .notif-item { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--li-border); cursor: pointer; transition: background 0.1s; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--li-hover); }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .notif-dot-blue { background: var(--li-blue); }
+    .notif-dot-green { background: var(--li-green); }
+    .notif-dot-orange { background: var(--li-orange); }
+    .notif-text { font-size: 0.8rem; line-height: 1.4; }
+    .notif-time { font-size: 0.72rem; color: var(--li-text-secondary); margin-top: 3px; }
+    .unread-badge { background: var(--li-blue); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+    /* QUICK ACTIONS */
+    .qa-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      padding: 11px 16px; border: none; background: none; cursor: pointer;
+      font-size: 0.875rem; font-family: inherit; text-align: left;
+      border-radius: 4px; transition: background 0.1s; color: var(--li-text);
+      border-bottom: 1px solid var(--li-border);
+    }
+    .qa-btn:last-child { border-bottom: none; }
+    .qa-btn:hover { background: var(--li-hover); }
+
+    @media (max-width: 1024px) { .page-wrap { grid-template-columns: 226px 1fr; } .dash-right { display: none; } }
+    @media (max-width: 700px) { .page-wrap { grid-template-columns: 1fr; } .dash-left { display: none; } .stats-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<script src="shared.js"></script>
+<script>renderNav('dashboard');</script>
+
+<div class="page-wrap">
+  <!-- LEFT -->
+  <aside class="dash-left">
+    <div class="li-card me-mini-card" style="margin-bottom:8px;padding:0;overflow:hidden;">
+      <div class="me-banner-sm"></div>
+      <div class="me-av-center"><div class="li-avatar" style="width:48px;height:48px;font-size:1rem;border:3px solid #fff;">AC</div></div>
+      <div style="padding:0 12px 4px;">
+        <div class="me-card-name">Alex Chen</div>
+        <div class="me-card-sub">CS · Year 3 · UoT</div>
+      </div>
+      <div class="dash-stat-row">
+        <span class="dash-stat-label">Profile views</span>
+        <span class="dash-stat-val">248</span>
+      </div>
+      <div class="dash-stat-row">
+        <span class="dash-stat-label">Post impressions</span>
+        <span class="dash-stat-val">1,240</span>
+      </div>
+    </div>
+
+    <div class="li-card" style="margin-bottom:8px;">
+      <div style="padding:8px;">
+        <div class="sidebar-nav-item active"><span class="sidebar-nav-icon">📊</span>Overview</div>
+        <div class="sidebar-nav-item" onclick="window.location.href='browse.html'"><span class="sidebar-nav-icon">🏠</span>Browse</div>
+        <div class="sidebar-nav-item" onclick="window.location.href='create.html'"><span class="sidebar-nav-icon">➕</span>Create Post</div>
+        <div class="sidebar-nav-item" onclick="window.location.href='profile.html'"><span class="sidebar-nav-icon">👤</span>My Profile</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER -->
+  <main class="dash-center">
+    <!-- Greeting -->
+    <div class="section-card" style="margin-bottom:8px;">
+      <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:1.1rem;font-weight:700;" id="dw-greet">Good evening, Alex 👋</div>
+          <div style="font-size:0.82rem;color:var(--li-text-secondary);margin-top:3px;">You have 5 new applications to review</div>
+        </div>
+        <button class="btn-li-primary" onclick="window.location.href='create.html'">+ New Post</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-val">4</div>
+        <div class="stat-label">Active Posts</div>
+        <div class="stat-change">↑ 1 this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📨</div>
+        <div class="stat-val">12</div>
+        <div class="stat-label">Total Applications</div>
+        <div class="stat-change">↑ 5 this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val">3</div>
+        <div class="stat-label">Teams Joined</div>
+        <div class="stat-change">All active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👁️</div>
+        <div class="stat-val">248</div>
+        <div class="stat-label">Profile Views</div>
+        <div class="stat-change">↑ 32% this week</div>
+      </div>
+    </div>
+
+    <!-- My Posts -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">My Posts</div>
+        <button class="btn-li-primary" style="padding:5px 14px;font-size:0.8rem;" onclick="window.location.href='create.html'">+ New</button>
+      </div>
+      <div class="post-row">
+        <div class="post-row-icon">🏆</div>
+        <div style="flex:1;">
+          <div class="post-row-title">MLH Hackathon — Need Backend Dev</div>
+          <div class="post-row-meta"><span>📝 6 applicants</span><span>👥 2 spots left</span><span>⏰ Closes in 3d</span></div>
+        </div>
+        <span class="li-badge li-badge-green">Active</span>
+        <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post...')">View</button>
+      </div>
+      <div class="post-row">
+        <div class="post-row-icon">🔬</div>
+        <div style="flex:1;">
+          <div class="post-row-title">NLP Research — Study Group</div>
+          <div class="post-row-meta"><span>📝 3 applicants</span><span>👥 1 spot left</span><span>⏰ Closes in 7d</span></div>
+        </div>
+        <span class="li-badge li-badge-blue">In Review</span>
+        <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post...')">View</button>
+      </div>
+      <div class="post-row">
+        <div class="post-row-icon">🚀</div>
+        <div style="flex:1;">
+          <div class="post-row-title">Startup MVP — FinTech Dashboard</div>
+          <div class="post-row-meta"><span>📝 8 applicants</span><span>Team full</span></div>
+        </div>
+        <span class="li-badge li-badge-orange">Closed</span>
+        <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post...')">View</button>
+      </div>
+    </div>
+
+    <!-- Incoming Applications -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">Incoming Applications</div>
+        <span class="unread-badge">5 new</span>
+      </div>
+      <div class="app-row">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">SK</div>
+        <div style="flex:1;">
+          <div class="app-name">Sara Kim · Backend Developer</div>
+          <div class="app-sub">Applied to MLH Hackathon · 2 hours ago</div>
+        </div>
+        <div class="app-actions">
+          <button class="btn-li-green" onclick="toast('Application accepted! 🎉')">Accept</button>
+          <button class="btn-li-red" onclick="toast('Application declined')">Decline</button>
+        </div>
+      </div>
+      <div class="app-row">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#f093fb,#f5576c);">MJ</div>
+        <div style="flex:1;">
+          <div class="app-name">Marcus Johnson · ML Engineer</div>
+          <div class="app-sub">Applied to NLP Research · 5 hours ago</div>
+        </div>
+        <div class="app-actions">
+          <button class="btn-li-green" onclick="toast('Application accepted! 🎉')">Accept</button>
+          <button class="btn-li-red" onclick="toast('Application declined')">Decline</button>
+        </div>
+      </div>
+      <div class="app-row">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">PL</div>
+        <div style="flex:1;">
+          <div class="app-name">Priya Lakhani · UI Designer</div>
+          <div class="app-sub">Applied to MLH Hackathon · 1 day ago</div>
+        </div>
+        <div class="app-actions">
+          <button class="btn-li-green" onclick="toast('Application accepted! 🎉')">Accept</button>
+          <button class="btn-li-red" onclick="toast('Application declined')">Decline</button>
+        </div>
+      </div>
+      <div class="app-row">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#fa709a,#fee140);">DT</div>
+        <div style="flex:1;">
+          <div class="app-name">David Tang · Mobile Dev</div>
+          <div class="app-sub">Applied to NLP Research · 2 days ago</div>
+        </div>
+        <div class="app-actions">
+          <button class="btn-li-green" onclick="toast('Application accepted! 🎉')">Accept</button>
+          <button class="btn-li-red" onclick="toast('Application declined')">Decline</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT -->
+  <aside class="dash-right">
+    <!-- Notifications -->
+    <div class="section-card" style="margin-bottom:8px;">
+      <div class="section-header">
+        <div class="section-title">🔔 Notifications</div>
+        <span class="unread-badge">4</span>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot notif-dot-green"></div>
+        <div>
+          <div class="notif-text">Accepted to <strong>InnovateSG Hackathon</strong> team!</div>
+          <div class="notif-time">10 minutes ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot notif-dot-blue"></div>
+        <div>
+          <div class="notif-text">6 new applicants on <strong>MLH Hackathon</strong></div>
+          <div class="notif-time">2 hours ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot notif-dot-orange"></div>
+        <div>
+          <div class="notif-text"><strong>Lena Park</strong> viewed your profile</div>
+          <div class="notif-time">5 hours ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot notif-dot-green"></div>
+        <div>
+          <div class="notif-text">Your posts have 248 views this week 🚀</div>
+          <div class="notif-time">1 day ago</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card">
+      <div class="section-header" style="border-bottom:none;">
+        <div class="section-title">Quick Actions</div>
+      </div>
+      <div>
+        <button class="qa-btn" onclick="window.location.href='create.html'"><span>📝</span> Create New Post</button>
+        <button class="qa-btn" onclick="window.location.href='browse.html'"><span>🔍</span> Browse Opportunities</button>
+        <button class="qa-btn" onclick="window.location.href='profile.html'"><span>👤</span> Edit Profile</button>
+        <button class="qa-btn" onclick="toast('Profile link copied!')"><span>🔗</span> Share Profile</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const hr = new Date().getHours();
+const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+document.getElementById('dw-greet').textContent = greet + ', Alex 👋';
+</script>
+</body>
+</html>

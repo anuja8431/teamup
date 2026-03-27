@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamUp — Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+
+    /* PROFILE CARD */
+    .profile-card { position: relative; }
+    .pf-banner { height: 200px; background: linear-gradient(135deg, #0a66c2 0%, #7b5ce5 60%, #e7a33e 100%); border-radius: 8px 8px 0 0; }
+    .pf-card-body { background: #fff; border: 1px solid var(--li-border); border-radius: 0 0 8px 8px; padding: 0 24px 20px; position: relative; margin-top: -1px; }
+    .pf-av-wrap { position: absolute; top: -56px; left: 24px; }
+    .pf-av-edit { position: absolute; bottom: 4px; right: 4px; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--li-border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; color: var(--li-text-secondary); }
+    .pf-av-edit:hover { background: var(--li-hover); }
+    .pf-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px; min-height: 68px; align-items: flex-start; }
+    .pf-name { font-size: 1.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
+    .pf-headline { font-size: 0.95rem; color: var(--li-text-secondary); margin-bottom: 4px; }
+    .pf-location { font-size: 0.875rem; color: var(--li-text-tertiary); margin-bottom: 12px; }
+    .pf-conn { font-size: 0.875rem; color: var(--li-blue); font-weight: 600; margin-bottom: 16px; cursor: pointer; }
+    .pf-conn:hover { text-decoration: underline; }
+
+    /* STATS */
+    .pf-stats { display: flex; gap: 0; border-top: 1px solid var(--li-border); margin: 0 -24px; padding: 0; }
+    .pf-stat { flex: 1; padding: 12px 20px; text-align: center; border-right: 1px solid var(--li-border); cursor: pointer; transition: background 0.1s; }
+    .pf-stat:last-child { border-right: none; }
+    .pf-stat:hover { background: var(--li-hover); }
+    .pf-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--li-blue); }
+    .pf-stat-label { font-size: 0.75rem; color: var(--li-text-secondary); }
+
+    /* SECTION CARDS */
+    .section-card { background: #fff; border: 1px solid var(--li-border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px 12px; }
+    .section-title { font-size: 1.1rem; font-weight: 700; }
+    .section-edit-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: none; font-size: 1rem; cursor: pointer; color: var(--li-text-secondary); display: flex; align-items: center; justify-content: center; }
+    .section-edit-btn:hover { background: var(--li-hover); }
+    .section-body { padding: 0 24px 16px; }
+
+    /* ABOUT */
+    .about-text { font-size: 0.875rem; line-height: 1.6; color: var(--li-text-secondary); }
+
+    /* SKILLS */
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-chip {
+      padding: 6px 16px; border-radius: 16px;
+      background: rgba(10,102,194,0.08); color: var(--li-blue);
+      border: 1px solid rgba(10,102,194,0.2);
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    }
+    .skill-chip:hover { background: rgba(10,102,194,0.14); }
+
+    /* POSTS */
+    .post-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--li-border); }
+    .post-item:last-child { border-bottom: none; }
+    .post-item-icon { font-size: 1.8rem; flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    .post-item-title { font-weight: 600; font-size: 0.875rem; margin-bottom: 4px; }
+    .post-item-meta { font-size: 0.78rem; color: var(--li-text-secondary); }
+
+    /* RIGHT SIDEBAR */
+    .right-col {}
+    .suggest-card { }
+    .suggest-item { display: flex; gap: 10px; align-items: center; padding: 10px 16px; cursor: pointer; transition: background 0.1s; }
+    .suggest-item:hover { background: var(--li-hover); }
+    .suggest-info { flex: 1; }
+    .suggest-name { font-size: 0.82rem; font-weight: 600; }
+    .suggest-sub { font-size: 0.73rem; color: var(--li-text-secondary); }
+
+    @media (max-width: 700px) { .page-wrap { grid-template-columns: 1fr; } .right-col { display: none; } }
+  </style>
+</head>
+<body>
+<script src="shared.js"></script>
+<script>renderNav('profile');</script>
+
+<div class="page-wrap">
+  <!-- MAIN COLUMN -->
+  <div>
+    <!-- Profile Hero Card -->
+    <div class="profile-card li-card" style="margin-bottom:8px;padding:0;overflow:visible;">
+      <div class="pf-banner"></div>
+      <div class="pf-card-body">
+        <div class="pf-av-wrap">
+          <div class="li-avatar av-xl" id="pf-av">AC</div>
+          <button class="pf-av-edit" onclick="openEditModal()">✏️</button>
+        </div>
+        <div class="pf-actions">
+          <button class="btn-li-ghost" onclick="toast('Profile link copied!')">🔗 Share</button>
+          <button class="btn-li-secondary" onclick="openEditModal()">Edit profile</button>
+        </div>
+        <div class="pf-name" id="pf-name">Alex Chen</div>
+        <div class="pf-headline" id="pf-headline">Full-Stack Developer · Computer Science, Year 3</div>
+        <div class="pf-location">🎓 University of Technology · Bengaluru, India</div>
+        <div id="pf-bio" style="font-size:0.875rem;color:var(--li-text-secondary);line-height:1.6;margin-bottom:10px;">Full-stack developer passionate about building products that matter. Love hackathons and open-source.</div>
+        <div class="pf-conn">📅 Available: Weekends + Evenings · <span style="color:var(--li-green);">Open to opportunities</span></div>
+        <div class="pf-stats">
+          <div class="pf-stat"><div class="pf-stat-val">4</div><div class="pf-stat-label">Posts</div></div>
+          <div class="pf-stat"><div class="pf-stat-val">12</div><div class="pf-stat-label">Applications</div></div>
+          <div class="pf-stat"><div class="pf-stat-val">3</div><div class="pf-stat-label">Teams</div></div>
+          <div class="pf-stat"><div class="pf-stat-val">248</div><div class="pf-stat-label">Views</div></div>
+          <div class="pf-stat"><div class="pf-stat-val">⭐ 4.8</div><div class="pf-stat-label">Rating</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">About</div>
+        <button class="section-edit-btn" onclick="openEditModal()">✏️</button>
+      </div>
+      <div class="section-body">
+        <p class="about-text">Full-stack developer passionate about building products that matter. I love competing in hackathons, contributing to open-source, and exploring the intersection of ML and web development.<br><br>Currently in my 3rd year of Computer Science, actively looking for teammates for hackathons and research projects. I bring strong React and Node.js skills, and I'm always excited to learn from my team.</p>
+      </div>
+    </div>
+
+    <!-- My Posts -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">My Posts</div>
+        <div style="display:flex;gap:8px;">
+          <button class="section-edit-btn" onclick="window.location.href='create.html'" title="Create new post">➕</button>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="post-item">
+          <div class="post-item-icon">🏆</div>
+          <div style="flex:1;">
+            <div class="post-item-title">MLH Hackathon — Need Backend Dev</div>
+            <div class="post-item-meta">6 applicants · 2 spots left · Closes Mar 30</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <span class="li-badge li-badge-green">Active</span>
+              <span class="li-tag">Hackathon</span>
+            </div>
+          </div>
+          <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post manager...')">Manage</button>
+        </div>
+        <div class="post-item">
+          <div class="post-item-icon">🔬</div>
+          <div style="flex:1;">
+            <div class="post-item-title">Research Project — NLP Study</div>
+            <div class="post-item-meta">3 applicants · 1 spot left · Closes Apr 5</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <span class="li-badge li-badge-blue">In Review</span>
+              <span class="li-tag">Research</span>
+            </div>
+          </div>
+          <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post manager...')">Manage</button>
+        </div>
+        <div class="post-item">
+          <div class="post-item-icon">🚀</div>
+          <div style="flex:1;">
+            <div class="post-item-title">Startup MVP — FinTech Dashboard</div>
+            <div class="post-item-meta">8 applicants · Team full</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <span class="li-badge li-badge-orange">Closed</span>
+              <span class="li-tag">Startup</span>
+            </div>
+          </div>
+          <button class="btn-li-ghost" style="padding:5px 12px;font-size:0.78rem;" onclick="toast('Opening post manager...')">Manage</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">Skills</div>
+        <button class="section-edit-btn" onclick="openEditModal()">✏️</button>
+      </div>
+      <div class="section-body">
+        <div class="skills-grid">
+          <span class="skill-chip">React</span>
+          <span class="skill-chip">Node.js</span>
+          <span class="skill-chip">Python</span>
+          <span class="skill-chip">TensorFlow</span>
+          <span class="skill-chip">Figma</span>
+          <span class="skill-chip">MongoDB</span>
+          <span class="skill-chip">TypeScript</span>
+          <span class="skill-chip">Docker</span>
+          <span class="skill-chip">PostgreSQL</span>
+          <span class="skill-chip">REST APIs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">Details</div>
+        <button class="section-edit-btn" onclick="openEditModal()">✏️</button>
+      </div>
+      <div class="section-body">
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.875rem;">
+          <div style="display:flex;gap:10px;align-items:center;"><span style="font-size:1rem;">🎓</span><span>University of Technology</span></div>
+          <div style="display:flex;gap:10px;align-items:center;"><span style="font-size:1rem;">📅</span><span>Available: Weekends + Evenings</span></div>
+          <div style="display:flex;gap:10px;align-items:center;"><span style="font-size:1rem;">🌐</span><a href="#" style="color:var(--li-blue);">github.com/alexchen</a></div>
+          <div style="display:flex;gap:10px;align-items:center;"><span style="font-size:1rem;">💼</span><span style="color:var(--li-green);">Open to opportunities</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+    <div class="section-card" style="margin-bottom:8px;">
+      <div class="section-header" style="padding-bottom:8px;">
+        <div class="section-title" style="font-size:0.95rem;">People also viewed</div>
+      </div>
+      <div class="suggest-item">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">SK</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Sara Kim</div>
+          <div class="suggest-sub">Backend Dev · Year 2</div>
+        </div>
+        <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.75rem;" onclick="toast('Following Sara!')">Follow</button>
+      </div>
+      <div class="suggest-item">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#f093fb,#f5576c);">MJ</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Marcus Johnson</div>
+          <div class="suggest-sub">ML Engineer · Year 4</div>
+        </div>
+        <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.75rem;" onclick="toast('Following Marcus!')">Follow</button>
+      </div>
+      <div class="suggest-item">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">PL</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Priya Lakhani</div>
+          <div class="suggest-sub">UI Designer · Year 3</div>
+        </div>
+        <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.75rem;" onclick="toast('Following Priya!')">Follow</button>
+      </div>
+      <div class="suggest-item">
+        <div class="li-avatar av-md" style="background:linear-gradient(135deg,#fa709a,#fee140);">DT</div>
+        <div class="suggest-info">
+          <div class="suggest-name">David Tang</div>
+          <div class="suggest-sub">Software Eng · Year 3</div>
+        </div>
+        <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.75rem;" onclick="toast('Following David!')">Follow</button>
+      </div>
+      <div style="padding:10px 16px;"><a href="browse.html" style="color:var(--li-blue);font-size:0.82rem;font-weight:600;text-decoration:none;">Show all →</a></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header" style="padding-bottom:8px;">
+        <div class="section-title" style="font-size:0.95rem;">Profile strength</div>
+      </div>
+      <div style="padding:0 16px 16px;">
+        <div style="font-size:0.78rem;color:var(--li-text-secondary);margin-bottom:8px;">All-Star · Keep it up!</div>
+        <div class="li-progress" style="height:6px;"><div class="li-progress-fill" style="width:82%;background:var(--li-orange);"></div></div>
+        <div style="font-size:0.78rem;color:var(--li-text-tertiary);margin-top:6px;">Add a portfolio link to reach 100%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="li-modal-ov" id="m-edit">
+  <div class="li-modal">
+    <div class="li-modal-header">
+      <h3>Edit intro</h3>
+      <button class="li-modal-close" onclick="closeModal('m-edit')">✕</button>
+    </div>
+    <div class="li-modal-body">
+      <div class="li-form">
+        <div class="form-row2">
+          <div class="li-field"><label>First name</label><input type="text" value="Alex" id="ep-fn" /></div>
+          <div class="li-field"><label>Last name</label><input type="text" value="Chen" id="ep-ln" /></div>
+        </div>
+        <div class="li-field"><label>Headline</label><input type="text" value="Full-Stack Developer · Computer Science, Year 3" id="ep-headline" /></div>
+        <div class="li-field"><label>About / Bio</label><textarea rows="4" id="ep-bio">Full-stack developer passionate about building products that matter. Love hackathons and open-source.</textarea></div>
+        <div class="li-field">
+          <label>Availability</label>
+          <select id="ep-avail">
+            <option>Weekends + Evenings</option>
+            <option>Full-time</option>
+            <option>Weekdays only</option>
+            <option>Flexible</option>
+          </select>
+        </div>
+        <div class="li-field"><label>GitHub / Portfolio</label><input type="text" value="github.com/alexchen" /></div>
+      </div>
+    </div>
+    <div class="li-modal-footer">
+      <button class="btn-li-ghost" onclick="closeModal('m-edit')">Cancel</button>
+      <button class="btn-li-primary" onclick="saveProfile()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+function openEditModal() { document.getElementById('m-edit').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function saveProfile() {
+  const fn = document.getElementById('ep-fn').value;
+  const ln = document.getElementById('ep-ln').value;
+  const hl = document.getElementById('ep-headline').value;
+  const bio = document.getElementById('ep-bio').value;
+  const name = fn + ' ' + ln;
+  const ini = (fn[0]||'') + (ln[0]||'');
+  document.getElementById('pf-name').textContent = name;
+  document.getElementById('pf-headline').textContent = hl;
+  document.getElementById('pf-bio').textContent = bio;
+  document.getElementById('pf-av').textContent = ini.toUpperCase();
+  closeModal('m-edit');
+  toast('Profile updated ✓');
+}
+
+document.querySelectorAll('.li-modal-ov').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
