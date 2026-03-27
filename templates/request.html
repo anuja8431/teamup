@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Requests – TeamUp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:#2563eb; --primary-light:#3b82f6; --primary-glow:rgba(37,99,235,0.15);
+            --accent:#06d6a0; --accent-glow:rgba(6,214,160,0.15); --warn:#f97316;
+            --danger:#ef4444; --bg:#080c14; --bg2:#0d1220; --bg3:#111827;
+            --card:#0f172a; --border:rgba(255,255,255,0.07); --border-active:rgba(37,99,235,0.4);
+            --text:#f0f4ff; --text2:#94a3b8; --text3:#475569; --sidebar-w:256px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
+
+        .sidebar { width:var(--sidebar-w); background:var(--bg2); border-right:1px solid var(--border); height:100vh; padding:28px 20px; display:flex; flex-direction:column; position:sticky; top:0; flex-shrink:0; }
+        .logo { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; margin-bottom:36px; display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--primary),var(--accent)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+        .nav-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); padding:0 12px; margin-bottom:6px; margin-top:20px; }
+        .nav a { display:flex; align-items:center; gap:10px; color:var(--text2); text-decoration:none; padding:10px 12px; border-radius:10px; margin-bottom:2px; font-size:14px; font-weight:500; transition:all 0.2s; }
+        .nav a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+        .nav a.active { background:var(--primary-glow); color:var(--primary-light); border:1px solid var(--border-active); }
+        .nav a .nav-icon { font-size:16px; width:20px; text-align:center; }
+        .nav a .badge { margin-left:auto; background:var(--primary); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
+        .sidebar-footer { margin-top:auto; padding-top:20px; border-top:1px solid var(--border); }
+        .user-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); }
+        .user-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; }
+        .user-name { font-size:13px; font-weight:600; }
+        .user-role { font-size:11px; color:var(--text3); }
+
+        .main { flex:1; padding:32px 36px; overflow-y:auto; }
+        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+        .header-left h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.5px; }
+        .header-left p { font-size:14px; color:var(--text2); margin-top:4px; }
+
+        /* STATS */
+        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+        .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; display:flex; align-items:center; gap:14px; }
+        .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+        .stat-icon.blue { background:var(--primary-glow); }
+        .stat-icon.green { background:var(--accent-glow); }
+        .stat-icon.orange { background:rgba(249,115,22,0.12); }
+        .stat-icon.red { background:rgba(239,68,68,0.12); }
+        .stat-value { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; line-height:1; }
+        .stat-label { font-size:12px; color:var(--text2); margin-top:3px; }
+
+        /* LAYOUT */
+        .layout { display:grid; grid-template-columns:1fr 340px; gap:20px; }
+
+        /* TABS */
+        .tabs { display:flex; gap:4px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:5px; margin-bottom:20px; width:fit-content; }
+        .tab { padding:8px 18px; border-radius:9px; border:none; background:transparent; color:var(--text2); font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; font-family:inherit; position:relative; }
+        .tab.active { background:var(--primary-glow); color:var(--primary-light); border:1px solid var(--border-active); }
+        .tab .count { background:var(--primary); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:5px; vertical-align:middle; }
+        .tab.active .count { background:var(--primary-light); }
+
+        /* CARD */
+        .card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+        .card-header { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--border); }
+        .card-header h3 { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600; }
+        .card-body { padding:6px 22px 18px; }
+
+        /* REQUEST ITEM */
+        .req-item { display:flex; align-items:flex-start; gap:14px; padding:16px 0; border-bottom:1px solid var(--border); transition:0.3s; animation:fadeUp 0.4s ease both; }
+        .req-item:last-child { border:none; padding-bottom:0; }
+        .req-avatar { width:46px; height:46px; border-radius:50%; font-size:16px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .req-info { flex:1; min-width:0; }
+        .req-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+        .req-name { font-size:14.5px; font-weight:700; }
+        .req-time { font-size:11.5px; color:var(--text3); }
+        .req-action-text { font-size:13px; color:var(--text2); margin-bottom:6px; }
+        .req-post { font-size:12px; color:var(--text3); background:var(--bg3); border:1px solid var(--border); padding:4px 10px; border-radius:7px; display:inline-block; margin-bottom:10px; }
+        .tag { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:500; background:var(--bg3); color:var(--text2); border:1px solid var(--border); }
+        .tag.blue { background:var(--primary-glow); color:var(--primary-light); border-color:var(--border-active); }
+        .tag.green { background:var(--accent-glow); color:var(--accent); border-color:rgba(6,214,160,0.25); }
+        .tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+        .req-note { font-size:12.5px; color:var(--text2); background:var(--bg3); border-left:2px solid var(--primary); padding:8px 12px; border-radius:0 8px 8px 0; margin-bottom:12px; font-style:italic; line-height:1.5; }
+        .req-actions { display:flex; gap:8px; }
+        .btn { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--primary),#1d4ed8); color:white; border:none; padding:8px 16px; border-radius:9px; cursor:pointer; font-weight:600; font-size:12.5px; font-family:inherit; transition:all 0.2s; box-shadow:0 3px 10px rgba(37,99,235,0.3); white-space:nowrap; }
+        .btn:hover { transform:translateY(-1px); }
+        .btn-ghost { background:var(--bg3); box-shadow:none; border:1px solid var(--border); color:var(--text2); }
+        .btn-ghost:hover { background:rgba(255,255,255,0.06); color:var(--text); transform:none; }
+        .btn-success { background:linear-gradient(135deg,#059669,#047857); box-shadow:0 2px 8px rgba(5,150,105,0.3); }
+        .btn-success:hover { box-shadow:0 4px 14px rgba(5,150,105,0.4); }
+        .btn-danger { background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 2px 8px rgba(239,68,68,0.25); }
+
+        /* STATUS BADGE */
+        .req-status { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+        .req-status::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+        .req-status.pending { background:rgba(249,115,22,0.12); color:var(--warn); }
+        .req-status.accepted { background:var(--accent-glow); color:var(--accent); }
+        .req-status.declined { background:rgba(239,68,68,0.1); color:var(--danger); }
+
+        /* SIDEBAR PANEL */
+        .panel-section { margin-bottom:20px; }
+        .panel-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:12px; }
+
+        /* ACTIVITY */
+        .activity-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+        .activity-item:last-child { border:none; }
+        .act-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+        .act-dot.green { background:var(--accent); }
+        .act-dot.blue { background:var(--primary-light); }
+        .act-dot.red { background:var(--danger); }
+        .act-dot.orange { background:var(--warn); }
+        .act-text { font-size:12.5px; color:var(--text2); line-height:1.5; }
+        .act-time { font-size:11px; color:var(--text3); margin-top:2px; }
+
+        /* SENT REQUESTS */
+        .sent-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+        .sent-item:last-child { border:none; }
+        .sent-avatar { width:36px; height:36px; border-radius:50%; font-size:13px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .sent-info { flex:1; }
+        .sent-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+        .sent-sub { font-size:11.5px; color:var(--text3); }
+
+        /* EMPTY */
+        .empty-state { text-align:center; padding:50px 20px; color:var(--text3); }
+        .empty-state .e-icon { font-size:40px; margin-bottom:12px; }
+        .empty-state p { font-size:14px; }
+
+        /* TOAST */
+        .toast-container { position:fixed; bottom:24px; right:24px; z-index:200; display:flex; flex-direction:column; gap:10px; }
+        .toast { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:12px 18px; font-size:13px; font-weight:500; animation:toastIn 0.3s ease; box-shadow:0 8px 30px rgba(0,0,0,0.4); }
+        .toast.success { border-color:rgba(6,214,160,0.3); }
+        .toast.error { border-color:rgba(239,68,68,0.3); }
+        @keyframes toastIn { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+        @keyframes toastOut { to{transform:translateX(40px);opacity:0} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo"><div class="logo-icon">🔗</div> TeamUp</div>
+    <div class="nav-label">Menu</div>
+    <div class="nav">
+        <a href="dashboard.html"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="browse-users.html"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="my-posts.html"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="requests.html" class="active"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+    </div>
+    <div class="nav-label">Account</div>
+    <div class="nav">
+        <a href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+        <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/login"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-chip">
+            <div class="user-avatar">A</div>
+            <div class="user-info"><div class="user-name">Aryan Kumar</div><div class="user-role">Frontend Dev</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="header">
+        <div class="header-left">
+            <h2>Requests 📬</h2>
+            <p>Manage collaboration requests for your posts and connections.</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon orange">📬</div><div><div class="stat-value" id="pendingCount">2</div><div class="stat-label">Pending</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-value" id="acceptedCount">3</div><div class="stat-label">Accepted</div></div></div>
+        <div class="stat-card"><div class="stat-icon red">✕</div><div><div class="stat-value" id="declinedCount">1</div><div class="stat-label">Declined</div></div></div>
+        <div class="stat-card"><div class="stat-icon blue">📤</div><div><div class="stat-value">4</div><div class="stat-label">Sent by Me</div></div></div>
+    </div>
+
+    <div class="layout">
+        <!-- LEFT: REQUESTS -->
+        <div>
+            <div class="tabs">
+                <button class="tab active" onclick="setTab('pending',this)">Pending <span class="count" id="pendingBadge">2</span></button>
+                <button class="tab" onclick="setTab('accepted',this)">Accepted</button>
+                <button class="tab" onclick="setTab('declined',this)">Declined</button>
+                <button class="tab" onclick="setTab('sent',this)">Sent by Me</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 id="cardTitle">📬 Incoming Requests</h3>
+                    <span id="cardCount" style="font-size:12px;color:var(--text3);">2 requests</span>
+                </div>
+                <div class="card-body" id="requestsBody"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+            <!-- ACTIVITY -->
+            <div class="card">
+                <div class="card-header"><h3>📊 Recent Activity</h3></div>
+                <div class="card-body" style="padding-top:8px;">
+                    <div class="activity-item">
+                        <div class="act-dot green"></div>
+                        <div><div class="act-text">Rahul Sharma accepted your connection request</div><div class="act-time">2 hours ago</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-dot blue"></div>
+                        <div><div class="act-text">New request on "Looking for Frontend Developer"</div><div class="act-time">5 hours ago</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-dot orange"></div>
+                        <div><div class="act-text">Meera Joshi sent you a collaboration request</div><div class="act-time">1 day ago</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-dot green"></div>
+                        <div><div class="act-text">You accepted Anjali Mehta's request</div><div class="act-time">2 days ago</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-dot red"></div>
+                        <div><div class="act-text">You declined a request from Vikram D.</div><div class="act-time">3 days ago</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK STATS CARD -->
+            <div class="card">
+                <div class="card-header"><h3>🎯 Your Stats</h3></div>
+                <div class="card-body" style="padding-top:14px;">
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        ${[['Acceptance Rate','75%','var(--accent)'],['Response Time','< 2h','var(--primary-light)'],['Active Posts','2','var(--warn)'],['Total Connections','12','var(--text2)']].map(([label,val,color])=>`
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:13px;color:var(--text2)">${label}</span>
+                            <span style="font-size:14px;font-weight:700;color:${color}">${val}</span>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+let requests = [
+    { id:1, name:"Rahul Sharma", initials:"RS", color:"#2563eb", time:"3h ago", actionText:"wants to join your team", post:"Looking for Frontend Developer", skills:["React","TypeScript"], note:"Hey Aryan! I saw your post and I'd love to help. I have 2 years of React experience and currently building a similar SaaS dashboard.", status:"pending" },
+    { id:2, name:"Meera Joshi", initials:"MJ", color:"#f97316", time:"1d ago", actionText:"sent a collaboration request", post:"Hackathon Team — Devhack 2025", skills:["UI/UX","Figma"], note:"I'm super excited about this hackathon! I specialize in rapid prototyping and have won 3 previous hackathons. Would love to design for your team.", status:"pending" },
+    { id:3, name:"Anjali Mehta", initials:"AM", color:"#06d6a0", time:"2d ago", actionText:"joined your team", post:"Looking for Frontend Developer", skills:["Python","Flask"], note:"Thanks for accepting! Can't wait to start building.", status:"accepted" },
+    { id:4, name:"Priya Nair", initials:"PN", color:"#8b5cf6", time:"3d ago", actionText:"requested to collaborate", post:"Hackathon Team — Devhack 2025", skills:["Flutter","Firebase"], note:"I'd bring strong mobile skills to the team.", status:"accepted" },
+    { id:5, name:"Dev Patel", initials:"DP", color:"#ec4899", time:"4d ago", actionText:"requested to join", post:"Open-source CLI Tool", skills:["Python","NLP"], note:"", status:"accepted" },
+    { id:6, name:"Vikram D.", initials:"VD", color:"#64748b", time:"5d ago", actionText:"requested to join", post:"Looking for Frontend Developer", skills:["Angular","CSS"], note:"Looking for a frontend role in your project.", status:"declined" },
+];
+
+const sentRequests = [
+    { id:1, name:"Rohan Verma", initials:"RV", color:"#f43f5e", post:"DevOps Help Needed", status:"pending", time:"1d ago" },
+    { id:2, name:"Sneha Gupta", initials:"SG", color:"#a78bfa", post:"AI Hackathon Team", status:"accepted", time:"2d ago" },
+    { id:3, name:"Karan Singh", initials:"KS", color:"#f97316", post:"Open-source Design", status:"pending", time:"3d ago" },
+    { id:4, name:"Dev Patel", initials:"DP", color:"#ec4899", post:"ML Project", status:"declined", time:"5d ago" },
+];
+
+let currentTab = 'pending';
+
+function setTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderRequests();
+}
+
+function updateCounts() {
+    const pending = requests.filter(r => r.status === 'pending').length;
+    const accepted = requests.filter(r => r.status === 'accepted').length;
+    const declined = requests.filter(r => r.status === 'declined').length;
+    document.getElementById('pendingCount').textContent = pending;
+    document.getElementById('acceptedCount').textContent = accepted;
+    document.getElementById('declinedCount').textContent = declined;
+    document.getElementById('pendingBadge').textContent = pending;
+    document.getElementById('pendingBadge').style.display = pending > 0 ? '' : 'none';
+}
+
+function renderRequests() {
+    const body = document.getElementById('requestsBody');
+    const titleEl = document.getElementById('cardTitle');
+    const countEl = document.getElementById('cardCount');
+
+    if (currentTab === 'sent') {
+        titleEl.textContent = '📤 Sent Requests';
+        countEl.textContent = `${sentRequests.length} requests`;
+        body.innerHTML = sentRequests.map((r, i) => `
+            <div class="sent-item" style="animation-delay:${i*0.07}s">
+                <div class="sent-avatar" style="background:${r.color}">${r.initials}</div>
+                <div class="sent-info">
+                    <div class="sent-name">${r.name}</div>
+                    <div class="sent-sub">📋 ${r.post} · ${r.time}</div>
+                </div>
+                <span class="req-status ${r.status}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>
+            </div>
+        `).join('');
+        return;
+    }
+
+    const filtered = requests.filter(r => r.status === currentTab);
+    const tabTitles = { pending:'📬 Incoming Requests', accepted:'✅ Accepted Requests', declined:'✕ Declined Requests' };
+    titleEl.textContent = tabTitles[currentTab];
+    countEl.textContent = `${filtered.length} request${filtered.length!==1?'s':''}`;
+
+    if (!filtered.length) {
+        const msgs = { pending:'No pending requests right now.', accepted:'No accepted requests yet.', declined:'No declined requests.' };
+        const icons = { pending:'📭', accepted:'🤝', declined:'🙅' };
+        body.innerHTML = `<div class="empty-state"><div class="e-icon">${icons[currentTab]}</div><p>${msgs[currentTab]}</p></div>`;
+        return;
+    }
+
+    body.innerHTML = filtered.map((r, i) => `
+        <div class="req-item" id="ri-${r.id}" style="animation-delay:${i*0.08}s">
+            <div class="req-avatar" style="background:${r.color}">${r.initials}</div>
+            <div class="req-info">
+                <div class="req-top">
+                    <div class="req-name">${r.name}</div>
+                    <div class="req-time">${r.time}</div>
+                </div>
+                <div class="req-action-text">${r.actionText}</div>
+                <div class="req-post">📋 ${r.post}</div>
+                <div class="tags">${r.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+                ${r.note ? `<div class="req-note">"${r.note}"</div>` : ''}
+                ${currentTab === 'pending' ? `
+                <div class="req-actions">
+                    <button class="btn btn-success" onclick="handleReq(${r.id},'accepted')">✓ Accept</button>
+                    <button class="btn btn-danger" onclick="handleReq(${r.id},'declined')">✕ Decline</button>
+                    <button class="btn btn-ghost" onclick="viewProfile('${r.name}')">View Profile</button>
+                </div>` : `
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="req-status ${r.status}">${r.status==='accepted'?'Accepted':'Declined'}</span>
+                    ${r.status==='accepted'?`<button class="btn btn-ghost" style="font-size:11.5px;padding:5px 12px;">💬 Message</button>`:''}
+                </div>`}
+            </div>
+        </div>
+    `).join('');
+}
+
+function handleReq(id, action) {
+    const el = document.getElementById(`ri-${id}`);
+    if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(20px)';
+        el.style.transition = 'all 0.3s';
+        setTimeout(() => {
+            const req = requests.find(r => r.id === id);
+            if (req) req.status = action;
+            updateCounts();
+            renderRequests();
+            showToast(action==='accepted' ? '✅ Request accepted! You\'re now connected.' : '✕ Request declined.', action==='accepted'?'success':'error');
+        }, 300);
+    }
+}
+
+function viewProfile(name) { showToast(`👤 Opening ${name}'s profile…`, 'success'); }
+
+function showToast(msg, type='success') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = msg;
+    c.appendChild(t);
+    setTimeout(()=>{ t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); },3000);
+}
+
+updateCounts();
+renderRequests();
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Settings – TeamUp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:#2563eb; --primary-light:#3b82f6; --primary-glow:rgba(37,99,235,0.15);
+            --accent:#06d6a0; --accent-glow:rgba(6,214,160,0.15); --warn:#f97316;
+            --danger:#ef4444; --bg:#080c14; --bg2:#0d1220; --bg3:#111827;
+            --card:#0f172a; --border:rgba(255,255,255,0.07); --border-active:rgba(37,99,235,0.4);
+            --text:#f0f4ff; --text2:#94a3b8; --text3:#475569; --sidebar-w:256px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
+
+        .sidebar { width:var(--sidebar-w); background:var(--bg2); border-right:1px solid var(--border); height:100vh; padding:28px 20px; display:flex; flex-direction:column; position:sticky; top:0; flex-shrink:0; }
+        .logo { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; margin-bottom:36px; display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--primary),var(--accent)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+        .nav-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); padding:0 12px; margin-bottom:6px; margin-top:20px; }
+        .nav a { display:flex; align-items:center; gap:10px; color:var(--text2); text-decoration:none; padding:10px 12px; border-radius:10px; margin-bottom:2px; font-size:14px; font-weight:500; transition:all 0.2s; }
+        .nav a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+        .nav a.active { background:var(--primary-glow); color:var(--primary-light); border:1px solid var(--border-active); }
+        .nav a .nav-icon { font-size:16px; width:20px; text-align:center; }
+        .nav a .badge { margin-left:auto; background:var(--primary); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
+        .sidebar-footer { margin-top:auto; padding-top:20px; border-top:1px solid var(--border); }
+        .user-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); }
+        .user-avatar-sm { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; }
+        .user-name { font-size:13px; font-weight:600; }
+        .user-role { font-size:11px; color:var(--text3); }
+
+        /* MAIN */
+        .main { flex:1; padding:32px 36px; overflow-y:auto; }
+        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+        .header-left h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.5px; }
+        .header-left p { font-size:14px; color:var(--text2); margin-top:4px; }
+
+        /* LAYOUT */
+        .settings-layout { display:grid; grid-template-columns:220px 1fr; gap:24px; }
+
+        /* SETTINGS NAV */
+        .settings-nav { display:flex; flex-direction:column; gap:3px; position:sticky; top:32px; }
+        .snav-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; font-size:13.5px; font-weight:500; color:var(--text2); cursor:pointer; transition:0.2s; border:1px solid transparent; }
+        .snav-item:hover { background:rgba(255,255,255,0.04); color:var(--text); }
+        .snav-item.active { background:var(--primary-glow); color:var(--primary-light); border-color:var(--border-active); }
+        .snav-icon { font-size:16px; width:20px; text-align:center; }
+        .snav-divider { height:1px; background:var(--border); margin:10px 0; }
+
+        /* SETTINGS CONTENT */
+        .settings-content { display:flex; flex-direction:column; gap:20px; }
+
+        /* SECTION CARD */
+        .scard { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; animation:fadeUp 0.4s ease both; }
+        .scard:nth-child(1){animation-delay:0.04s} .scard:nth-child(2){animation-delay:0.08s} .scard:nth-child(3){animation-delay:0.12s} .scard:nth-child(4){animation-delay:0.16s}
+        .scard-header { padding:20px 24px; border-bottom:1px solid var(--border); }
+        .scard-header h3 { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+        .scard-header p { font-size:13px; color:var(--text3); }
+        .scard-body { padding:24px; }
+
+        /* FORM ELEMENTS */
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+        .form-group { margin-bottom:16px; }
+        .form-group:last-child { margin-bottom:0; }
+        .form-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:7px; display:block; letter-spacing:0.3px; }
+        .form-input { width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:13.5px; font-family:inherit; transition:0.2s; outline:none; }
+        .form-input:focus { border-color:var(--border-active); box-shadow:0 0 0 3px var(--primary-glow); }
+        .form-input::placeholder { color:var(--text3); }
+        .form-input:disabled { opacity:0.5; cursor:not-allowed; }
+        .form-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; cursor:pointer; }
+        .form-hint { font-size:11.5px; color:var(--text3); margin-top:5px; line-height:1.5; }
+
+        /* TOGGLE ROW */
+        .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+        .toggle-row:last-child { border:none; padding-bottom:0; }
+        .toggle-info { flex:1; padding-right:20px; }
+        .toggle-label { font-size:14px; font-weight:600; margin-bottom:3px; }
+        .toggle-desc { font-size:12.5px; color:var(--text3); line-height:1.5; }
+        .toggle-switch { position:relative; width:44px; height:24px; flex-shrink:0; }
+        .toggle-switch input { opacity:0; width:0; height:0; }
+        .slider { position:absolute; inset:0; background:var(--bg); border:1px solid var(--border); border-radius:24px; cursor:pointer; transition:0.3s; }
+        .slider:before { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:var(--text3); top:2px; left:2px; transition:0.3s; }
+        input:checked + .slider { background:var(--accent-glow); border-color:rgba(6,214,160,0.4); }
+        input:checked + .slider:before { transform:translateX(20px); background:var(--accent); }
+
+        /* DANGER ZONE */
+        .danger-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+        .danger-row:last-child { border:none; }
+        .danger-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px; }
+        .danger-desc { font-size:12.5px; color:var(--text3); }
+
+        /* AVATAR EDITOR */
+        .avatar-editor { display:flex; align-items:center; gap:20px; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+        .avatar-lg { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:#fff; flex-shrink:0; }
+        .avatar-actions { display:flex; flex-direction:column; gap:6px; }
+        .avatar-hint { font-size:12px; color:var(--text3); }
+
+        /* PASSWORD STRENGTH */
+        .pw-strength { height:4px; border-radius:4px; margin-top:8px; transition:0.3s; }
+        .pw-strength.weak { background:var(--danger); width:25%; }
+        .pw-strength.medium { background:var(--warn); width:60%; }
+        .pw-strength.strong { background:var(--accent); width:100%; }
+
+        /* CONNECTED ACCOUNTS */
+        .connected-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+        .connected-row:last-child { border:none; }
+        .service-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; background:var(--bg3); border:1px solid var(--border); flex-shrink:0; }
+        .service-info { flex:1; }
+        .service-name { font-size:13.5px; font-weight:600; }
+        .service-status { font-size:12px; margin-top:2px; }
+        .service-status.connected { color:var(--accent); }
+        .service-status.disconnected { color:var(--text3); }
+
+        /* BUTTONS */
+        .btn { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--primary),#1d4ed8); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px; font-family:inherit; transition:all 0.2s; box-shadow:0 3px 12px rgba(37,99,235,0.3); white-space:nowrap; }
+        .btn:hover { transform:translateY(-1px); box-shadow:0 5px 18px rgba(37,99,235,0.4); }
+        .btn-ghost { background:var(--bg3); box-shadow:none; border:1px solid var(--border); color:var(--text2); }
+        .btn-ghost:hover { background:rgba(255,255,255,0.06); color:var(--text); transform:none; box-shadow:none; }
+        .btn-sm { padding:7px 14px; font-size:12px; }
+        .btn-danger { background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 2px 10px rgba(239,68,68,0.25); }
+        .btn-danger:hover { box-shadow:0 4px 16px rgba(239,68,68,0.35); }
+        .btn-danger-outline { background:transparent; border:1px solid rgba(239,68,68,0.4); color:var(--danger); box-shadow:none; }
+        .btn-danger-outline:hover { background:rgba(239,68,68,0.08); transform:none; box-shadow:none; }
+        .save-row { display:flex; justify-content:flex-end; gap:10px; padding-top:16px; border-top:1px solid var(--border); margin-top:4px; }
+
+        /* MODAL */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.2s; }
+        .modal-overlay.open { opacity:1; pointer-events:all; }
+        .modal { background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:28px; width:400px; max-width:95vw; transform:scale(0.96) translateY(10px); transition:0.2s; text-align:center; }
+        .modal-overlay.open .modal { transform:scale(1) translateY(0); }
+        .modal-icon { font-size:44px; margin-bottom:14px; }
+        .modal-title { font-family:'Space Grotesk',sans-serif; font-size:20px; font-weight:700; margin-bottom:8px; }
+        .modal-desc { font-size:13.5px; color:var(--text2); line-height:1.65; margin-bottom:22px; }
+        .modal-actions { display:flex; gap:10px; justify-content:center; }
+        .modal-actions .btn { flex:1; justify-content:center; }
+
+        /* TOAST */
+        .toast-container { position:fixed; bottom:24px; right:24px; z-index:200; display:flex; flex-direction:column; gap:10px; }
+        .toast { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:12px 18px; font-size:13px; font-weight:500; animation:toastIn 0.3s ease; box-shadow:0 8px 30px rgba(0,0,0,0.4); }
+        .toast.success { border-color:rgba(6,214,160,0.3); }
+        .toast.error { border-color:rgba(239,68,68,0.3); }
+        @keyframes toastIn { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+        @keyframes toastOut { to{transform:translateX(40px);opacity:0} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+
+        /* SECTION HIDE */
+        .settings-section { display:none; }
+        .settings-section.active { display:flex; flex-direction:column; gap:20px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo"><div class="logo-icon">🔗</div> TeamUp</div>
+    <div class="nav-label">Menu</div>
+    <div class="nav">
+        <a href="dashboard.html"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="browse-users.html"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="my-posts.html"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="requests.html"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+    </div>
+    <div class="nav-label">Account</div>
+    <div class="nav">
+        <a href="profile.html"><span class="nav-icon">👤</span> Profile</a>
+        <a href="settings.html" class="active"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/login"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-chip">
+            <div class="user-avatar-sm">A</div>
+            <div class="user-info"><div class="user-name">Aryan Kumar</div><div class="user-role">Frontend Dev</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="header">
+        <div class="header-left">
+            <h2>Settings ⚙️</h2>
+            <p>Manage your account, notifications, and privacy preferences.</p>
+        </div>
+    </div>
+
+    <div class="settings-layout">
+        <!-- SETTINGS NAV -->
+        <div class="settings-nav">
+            <div class="snav-item active" onclick="switchSection('account',this)"><span class="snav-icon">👤</span> Account</div>
+            <div class="snav-item" onclick="switchSection('security',this)"><span class="snav-icon">🔒</span> Security</div>
+            <div class="snav-item" onclick="switchSection('notifications',this)"><span class="snav-icon">🔔</span> Notifications</div>
+            <div class="snav-item" onclick="switchSection('privacy',this)"><span class="snav-icon">🛡️</span> Privacy</div>
+            <div class="snav-item" onclick="switchSection('connections',this)"><span class="snav-icon">🔗</span> Connections</div>
+            <div class="snav-divider"></div>
+            <div class="snav-item" onclick="switchSection('danger',this)" style="color:var(--danger);"><span class="snav-icon">⚠️</span> Danger Zone</div>
+        </div>
+
+        <!-- SETTINGS CONTENT -->
+        <div class="settings-content">
+
+            <!-- ACCOUNT -->
+            <div class="settings-section active" id="section-account">
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>👤 Account Information</h3>
+                        <p>Update your basic profile details and contact info.</p>
+                    </div>
+                    <div class="scard-body">
+                        <div class="avatar-editor">
+                            <div class="avatar-lg">A</div>
+                            <div class="avatar-actions">
+                                <button class="btn btn-ghost btn-sm" onclick="showToast('📤 Upload feature connected to backend','success')">📷 Change Photo</button>
+                                <button class="btn btn-ghost btn-sm" onclick="showToast('🗑️ Photo removed','success')">Remove</button>
+                                <div class="avatar-hint">JPG, PNG, WebP. Max 5MB.</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" value="Aryan"></div>
+                            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" value="Kumar"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Username</label><input class="form-input" type="text" value="aryan-kumar"><div class="form-hint">teamup.dev/@aryan-kumar</div></div>
+                        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" value="aryan@example.com"></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Role / Headline</label><input class="form-input" type="text" value="Frontend Developer"></div>
+                            <div class="form-group"><label class="form-label">Location</label><input class="form-input" type="text" value="Bengaluru, India"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">College / University</label>
+                            <input class="form-input" type="text" value="NIT Karnataka">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Year of Study</label>
+                            <select class="form-input form-select">
+                                <option>1st Year</option>
+                                <option>2nd Year</option>
+                                <option selected>3rd Year</option>
+                                <option>4th Year</option>
+                                <option>Graduated</option>
+                                <option>Working Professional</option>
+                            </select>
+                        </div>
+                        <div class="save-row">
+                            <button class="btn btn-ghost" onclick="showToast('Changes discarded.','error')">Discard</button>
+                            <button class="btn" onclick="showToast('✅ Account updated!','success')">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECURITY -->
+            <div class="settings-section" id="section-security">
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>🔒 Change Password</h3>
+                        <p>Keep your account secure with a strong password.</p>
+                    </div>
+                    <div class="scard-body">
+                        <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="Enter current password"></div>
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input class="form-input" type="password" placeholder="Minimum 8 characters" id="newPw" oninput="checkPwStrength()">
+                            <div class="pw-strength" id="pwBar" style="display:none;"></div>
+                            <div class="form-hint" id="pwHint" style="display:none;"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="Repeat new password"></div>
+                        <div class="save-row">
+                            <button class="btn" onclick="showToast('🔒 Password updated successfully!','success')">Update Password</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>🛡️ Two-Factor Authentication</h3>
+                        <p>Add an extra layer of security to your account.</p>
+                    </div>
+                    <div class="scard-body">
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <div class="toggle-label">Enable 2FA</div>
+                                <div class="toggle-desc">Require OTP on each login via email or authenticator app.</div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" onchange="showToast('🛡️ 2FA setting saved!','success')"><span class="slider"></span></label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <div class="toggle-label">Login Alerts</div>
+                                <div class="toggle-desc">Get notified by email when a new device logs in.</div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('🔔 Login alerts updated!','success')"><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>📱 Active Sessions</h3>
+                        <p>Devices currently logged in to your account.</p>
+                    </div>
+                    <div class="scard-body">
+                        ${[['💻 Chrome on macOS','Current device · Bengaluru, IN','true'],['📱 Safari on iPhone','2 days ago · Bengaluru, IN','false'],['💻 Firefox on Windows','5 days ago · Delhi, IN','false']].map(([device,meta,cur])=>`
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">
+                            <div>
+                                <div style="font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px">${device}${cur==='true'?`<span style="background:var(--accent-glow);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700">Current</span>`:''}
+                                </div>
+                                <div style="font-size:12px;color:var(--text3);margin-top:2px">${meta}</div>
+                            </div>
+                            ${cur!=='true'?`<button class="btn btn-danger-outline btn-sm" onclick="showToast('Session revoked.','error')">Revoke</button>`:''}
+                        </div>`).join('')}
+                        <div style="padding-top:14px;"><button class="btn btn-danger-outline" onclick="showToast('⚠️ All other sessions terminated.','error')">Revoke All Other Sessions</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div class="settings-section" id="section-notifications">
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>📧 Email Notifications</h3>
+                        <p>Choose what emails you'd like to receive from TeamUp.</p>
+                    </div>
+                    <div class="scard-body">
+                        ${[['New team request','When someone requests to join your post',true],['Request accepted','When someone accepts your connection request',true],['New message','When you receive a new direct message',true],['Post activity','Weekly summary of your post views and requests',false],['Platform updates','News, tips, and feature announcements',false]].map(([title,desc,checked])=>`
+                        <div class="toggle-row">
+                            <div class="toggle-info"><div class="toggle-label">${title}</div><div class="toggle-desc">${desc}</div></div>
+                            <label class="toggle-switch"><input type="checkbox" ${checked?'checked':''} onchange="showToast('🔔 Notification preference saved!','success')"><span class="slider"></span></label>
+                        </div>`).join('')}
+                    </div>
+                </div>
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>🔔 In-App Notifications</h3>
+                        <p>Real-time alerts within the TeamUp dashboard.</p>
+                    </div>
+                    <div class="scard-body">
+                        ${[['Team requests','Instant alert when someone applies to your post',true],['Connection accepted','When a connection is confirmed',true],['Profile views','Notify when someone views your profile',false],['Suggested teammates','Weekly smart teammate suggestions',true]].map(([title,desc,checked])=>`
+                        <div class="toggle-row">
+                            <div class="toggle-info"><div class="toggle-label">${title}</div><div class="toggle-desc">${desc}</div></div>
+                            <label class="toggle-switch"><input type="checkbox" ${checked?'checked':''} onchange="showToast('🔔 Saved!','success')"><span class="slider"></span></label>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRIVACY -->
+            <div class="settings-section" id="section-privacy">
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>🛡️ Profile Visibility</h3>
+                        <p>Control who can see your profile and information.</p>
+                    </div>
+                    <div class="scard-body">
+                        <div class="form-group">
+                            <label class="form-label">Profile Visibility</label>
+                            <select class="form-input form-select">
+                                <option selected>Public – Anyone on TeamUp</option>
+                                <option>Connections Only</option>
+                                <option>Private – Hidden from browse</option>
+                            </select>
+                            <div class="form-hint">Who can discover and view your profile.</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Who can send you requests?</label>
+                            <select class="form-input form-select">
+                                <option selected>Everyone</option>
+                                <option>Only users with matching skills</option>
+                                <option>Nobody – Pause requests</option>
+                            </select>
+                        </div>
+                        ${[['Show email on profile','Let others see your email address',false],['Show college/university','Display your institution on your profile',true],['Show profile in search','Appear in Browse Users results',true],['Show last active status','Let others see when you were last online',false]].map(([title,desc,checked])=>`
+                        <div class="toggle-row">
+                            <div class="toggle-info"><div class="toggle-label">${title}</div><div class="toggle-desc">${desc}</div></div>
+                            <label class="toggle-switch"><input type="checkbox" ${checked?'checked':''} onchange="showToast('🛡️ Privacy setting saved!','success')"><span class="slider"></span></label>
+                        </div>`).join('')}
+                        <div class="save-row">
+                            <button class="btn" onclick="showToast('🛡️ Privacy settings saved!','success')">Save Privacy Settings</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>📊 Data & Analytics</h3>
+                        <p>Control how your data is used on TeamUp.</p>
+                    </div>
+                    <div class="scard-body">
+                        ${[['Analytics data','Allow TeamUp to use anonymized usage data to improve recommendations',true],['Personalized suggestions','Use your activity to suggest better teammates and posts',true]].map(([title,desc,checked])=>`
+                        <div class="toggle-row">
+                            <div class="toggle-info"><div class="toggle-label">${title}</div><div class="toggle-desc">${desc}</div></div>
+                            <label class="toggle-switch"><input type="checkbox" ${checked?'checked':''} onchange="showToast('✅ Data preference saved!','success')"><span class="slider"></span></label>
+                        </div>`).join('')}
+                        <div style="margin-top:14px;">
+                            <button class="btn btn-ghost" onclick="showToast('📦 Data export requested. Check your email.','success')">📤 Export My Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNECTIONS (OAuth) -->
+            <div class="settings-section" id="section-connections">
+                <div class="scard">
+                    <div class="scard-header">
+                        <h3>🔗 Connected Accounts</h3>
+                        <p>Link external accounts to enrich your profile.</p>
+                    </div>
+                    <div class="scard-body">
+                        ${[['💻','GitHub','Connect to showcase your repos and contributions','connected'],['💼','LinkedIn','Sync your professional experience and skills','disconnected'],['🐦','Twitter / X','Share your TeamUp activity with your followers','disconnected'],['📧','Google','Sign in faster and sync your calendar','connected']].map(([icon,name,desc,status])=>`
+                        <div class="connected-row">
+                            <div class="service-icon">${icon}</div>
+                            <div class="service-info">
+                                <div class="service-name">${name}</div>
+                                <div class="service-status ${status}">${status==='connected'?'✓ Connected':'Not connected'}</div>
+                                <div style="font-size:12px;color:var(--text3);margin-top:2px">${desc}</div>
+                            </div>
+                            ${status==='connected' ?
+                                `<button class="btn btn-ghost btn-sm" onclick="showToast('🔌 ${name} disconnected.','error')">Disconnect</button>` :
+                                `<button class="btn btn-sm" onclick="showToast('🔗 Redirecting to ${name}…','success')">Connect</button>`
+                            }
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div class="settings-section" id="section-danger">
+                <div class="scard" style="border-color:rgba(239,68,68,0.2)">
+                    <div class="scard-header" style="border-color:rgba(239,68,68,0.15)">
+                        <h3 style="color:var(--danger)">⚠️ Danger Zone</h3>
+                        <p>Irreversible actions. Proceed with caution.</p>
+                    </div>
+                    <div class="scard-body">
+                        <div class="danger-row">
+                            <div><div class="danger-title">Deactivate Account</div><div class="danger-desc">Temporarily hide your profile and posts from TeamUp. You can reactivate anytime.</div></div>
+                            <button class="btn btn-danger-outline btn-sm" onclick="openDangerModal('deactivate')">Deactivate</button>
+                        </div>
+                        <div class="danger-row">
+                            <div><div class="danger-title">Clear All Posts</div><div class="danger-desc">Permanently delete all your posts and associated requests.</div></div>
+                            <button class="btn btn-danger-outline btn-sm" onclick="openDangerModal('clear')">Clear Posts</button>
+                        </div>
+                        <div class="danger-row">
+                            <div><div class="danger-title" style="color:var(--danger)">Delete Account</div><div class="danger-desc">Permanently delete your TeamUp account, all posts, connections, and data. This cannot be undone.</div></div>
+                            <button class="btn btn-danger btn-sm" onclick="openDangerModal('delete')">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- DANGER MODAL -->
+<div class="modal-overlay" id="dangerModal" onclick="closeDangerModal(event)">
+    <div class="modal">
+        <div class="modal-icon" id="dangerIcon">⚠️</div>
+        <div class="modal-title" id="dangerTitle">Confirm Action</div>
+        <div class="modal-desc" id="dangerDesc">Are you sure?</div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="document.getElementById('dangerModal').classList.remove('open')">Cancel</button>
+            <button class="btn btn-danger" id="dangerConfirmBtn" onclick="confirmDanger()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+let dangerAction = '';
+
+function switchSection(id, el) {
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.snav-item').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-'+id).classList.add('active');
+    el.classList.add('active');
+}
+
+function checkPwStrength() {
+    const pw = document.getElementById('newPw').value;
+    const bar = document.getElementById('pwBar');
+    const hint = document.getElementById('pwHint');
+    if (!pw) { bar.style.display='none'; hint.style.display='none'; return; }
+    bar.style.display='block'; hint.style.display='block';
+    if (pw.length < 6) { bar.className='pw-strength weak'; hint.textContent='Weak – too short'; }
+    else if (pw.length < 10 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) { bar.className='pw-strength medium'; hint.textContent='Medium – add numbers, uppercase'; }
+    else { bar.className='pw-strength strong'; hint.textContent='Strong password ✓'; hint.style.color='var(--accent)'; }
+}
+
+function openDangerModal(action) {
+    dangerAction = action;
+    const configs = {
+        deactivate: { icon:'😴', title:'Deactivate Account?', desc:'Your profile and posts will be hidden from other users. You can reactivate anytime by logging back in.', btn:'Deactivate' },
+        clear: { icon:'🗑️', title:'Clear All Posts?', desc:'This will permanently delete all your posts, requests, and associated data. This cannot be undone.', btn:'Clear All Posts' },
+        delete: { icon:'💀', title:'Delete Account?', desc:'This will permanently delete your account, all posts, connections, and personal data. This action is irreversible.', btn:'Delete Forever' }
+    };
+    const c = configs[action];
+    document.getElementById('dangerIcon').textContent = c.icon;
+    document.getElementById('dangerTitle').textContent = c.title;
+    document.getElementById('dangerDesc').textContent = c.desc;
+    document.getElementById('dangerConfirmBtn').textContent = c.btn;
+    document.getElementById('dangerModal').classList.add('open');
+}
+
+function closeDangerModal(e) { if (e.target===document.getElementById('dangerModal')) document.getElementById('dangerModal').classList.remove('open'); }
+function confirmDanger() {
+    document.getElementById('dangerModal').classList.remove('open');
+    const msgs = { deactivate:'😴 Account deactivated. Logging out…', clear:'🗑️ All posts deleted.', delete:'💀 Account deleted. Redirecting…' };
+    showToast(msgs[dangerAction],'error');
+}
+
+function showToast(msg, type='success') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = msg;
+    c.appendChild(t);
+    setTimeout(()=>{ t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); },3000);
+}
+</script>
+</body>
+</html>

@@ -1,56 +1,91 @@
-from flask import Flask, render_template, request, redirect
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# ---------- DB CONNECT ----------
-def get_db():
-    return sqlite3.connect("database.db")
+# Temporary storage (replace with MongoDB later)
+users = []
 
-# LOGIN PAGE
+# ================= HOME =================
 @app.route('/')
-def login_page():
-    return render_template("login.html")
+def home():
+    return redirect('/register')
 
-# LOGIN
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form['username']
-    password = request.form['password']
 
-    # SAME logic (no change)
-    if username == "admin" and password == "1234":
+# ================= REGISTER PAGE =================
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+
+        # Step 1 data
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Save basic data temporarily
+        user = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "username": username,
+            "email": email,
+            "password": password
+        }
+
+        users.append(user)
+
+        print("User Registered:", user)
+
         return redirect('/dashboard')
-    else:
-        return "Invalid"
 
-# DASHBOARD
+    return render_template('register.html')
+
+
+# ================= PROFILE STEP =================
+@app.route('/register/profile', methods=['POST'])
+def register_profile():
+
+    job_title = request.form.get('job_title')
+    role = request.form.get('role')
+    timezone = request.form.get('timezone')
+    phone = request.form.get('phone')
+    bio = request.form.get('bio')
+
+    profile = {
+        "job_title": job_title,
+        "role": role,
+        "timezone": timezone,
+        "phone": phone,
+        "bio": bio
+    }
+
+    print("Profile Data:", profile)
+
+    return redirect('/dashboard')
+
+
+# ================= LOGIN =================
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        for user in users:
+            if user['username'] == username and user['password'] == password:
+                return redirect('/dashboard')
+
+        return "Invalid Credentials ❌"
+
+    return render_template('login.html')
+
+
+# ================= DASHBOARD =================
 @app.route('/dashboard')
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template('dashboard.html')
 
-# CREATE PAGE
-@app.route('/create')
-def create_post():
-    return render_template("create_post.html")
 
-# ✅ ADD POST (NOW CONNECTED)
-@app.route('/add_post', methods=['POST'])
-def add_post():
-    title = request.form['title']
-    content = request.form['content']
-
-    db = get_db()
-    db.execute("INSERT INTO posts (title, content) VALUES (?, ?)", (title, content))
-    db.commit()
-
-    return redirect('/posts')
-
-# ✅ SHOW POSTS (NOW CONNECTED)
-@app.route('/posts')
-def posts():
-    db = get_db()
-    all_posts = db.execute("SELECT * FROM posts").fetchall()
-    return render_template("posts.html", posts=all_posts)
-
-app.run(debug=True)
+# ================= RUN =================
+if __name__ == '__main__':
+    app.run(debug=True)
