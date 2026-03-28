@@ -7,11 +7,17 @@ import json
 from functools import wraps
 
 app = Flask(__name__)
+MAX_TEAMS = 1
 app.secret_key = "secret"
 CORS(app)
 
 # Initialize with default admin user
-users = [{"username": "admin", "password": "1234"}]
+users = [{
+    "username": "admin",
+    "password": "1234",
+    "teams_joined": 0,
+    "team_confirmed": False
+}]
 
 # # MongoDB connection
 # # Replace with your MongoDB URI: mongodb+srv://<user>:<pass>@cluster.mongodb.net/teamup
@@ -107,3 +113,5 @@ def requests_page():
 # RUN
 if __name__ == '__main__':
     app.run(debug=True)
+
+    

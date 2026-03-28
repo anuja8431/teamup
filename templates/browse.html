@@ -1,414 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TeamUp — Browse</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="shared.css" />
-  <style>
-    .page-wrap { max-width: 1128px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 226px 1fr 300px; gap: 24px; }
+    <title>Browse Users – TeamUp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #16a34a;
+            --primary-light: #22c55e;
+            --primary-dim: rgba(22,163,74,0.09);
+            --primary-border: rgba(22,163,74,0.28);
+            --primary-glow: rgba(22,163,74,0.18);
+            --accent: #059669;
+            --warn: #d97706;
+            --bg: #f0fdf4;
+            --bg2: #ffffff;
+            --bg3: #f3f4f3;
+            --card: #ffffff;
+            --card-hover: #f7fef9;
+            --border: rgba(0,0,0,0.07);
+            --border-mid: rgba(22,163,74,0.22);
+            --text: #0f1a12;
+            --text2: #3b6347;
+            --text3: #9db8a2;
+            --sidebar-w: 240px;
+            --radius: 14px;
+            --shadow: 0 1px 12px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 28px rgba(22,163,74,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    /* LEFT PANEL */
-    .left-panel {}
-    .me-card { text-align: center; padding-bottom: 0; overflow: hidden; }
-    .me-banner { height: 60px; background: linear-gradient(135deg, #0a66c2, #7b5ce5); margin: -1px -1px 0; }
-    .me-av-wrap { margin-top: -28px; display: flex; justify-content: center; margin-bottom: 8px; }
-    .me-name { font-weight: 700; font-size: 0.95rem; }
-    .me-sub { color: var(--li-text-secondary); font-size: 0.8rem; margin-top: 2px; margin-bottom: 12px; }
-    .me-stat-row { display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--li-border); font-size: 0.8rem; cursor: pointer; }
-    .me-stat-row:hover { background: var(--li-hover); }
-    .me-stat-label { color: var(--li-text-secondary); }
-    .me-stat-val { font-weight: 700; color: var(--li-blue); }
-    .sidebar-section { padding: 12px 16px; }
-    .sidebar-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 10px; }
-    .sidebar-link { display: block; font-size: 0.8rem; color: var(--li-text-secondary); padding: 4px 0; cursor: pointer; transition: color 0.1s; }
-    .sidebar-link:hover { color: var(--li-blue); text-decoration: underline; }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: radial-gradient(circle, rgba(22,163,74,0.09) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none; z-index: 0;
+        }
 
-    /* CENTER FEED */
-    .feed {}
-    .feed-top {
-      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
-      padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    }
-    .feed-inp {
-      flex: 1; border: 1px solid rgba(0,0,0,0.4); border-radius: 24px;
-      padding: 10px 16px; font-size: 0.875rem; background: #fff; cursor: pointer;
-      transition: border-color 0.15s; color: var(--li-text-secondary);
-    }
-    .feed-inp:hover { border-color: var(--li-text); }
-    .feed-actions { display: flex; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--li-border); }
-    .feed-action-btn {
-      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 8px 4px; border-radius: 4px; border: none; background: none;
-      font-size: 0.82rem; font-weight: 600; color: var(--li-text-secondary); cursor: pointer;
-      transition: background 0.15s;
-    }
-    .feed-action-btn:hover { background: var(--li-hover); color: var(--li-text); }
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            height: 100vh; padding: 24px 16px;
+            display: flex; flex-direction: column;
+            position: sticky; top: 0; flex-shrink: 0; z-index: 10;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.04);
+        }
+        .logo {
+            font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+            margin-bottom: 32px;
+            display: flex; align-items: center; gap: 10px; padding: 0 8px;
+        }
+        .logo-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+        .logo-text { color: var(--primary); }
 
-    /* FILTER BAR */
-    .filter-bar {
-      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
-      padding: 12px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-      margin-bottom: 16px;
-    }
-    .filter-label { font-size: 0.8rem; font-weight: 600; color: var(--li-text-secondary); margin-right: 4px; }
-    .fchip {
-      padding: 5px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 600;
-      cursor: pointer; border: 1px solid var(--li-border); background: #fff;
-      color: var(--li-text-secondary); transition: all 0.15s;
-    }
-    .fchip:hover { color: var(--li-text); border-color: rgba(0,0,0,0.3); }
-    .fchip.on { background: rgba(10,102,194,0.1); border-color: var(--li-blue); color: var(--li-blue); }
+        .nav-label {
+            font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+            text-transform: uppercase; color: var(--text3);
+            padding: 0 10px; margin-bottom: 6px; margin-top: 18px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav a {
+            display: flex; align-items: center; gap: 9px;
+            color: var(--text2); text-decoration: none;
+            padding: 9px 10px; border-radius: 10px;
+            margin-bottom: 1px; font-size: 13.5px; font-weight: 500;
+            transition: all 0.18s;
+        }
+        .nav a:hover { background: var(--primary-dim); color: var(--primary); }
+        .nav a.active {
+            background: var(--primary-dim); color: var(--primary);
+            border: 1px solid var(--primary-border); font-weight: 600;
+        }
+        .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+        .badge {
+            margin-left: auto; background: var(--primary); color: #fff;
+            font-size: 10px; font-weight: 700; padding: 1px 6px;
+            border-radius: 20px; font-family: 'JetBrains Mono', monospace;
+        }
+        .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+        .user-chip {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px; border-radius: 12px;
+            background: var(--bg3); border: 1px solid var(--border);
+            cursor: pointer; transition: 0.18s;
+        }
+        .user-chip:hover { border-color: var(--primary-border); }
+        .user-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+        }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+        .user-role { font-size: 11px; color: var(--text3); margin-top: 1px; }
 
-    /* POST CARD */
-    .post-card {
-      background: #fff; border: 1px solid var(--li-border); border-radius: 8px;
-      margin-bottom: 8px; overflow: hidden; cursor: pointer;
-      transition: box-shadow 0.15s;
-    }
-    .post-card:hover { box-shadow: 0 0 0 1px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08); }
-    .pc-header { padding: 16px 16px 0; display: flex; gap: 10px; }
-    .pc-meta-info { flex: 1; }
-    .pc-author { font-weight: 700; font-size: 0.875rem; }
-    .pc-sub { font-size: 0.78rem; color: var(--li-text-secondary); }
-    .pc-time { font-size: 0.75rem; color: var(--li-text-tertiary); }
-    .pc-body { padding: 10px 16px 14px; }
-    .pc-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; line-height: 1.3; }
-    .pc-desc { font-size: 0.875rem; color: var(--li-text-secondary); line-height: 1.5; margin-bottom: 10px; }
-    .pc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .pc-stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--li-border); font-size: 0.78rem; color: var(--li-text-secondary); }
-    .pc-fill-bar { height: 2px; background: rgba(0,0,0,0.08); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
-    .pc-fill-inner { height: 100%; background: var(--li-green); border-radius: 2px; }
-    .pc-actions { display: flex; border-top: 1px solid var(--li-border); }
-    .pc-action {
-      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 10px; border: none; background: none; font-size: 0.82rem; font-weight: 600;
-      color: var(--li-text-secondary); cursor: pointer; transition: background 0.15s;
-    }
-    .pc-action:hover { background: var(--li-hover); color: var(--li-text); }
-    .pc-action.apply-btn { color: var(--li-blue); }
-    .pc-action.apply-btn:hover { background: rgba(10,102,194,0.08); }
+        /* MAIN */
+        .main { flex: 1; padding: 32px 32px; overflow-y: auto; position: relative; z-index: 1; }
 
-    /* RIGHT PANEL */
-    .right-panel {}
-    .news-card {}
-    .news-title { font-size: 0.875rem; font-weight: 700; padding: 12px 16px 8px; }
-    .news-item { padding: 8px 16px; cursor: pointer; transition: background 0.1s; }
-    .news-item:hover { background: var(--li-hover); }
-    .news-item-title { font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
-    .news-item-sub { font-size: 0.73rem; color: var(--li-text-secondary); margin-top: 2px; }
-    .news-bullet { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--li-text); margin-right: 6px; vertical-align: middle; }
-    .promoted-label { font-size: 0.7rem; color: var(--li-text-tertiary); padding: 0 16px 8px; }
+        .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 26px; gap: 16px; }
+        .header-left h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-left p { font-size: 13.5px; color: var(--text2); margin-top: 4px; }
 
-    @media (max-width: 1024px) { .page-wrap { grid-template-columns: 226px 1fr; } .right-panel { display: none; } }
-    @media (max-width: 700px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } }
-  </style>
+        .search-wrap {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg2); border: 1.5px solid var(--border);
+            border-radius: 11px; padding: 9px 14px;
+            transition: 0.2s; min-width: 260px; box-shadow: var(--shadow);
+        }
+        .search-wrap:focus-within { border-color: var(--primary-border); box-shadow: 0 0 0 3px var(--primary-dim); }
+        .search-wrap input { background: none; border: none; outline: none; color: var(--text); font-size: 13.5px; width: 100%; font-family: inherit; }
+        .search-wrap input::placeholder { color: var(--text3); }
+        .search-icon { color: var(--text3); font-size: 14px; }
+
+        /* FILTERS */
+        .filters-section {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 18px 20px;
+            margin-bottom: 22px; box-shadow: var(--shadow);
+        }
+        .filters-row { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; }
+        .filter-group { display: flex; flex-direction: column; gap: 9px; flex: 1; min-width: 170px; padding: 0 18px; }
+        .filter-group:first-child { padding-left: 0; }
+        .filter-group-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+        .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .filter-chip {
+            padding: 5px 12px; border: 1px solid var(--border);
+            border-radius: 8px; background: var(--bg3);
+            color: var(--text2); font-size: 12px; font-weight: 500;
+            cursor: pointer; transition: all 0.15s; font-family: inherit;
+        }
+        .filter-chip:hover { border-color: var(--primary-border); color: var(--primary); background: var(--primary-dim); }
+        .filter-chip.active { background: var(--primary-dim); border-color: var(--primary-border); color: var(--primary); font-weight: 600; }
+        .filter-v-divider { width: 1px; background: var(--border); min-height: 50px; align-self: center; flex-shrink: 0; }
+
+        /* RESULTS BAR */
+        .results-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .results-count { font-size: 12.5px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+        .results-count span { color: var(--primary); font-weight: 600; }
+        .sort-select {
+            background: var(--bg2); border: 1px solid var(--border);
+            color: var(--text2); font-size: 12.5px;
+            padding: 7px 12px; border-radius: 9px; outline: none;
+            cursor: pointer; font-family: inherit; transition: 0.15s; box-shadow: var(--shadow);
+        }
+        .sort-select:hover { border-color: var(--primary-border); color: var(--primary); }
+
+        /* GRID */
+        .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 14px; }
+
+        /* CARD */
+        .user-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+            transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer; animation: fadeUp 0.4s ease both;
+            box-shadow: var(--shadow); position: relative; overflow: hidden;
+        }
+        .user-card::after {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transform: scaleX(0); transform-origin: left;
+            transition: transform 0.28s ease; border-radius: 14px 14px 0 0;
+        }
+        .user-card:hover { border-color: var(--primary-border); background: var(--card-hover); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .user-card:hover::after { transform: scaleX(1); }
+
+        .uc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+        .uc-avatar { width: 48px; height: 48px; border-radius: 12px; font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .uc-match-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+        .match-pill {
+            display: flex; align-items: center; gap: 4px;
+            background: var(--primary-dim); border: 1px solid var(--primary-border);
+            color: var(--primary); padding: 3px 9px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+        }
+        .match-label { font-size: 10px; color: var(--text3); font-weight: 500; }
+
+        .uc-name { font-size: 15.5px; font-weight: 700; margin-bottom: 2px; letter-spacing: -0.2px; }
+        .uc-role { font-size: 12.5px; color: var(--text2); margin-bottom: 10px; }
+        .uc-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; flex-wrap: wrap; }
+        .avail-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+        }
+        .avail-badge.open { background: rgba(22,163,74,0.09); color: var(--primary); border: 1px solid var(--primary-border); }
+        .avail-badge.busy { background: rgba(217,119,6,0.08); color: var(--warn); border: 1px solid rgba(217,119,6,0.22); }
+        .avail-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .avail-dot.open { background: var(--primary); box-shadow: 0 0 5px var(--primary-glow); }
+        .avail-dot.busy { background: var(--warn); }
+        .meta-item { font-size: 11.5px; color: var(--text3); }
+
+        .uc-bio { font-size: 12.5px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .uc-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+        .tag { padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 500; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
+        .tag.blue { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-border); }
+        .tag.more { color: var(--text3); }
+
+        .uc-actions { display: flex; gap: 8px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            border: none; padding: 9px 14px; border-radius: 9px;
+            cursor: pointer; font-weight: 600; font-size: 12.5px;
+            font-family: inherit; transition: all 0.18s; flex: 1; white-space: nowrap;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 14px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.26); filter: brightness(1.06); }
+        .btn-ghost { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--primary-border); color: var(--primary); background: var(--primary-dim); }
+
+        /* DRAWER */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(10,20,12,0.3); backdrop-filter: blur(4px); z-index: 89; opacity: 0; pointer-events: none; transition: opacity 0.28s; }
+        .drawer-overlay.open { opacity: 1; pointer-events: all; }
+        .profile-drawer {
+            position: fixed; right: -420px; top: 0; bottom: 0; width: 390px;
+            background: var(--bg2); border-left: 1px solid var(--border);
+            z-index: 90; transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow-y: auto; padding: 24px 22px;
+            box-shadow: -8px 0 40px rgba(22,163,74,0.07);
+        }
+        .profile-drawer.open { right: 0; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+        .close-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
+        .close-btn:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-border); }
+
+        .profile-hero { text-align: center; padding-bottom: 22px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+        .profile-avatar-lg { width: 76px; height: 76px; border-radius: 18px; font-size: 26px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 6px 24px var(--primary-glow); }
+        .profile-name { font-size: 21px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; }
+        .profile-role { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+        .profile-loc { font-size: 12px; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .profile-match { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-dim); border: 1px solid var(--primary-border); color: var(--primary); padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .drawer-section { margin-bottom: 18px; }
+        .section-title { font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
+        .profile-bio { font-size: 13px; color: var(--text2); line-height: 1.7; }
+        .skill-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+        .drawer-actions { display: flex; gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+        /* PAGINATION */
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 30px; }
+        .page-btn { width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 9px; background: var(--card); color: var(--text2); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.15s; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+        .page-btn:hover { border-color: var(--primary-border); color: var(--primary); background: var(--primary-dim); }
+        .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 12px var(--primary-glow); }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); grid-column: 1/-1; }
+        .empty-state .e-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+        .empty-state p { font-size: 13.5px; line-height: 1.7; }
+
+        /* TOAST */
+        .toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: var(--bg2); border: 1px solid var(--primary-border); border-radius: 11px; padding: 12px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 9px; animation: toastIn 0.28s ease; max-width: 300px; box-shadow: 0 8px 24px rgba(22,163,74,0.12); color: var(--text); }
+
+        @keyframes toastIn  { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastOut { to   { transform: translateX(40px); opacity: 0; } }
+        @keyframes fadeUp   { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
-<script src="shared.js"></script>
-<script>renderNav('browse');</script>
 
-<div class="page-wrap">
-  <!-- LEFT -->
-  <aside class="left-panel">
-    <div class="li-card me-card" style="margin-bottom:8px;">
-      <div class="me-banner"></div>
-      <div class="me-av-wrap"><div class="li-avatar av-xl" style="border:3px solid #fff;">AC</div></div>
-      <div style="padding:0 16px 12px;">
-        <div class="me-name">Alex Chen</div>
-        <div class="me-sub">Computer Science, Year 3</div>
-        <div class="me-sub" style="margin-bottom:0;">University of Technology</div>
-      </div>
-      <div class="me-stat-row">
-        <span class="me-stat-label">Profile views</span>
-        <span class="me-stat-val">248</span>
-      </div>
-      <div class="me-stat-row">
-        <span class="me-stat-label">Post impressions</span>
-        <span class="me-stat-val">1,240</span>
-      </div>
+<div class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">🔗</div>
+        <span class="logo-text">TeamUp</span>
     </div>
-
-    <div class="li-card" style="margin-bottom:8px;">
-      <div class="sidebar-section">
-        <div class="sidebar-title">Browse by type</div>
-        <a class="sidebar-link" onclick="fType(this,'all')">🏠 All posts</a>
-        <a class="sidebar-link" onclick="fType(this,'hackathon')">🏆 Hackathons</a>
-        <a class="sidebar-link" onclick="fType(this,'project')">🚀 Projects</a>
-        <a class="sidebar-link" onclick="fType(this,'study')">📚 Study Groups</a>
-        <a class="sidebar-link" onclick="fType(this,'research')">🔬 Research</a>
-        <a class="sidebar-link" onclick="fType(this,'startup')">💡 Startups</a>
-      </div>
+    <div class="nav-label">Menu</div>
+    <div class="nav">
+        <a href="/dashboard"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="/browse" class="active"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="/post"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="/request"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
     </div>
-
-    <div class="li-card">
-      <div class="sidebar-section">
-        <a class="sidebar-link" href="profile.html">👤 My Profile</a>
-        <a class="sidebar-link" href="dashboard.html">📊 Dashboard</a>
-        <a class="sidebar-link" href="create.html">➕ Create Post</a>
-      </div>
+    <div class="nav-label">Account</div>
+    <div class="nav">
+        <a href="/profile"><span class="nav-icon">👤</span> Profile</a>
+        <a href="/settings"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
-  </aside>
-
-  <!-- CENTER -->
-  <main class="feed">
-    <!-- Create Post Bar -->
-    <div class="li-card feed-top" style="flex-direction:column;align-items:stretch;gap:0;">
-      <div style="display:flex;gap:10px;align-items:center;">
-        <div class="li-avatar av-md">AC</div>
-        <div class="feed-inp" onclick="window.location.href='create.html'">Start a post or find teammates...</div>
-      </div>
-      <div class="feed-actions">
-        <button class="feed-action-btn" onclick="window.location.href='create.html'">🏆 Hackathon</button>
-        <button class="feed-action-btn" onclick="window.location.href='create.html'">🚀 Project</button>
-        <button class="feed-action-btn" onclick="window.location.href='create.html'">📚 Study Group</button>
-        <button class="feed-action-btn" onclick="window.location.href='create.html'">💡 Startup</button>
-      </div>
-    </div>
-
-    <!-- Filter -->
-    <div class="filter-bar">
-      <span class="filter-label">Filter:</span>
-      <button class="fchip on" onclick="fType(this,'all')">All</button>
-      <button class="fchip" onclick="fType(this,'hackathon')">🏆 Hackathon</button>
-      <button class="fchip" onclick="fType(this,'project')">🚀 Project</button>
-      <button class="fchip" onclick="fType(this,'study')">📚 Study</button>
-      <button class="fchip" onclick="fType(this,'research')">🔬 Research</button>
-      <button class="fchip" onclick="fType(this,'startup')">💡 Startup</button>
-    </div>
-
-    <div id="posts-feed"></div>
-  </main>
-
-  <!-- RIGHT -->
-  <aside class="right-panel">
-    <div class="li-card news-card" style="margin-bottom:8px;">
-      <div class="news-title">TeamUp News &nbsp;•&nbsp; <span style="font-size:0.75rem;font-weight:400;color:var(--li-text-secondary);">top opportunities</span></div>
-      <div class="news-item">
-        <div class="news-item-title"><span class="news-bullet"></span>MLH Hack Week spots filling fast</div>
-        <div class="news-item-sub">1 day ago · 128 readers</div>
-      </div>
-      <div class="news-item">
-        <div class="news-item-title"><span class="news-bullet"></span>InnovateSG 2025 opens registration</div>
-        <div class="news-item-sub">2 days ago · 87 readers</div>
-      </div>
-      <div class="news-item">
-        <div class="news-item-title"><span class="news-bullet"></span>NLP research collaboration call</div>
-        <div class="news-item-sub">3 days ago · 54 readers</div>
-      </div>
-      <div class="news-item">
-        <div class="news-item-title"><span class="news-bullet"></span>FinTech startup seeks co-founder</div>
-        <div class="news-item-sub">4 days ago · 203 readers</div>
-      </div>
-      <div class="news-item">
-        <div class="news-item-title"><span class="news-bullet"></span>DSA interview prep group forming</div>
-        <div class="news-item-sub">5 days ago · 310 readers</div>
-      </div>
-    </div>
-
-    <div class="li-card">
-      <div class="sidebar-section">
-        <div class="sidebar-title">Add to your feed</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">SK</div>
-          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Sara Kim</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">Backend Developer</div></div>
-          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
+    <div class="sidebar-footer">
+        <div class="user-chip">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <div class="user-name">Aryan Kumar</div>
+                <div class="user-role">Frontend Dev</div>
+            </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#f093fb,#f5576c);">MJ</div>
-          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Marcus Johnson</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">ML Engineer</div></div>
-          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="li-avatar av-md" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">PL</div>
-          <div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;">Priya Lakhani</div><div style="font-size:0.75rem;color:var(--li-text-secondary);">UI Designer</div></div>
-          <button class="btn-li-secondary" style="padding:4px 12px;font-size:0.78rem;">+ Follow</button>
-        </div>
-      </div>
     </div>
-  </aside>
 </div>
 
-<!-- APPLY MODAL -->
-<div class="li-modal-ov" id="m-apply">
-  <div class="li-modal">
-    <div class="li-modal-header">
-      <h3 id="m-apply-title">Apply to Team</h3>
-      <button class="li-modal-close" onclick="closeModal('m-apply')">✕</button>
-    </div>
-    <div class="li-modal-body">
-      <div class="li-form">
-        <div class="li-field">
-          <label>Why do you want to join?</label>
-          <textarea rows="4" placeholder="Briefly explain your motivation and what you bring to the team..."></textarea>
+<div class="main">
+    <div class="header">
+        <div class="header-left">
+            <h2>Browse Users</h2>
+            <p>Discover developers, designers, and builders to collaborate with.</p>
         </div>
-        <div class="li-field">
-          <label>Relevant links (GitHub, portfolio...)</label>
-          <input type="text" placeholder="https://github.com/yourhandle" />
+        <div class="header-right">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search by name, skill, role…" oninput="applyFilters()">
+            </div>
         </div>
-      </div>
     </div>
-    <div class="li-modal-footer">
-      <button class="btn-li-ghost" onclick="closeModal('m-apply')">Cancel</button>
-      <button class="btn-li-primary" onclick="submitApp()">Send Application</button>
+
+    <div class="filters-section">
+        <div class="filters-row">
+            <div class="filter-group">
+                <div class="filter-group-label">Role</div>
+                <div class="filter-chips" id="roleFilters">
+                    <button class="filter-chip active" onclick="setFilter('role','all',this)">All</button>
+                    <button class="filter-chip" onclick="setFilter('role','Frontend',this)">Frontend</button>
+                    <button class="filter-chip" onclick="setFilter('role','Backend',this)">Backend</button>
+                    <button class="filter-chip" onclick="setFilter('role','UI/UX',this)">UI/UX</button>
+                    <button class="filter-chip" onclick="setFilter('role','Mobile',this)">Mobile</button>
+                    <button class="filter-chip" onclick="setFilter('role','AI/ML',this)">AI/ML</button>
+                    <button class="filter-chip" onclick="setFilter('role','DevOps',this)">DevOps</button>
+                </div>
+            </div>
+            <div class="filter-v-divider"></div>
+            <div class="filter-group">
+                <div class="filter-group-label">Availability</div>
+                <div class="filter-chips" id="availFilters">
+                    <button class="filter-chip active" onclick="setFilter('avail','all',this)">All</button>
+                    <button class="filter-chip" onclick="setFilter('avail','open',this)">🟢 Open</button>
+                    <button class="filter-chip" onclick="setFilter('avail','busy',this)">🟡 Busy</button>
+                </div>
+            </div>
+            <div class="filter-v-divider"></div>
+            <div class="filter-group">
+                <div class="filter-group-label">Location</div>
+                <div class="filter-chips" id="locFilters">
+                    <button class="filter-chip active" onclick="setFilter('loc','all',this)">All India</button>
+                    <button class="filter-chip" onclick="setFilter('loc','Bengaluru',this)">Bengaluru</button>
+                    <button class="filter-chip" onclick="setFilter('loc','Delhi',this)">Delhi</button>
+                    <button class="filter-chip" onclick="setFilter('loc','Pune',this)">Pune</button>
+                    <button class="filter-chip" onclick="setFilter('loc','Mumbai',this)">Mumbai</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="results-bar">
+        <div class="results-count" id="resultsCount">Showing <span>8</span> users</div>
+        <select class="sort-select" onchange="applyFilters()" id="sortSelect">
+            <option value="match">Best Match</option>
+            <option value="name">Name A–Z</option>
+            <option value="newest">Newest</option>
+        </select>
+    </div>
+
+    <div class="users-grid" id="usersGrid"></div>
+
+    <div class="pagination">
+        <button class="page-btn">←</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">→</button>
+    </div>
 </div>
 
-<!-- POST DETAIL MODAL -->
-<div class="li-modal-ov" id="m-detail">
-  <div class="li-modal" style="max-width:540px;">
-    <div class="li-modal-header">
-      <h3>Opportunity Details</h3>
-      <button class="li-modal-close" onclick="closeModal('m-detail')">✕</button>
-    </div>
-    <div class="li-modal-body" id="m-detail-body"></div>
-    <div class="li-modal-footer">
-      <button class="btn-li-ghost" onclick="closeModal('m-detail')">Close</button>
-      <button class="btn-li-primary" id="m-detail-apply-btn">Apply Now</button>
-    </div>
-  </div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="profile-drawer" id="profileDrawer">
+    <div class="drawer-header"><button class="close-btn" onclick="closeDrawer()">✕</button></div>
+    <div id="drawerContent"></div>
 </div>
-
-<div id="toast"></div>
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-const typeE = { hackathon:'🏆', project:'🚀', study:'📚', research:'🔬', startup:'💡', other:'✨' };
-const gradMap = {
-  1:'linear-gradient(135deg,#43e97b,#38f9d7)',
-  2:'linear-gradient(135deg,#f093fb,#f5576c)',
-  3:'linear-gradient(135deg,#4facfe,#00f2fe)',
-  4:'linear-gradient(135deg,#fa709a,#fee140)',
-  5:'linear-gradient(135deg,#a18cd1,#fbc2eb)',
-  6:'linear-gradient(135deg,#96fbc4,#f9f586)',
-};
-
-const POSTS = [
-  { id:1, type:'hackathon', title:'MLH Global Hack Week — Need UI/UX Designer', desc:'Building a mental health app for students. Need someone with Figma skills and a good eye for design. 48h hackathon, fully remote. Backend is covered.', author:'Sara K.', major:'Backend Dev · Year 2', ini:'SK', time:'2h ago', spots:1, total:3, tags:['Figma','UI/UX','React'], mode:'Remote', dl:'Mar 30', views:89, apps:6 },
-  { id:2, type:'research', title:'NLP Research Paper — Co-author Needed', desc:'Transformer models in low-resource languages study. Looking for NLP + academic writing experience. Professor-supervised project with publication goal.', author:'Marcus J.', major:'ML Engineer · Year 4', ini:'MJ', time:'4h ago', spots:2, total:4, tags:['Python','NLP','PyTorch','LaTeX'], mode:'Hybrid', dl:'Apr 5', views:54, apps:3 },
-  { id:3, type:'startup', title:'FinTech Startup — Full Stack Developer', desc:'Early-stage fintech startup building a savings app for Gen Z. Equity + stipend. Looking for a passionate dev who wants to own the frontend completely.', author:'Priya L.', major:'CS + Business · Year 3', ini:'PL', time:'6h ago', spots:1, total:5, tags:['React','Node.js','MongoDB','TypeScript'], mode:'Remote', dl:'Apr 10', views:142, apps:11 },
-  { id:4, type:'project', title:'Open-Source Campus Navigation App', desc:'Indoor AR navigation for our university. Need mobile devs and someone who knows computer vision. Great portfolio project with real-world impact.', author:'David T.', major:'Software Eng · Year 3', ini:'DT', time:'1d ago', spots:3, total:5, tags:['React Native','OpenCV','ARCore'], mode:'In-Person', dl:'Mar 28', views:76, apps:5 },
-  { id:5, type:'study', title:'Data Structures & Algorithms Study Circle', desc:'Preparing for technical interviews together. Weekly sessions, LeetCode problems, mock interviews. Looking for 4 dedicated students at similar levels.', author:'Lena P.', major:'Computer Science · Year 2', ini:'LP', time:'1d ago', spots:4, total:4, tags:['DSA','Python','Java'], mode:'Remote', dl:'Apr 1', views:203, apps:18 },
-  { id:6, type:'hackathon', title:'InnovateSG 2025 — Sustainability Track', desc:'National hackathon focused on sustainability tech. Strong idea around carbon footprint tracking. Need 1 more dev with ML experience. Team of 3 so far.', author:'Raj M.', major:'Data Science · Year 4', ini:'RM', time:'2d ago', spots:1, total:4, tags:['Python','Machine Learning','React'], mode:'In-Person', dl:'Mar 27', views:115, apps:9 },
+const users = [
+    { id:1, name:"Rahul Sharma",  initials:"RS", color:"linear-gradient(135deg,#16a34a,#22c55e)", role:"Frontend Developer",  category:"Frontend", skills:["React","TypeScript","Tailwind","Next.js"],    bio:"Passionate about building accessible and performant web apps. 3 years exp, open to hackathons and startups.", match:85, location:"Bengaluru", avail:"open" },
+    { id:2, name:"Anjali Mehta",  initials:"AM", color:"linear-gradient(135deg,#059669,#34d399)", role:"Full-Stack Developer", category:"Backend",  skills:["Python","Flask","PostgreSQL","Redis"],         bio:"Love building REST APIs and data pipelines. Looking for a frontend partner for SaaS ideas.", match:78, location:"Pune",      avail:"open" },
+    { id:3, name:"Karan Singh",   initials:"KS", color:"linear-gradient(135deg,#d97706,#fbbf24)", role:"UI/UX Designer",       category:"UI/UX",    skills:["Figma","UI/UX","Prototyping","Framer"],        bio:"Design-focused thinker who codes. Loves turning complex problems into clean interfaces.", match:73, location:"Delhi",     avail:"busy" },
+    { id:4, name:"Priya Nair",    initials:"PN", color:"linear-gradient(135deg,#0891b2,#22d3ee)", role:"Mobile Developer",     category:"Mobile",   skills:["Flutter","Firebase","Dart","iOS"],             bio:"Building mobile-first apps. Interested in health-tech and edtech projects.", match:68, location:"Bengaluru", avail:"open" },
+    { id:5, name:"Dev Patel",     initials:"DP", color:"linear-gradient(135deg,#7c3aed,#a78bfa)", role:"ML Engineer",          category:"AI/ML",    skills:["Python","TensorFlow","NLP","PyTorch"],         bio:"ML researcher who loves turning models into products. Hackathon enthusiast.", match:62, location:"Ahmedabad", avail:"open" },
+    { id:6, name:"Meera Joshi",   initials:"MJ", color:"linear-gradient(135deg,#0f766e,#2dd4bf)", role:"Backend Developer",    category:"Backend",  skills:["Node.js","MongoDB","Docker","AWS"],            bio:"DevOps-aware backend engineer. Love scaling systems and solving infra challenges.", match:71, location:"Mumbai",    avail:"open" },
+    { id:7, name:"Rohan Verma",   initials:"RV", color:"linear-gradient(135deg,#be123c,#fb7185)", role:"DevOps Engineer",      category:"DevOps",   skills:["Kubernetes","Docker","CI/CD","Terraform"],     bio:"Infrastructure nerd. Love deploying at scale and automating everything.", match:55, location:"Delhi",     avail:"busy" },
+    { id:8, name:"Sneha Gupta",   initials:"SG", color:"linear-gradient(135deg,#15803d,#4ade80)", role:"AI/ML Engineer",       category:"AI/ML",    skills:["Python","Scikit-learn","LangChain","OpenAI"],  bio:"Building LLM-powered apps. Excited about AI x product use cases.", match:80, location:"Bengaluru", avail:"open" },
 ];
 
-let aFilter = 'all', fPosts = [...POSTS], cPostId = null;
+let filters = { role:'all', avail:'all', loc:'all' };
 
-function renderPosts() {
-  const feed = document.getElementById('posts-feed');
-  if (!fPosts.length) {
-    feed.innerHTML = `<div class="li-card" style="padding:40px;text-align:center;color:var(--li-text-secondary);">
-      <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div>
-      <div style="font-weight:700;margin-bottom:4px;">No posts found</div>
-      <div style="font-size:0.875rem;">Try a different filter</div>
-    </div>`;
-    return;
-  }
-  feed.innerHTML = fPosts.map(p => {
-    const em = typeE[p.type] || '✨';
-    const fill = p.total - p.spots;
-    const pct = Math.round((fill/p.total)*100);
-    const grad = gradMap[p.id] || gradMap[1];
-    return `<div class="post-card li-card" onclick="openDetail(${p.id})">
-      <div class="pc-header">
-        <div class="li-avatar av-lg" style="background:${grad};">${p.ini}</div>
-        <div class="pc-meta-info">
-          <div class="pc-author">${p.author}</div>
-          <div class="pc-sub">${p.major}</div>
-          <div class="pc-time">${p.time} · <span class="li-badge li-badge-blue">${em} ${cap(p.type)}</span></div>
-        </div>
-        <div style="margin-left:auto;"><span class="li-badge ${p.mode==='Remote'?'li-badge-green':p.mode==='Hybrid'?'li-badge-orange':'li-badge-blue'}">${p.mode}</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-title">${p.title}</div>
-        <div class="pc-desc">${p.desc.length>140?p.desc.slice(0,140)+'…':p.desc}</div>
-        <div class="pc-tags">
-          ${p.tags.slice(0,4).map(t=>`<span class="li-tag">${t}</span>`).join('')}
-          ${p.tags.length>4?`<span class="li-tag">+${p.tags.length-4} more</span>`:''}
-        </div>
-        <div style="font-size:0.78rem;color:var(--li-text-secondary);display:flex;justify-content:space-between;margin-bottom:4px;">
-          <span>${fill} of ${p.total} spots filled</span>
-          <span>${p.spots} spot${p.spots!==1?'s':''} remaining</span>
-        </div>
-        <div class="pc-fill-bar"><div class="pc-fill-inner" style="width:${pct}%;"></div></div>
-        <div class="pc-stats-bar">
-          <span>👁 ${p.views} views · 📝 ${p.apps} applied · 📅 Closes ${p.dl}</span>
-        </div>
-      </div>
-      <div class="pc-actions">
-        <button class="pc-action" onclick="event.stopPropagation();toast('👍 Interested!')">👍 Interested</button>
-        <button class="pc-action" onclick="event.stopPropagation();toast('🔗 Link copied!')">🔗 Share</button>
-        <button class="pc-action apply-btn" onclick="event.stopPropagation();openApply(${p.id})">🚀 Apply</button>
-      </div>
-    </div>`;
-  }).join('');
+function setFilter(type, val, btn) {
+    filters[type] = val;
+    const group = { role:'roleFilters', avail:'availFilters', loc:'locFilters' }[type];
+    document.querySelectorAll(`#${group} .filter-chip`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
 }
 
-function fType(el, t) {
-  aFilter = t;
-  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
-  if(el && el.classList) el.classList.add('on');
-  fPosts = t==='all' ? [...POSTS] : POSTS.filter(p=>p.type===t);
-  renderPosts();
+function applyFilters() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const sort = document.getElementById('sortSelect').value;
+    let result = users.filter(u => {
+        const matchRole  = filters.role  === 'all' || u.category === filters.role;
+        const matchAvail = filters.avail === 'all' || u.avail    === filters.avail;
+        const matchLoc   = filters.loc   === 'all' || u.location === filters.loc;
+        const matchSearch = !q || u.name.toLowerCase().includes(q) || u.role.toLowerCase().includes(q) || u.skills.some(s => s.toLowerCase().includes(q));
+        return matchRole && matchAvail && matchLoc && matchSearch;
+    });
+    if (sort === 'match') result.sort((a,b) => b.match - a.match);
+    else if (sort === 'name') result.sort((a,b) => a.name.localeCompare(b.name));
+    document.getElementById('resultsCount').innerHTML = `Showing <span>${result.length}</span> user${result.length !== 1 ? 's' : ''}`;
+    renderUsers(result);
 }
 
-function openDetail(id) {
-  cPostId = id;
-  const p = POSTS.find(x=>x.id===id);
-  const em = typeE[p.type]||'✨';
-  const fill = p.total - p.spots;
-  const pct = Math.round((fill/p.total)*100);
-  document.getElementById('m-detail-body').innerHTML = `
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
-      <div class="li-avatar av-lg" style="background:${gradMap[p.id]||gradMap[1]};">${p.ini}</div>
-      <div><div style="font-weight:700;">${p.author}</div><div style="font-size:0.8rem;color:var(--li-text-secondary);">${p.major}</div><div style="font-size:0.75rem;color:var(--li-text-tertiary);">${p.time}</div></div>
-    </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-      <span class="li-badge li-badge-blue">${em} ${cap(p.type)}</span>
-      <span class="li-badge ${p.mode==='Remote'?'li-badge-green':p.mode==='Hybrid'?'li-badge-orange':'li-badge-blue'}">${p.mode}</span>
-    </div>
-    <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">${p.title}</div>
-    <div style="font-size:0.875rem;color:var(--li-text-secondary);line-height:1.6;margin-bottom:12px;">${p.desc}</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${p.tags.map(t=>`<span class="li-tag">${t}</span>`).join('')}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div style="background:#f3f2ee;border-radius:4px;padding:12px;text-align:center;">
-        <div style="font-size:0.72rem;color:var(--li-text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Spots Left</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--li-blue);">${p.spots}</div>
-      </div>
-      <div style="background:#f3f2ee;border-radius:4px;padding:12px;text-align:center;">
-        <div style="font-size:0.72rem;color:var(--li-text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Deadline</div>
-        <div style="font-size:1.1rem;font-weight:700;">${p.dl}</div>
-      </div>
-    </div>
-    <div style="margin-top:10px;">
-      <div style="font-size:0.78rem;color:var(--li-text-secondary);display:flex;justify-content:space-between;margin-bottom:4px;">
-        <span>${fill} of ${p.total} filled</span><span>${pct}%</span>
-      </div>
-      <div class="li-progress"><div class="li-progress-fill" style="width:${pct}%;"></div></div>
-    </div>
-  `;
-  document.getElementById('m-detail-apply-btn').onclick = () => { closeModal('m-detail'); openApply(id); };
-  document.getElementById('m-detail').classList.add('open');
+function renderUsers(list) {
+    const grid = document.getElementById('usersGrid');
+    if (!list.length) {
+        grid.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div><p>No users match your filters.<br>Try adjusting your criteria.</p></div>`;
+        return;
+    }
+    grid.innerHTML = list.map((u, i) => `
+        <div class="user-card" style="animation-delay:${i*0.05}s" onclick="openProfile(${u.id})">
+            <div class="uc-top">
+                <div class="uc-avatar" style="background:${u.color}">${u.initials}</div>
+                <div class="uc-match-wrap">
+                    <div class="match-pill">⚡ ${u.match}%</div>
+                    <div class="match-label">skill match</div>
+                </div>
+            </div>
+            <div class="uc-name">${u.name}</div>
+            <div class="uc-role">${u.role}</div>
+            <div class="uc-meta">
+                <span class="avail-badge ${u.avail}">
+                    <span class="avail-dot ${u.avail}"></span>
+                    ${u.avail === 'open' ? 'Available' : 'Busy'}
+                </span>
+                <span class="meta-item">📍 ${u.location}</span>
+            </div>
+            <div class="uc-bio">${u.bio}</div>
+            <div class="uc-tags">
+                ${u.skills.slice(0,3).map(s => `<span class="tag">${s}</span>`).join('')}
+                ${u.skills.length > 3 ? `<span class="tag more">+${u.skills.length-3}</span>` : ''}
+            </div>
+            <div class="uc-actions" onclick="event.stopPropagation()">
+                <button class="btn btn-primary" onclick="sendConnect(${u.id},'${u.name}')">Connect</button>
+                <button class="btn btn-ghost" onclick="openProfile(${u.id})">View Profile</button>
+            </div>
+        </div>
+    `).join('');
 }
 
-function openApply(id) {
-  cPostId = id;
-  const p = POSTS.find(x=>x.id===id);
-  if(p) document.getElementById('m-apply-title').textContent = 'Apply — ' + p.title;
-  document.getElementById('m-apply').classList.add('open');
+function openProfile(id) {
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    document.getElementById('drawerContent').innerHTML = `
+        <div class="profile-hero">
+            <div class="profile-avatar-lg" style="background:${u.color}">${u.initials}</div>
+            <div class="profile-name">${u.name}</div>
+            <div class="profile-role">${u.role}</div>
+            <div class="profile-loc">
+                <span class="avail-badge ${u.avail}">
+                    <span class="avail-dot ${u.avail}"></span>
+                    ${u.avail === 'open' ? 'Open to collaborate' : 'Currently busy'}
+                </span>
+                <span>📍 ${u.location}</span>
+            </div>
+            <div class="profile-match">⚡ ${u.match}% skill match</div>
+        </div>
+        <div class="drawer-section">
+            <div class="section-title">About</div>
+            <p class="profile-bio">${u.bio}</p>
+        </div>
+        <div class="drawer-section">
+            <div class="section-title">Skills</div>
+            <div class="skill-grid">${u.skills.map(s => `<span class="tag blue">${s}</span>`).join('')}</div>
+        </div>
+        <div class="drawer-actions">
+            <button class="btn btn-primary" style="flex:1" onclick="sendConnect(${u.id},'${u.name}')">✉️ Connect</button>
+            <button class="btn btn-ghost" style="flex:1">💬 Message</button>
+        </div>
+    `;
+    document.getElementById('profileDrawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('open');
 }
 
-function submitApp() { closeModal('m-apply'); toast('Application sent! Good luck 🚀'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+function closeDrawer() {
+    document.getElementById('profileDrawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
+}
 
-document.querySelectorAll('.li-modal-ov').forEach(o => {
-  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
-});
+function sendConnect(id, name) { showToast(`✉️ Request sent to ${name}!`); }
 
-renderPosts();
+function showToast(msg) {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span>✅</span>${msg}`;
+    c.appendChild(t);
+    setTimeout(() => { t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+applyFilters();
 </script>
 </body>
 </html>

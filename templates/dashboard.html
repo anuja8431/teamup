@@ -3,36 +3,39 @@
 <head>
     <title>Dashboard – TeamUp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --primary-glow: rgba(37,99,235,0.15);
-            --accent: #06d6a0;
-            --accent-glow: rgba(6,214,160,0.15);
-            --warn: #f97316;
-            --danger: #ef4444;
-            --bg: #080c14;
-            --bg2: #0d1220;
-            --bg3: #111827;
-            --card: #0f172a;
-            --card2: #131d2e;
-            --border: rgba(255,255,255,0.07);
-            --border-active: rgba(37,99,235,0.4);
-            --text: #f0f4ff;
-            --text2: #94a3b8;
-            --text3: #475569;
-            --sidebar-w: 256px;
+            --primary: #16a34a;
+            --primary-light: #22c55e;
+            --primary-dim: rgba(22,163,74,0.09);
+            --primary-border: rgba(22,163,74,0.28);
+            --primary-glow: rgba(22,163,74,0.18);
+            --accent: #059669;
+            --accent-dim: rgba(5,150,105,0.09);
+            --accent-border: rgba(5,150,105,0.28);
+            --warn: #d97706;
+            --danger: #dc2626;
+            --bg: #f0fdf4;
+            --bg2: #ffffff;
+            --bg3: #f3f4f3;
+            --card: #ffffff;
+            --card-hover: #f7fef9;
+            --border: rgba(0,0,0,0.07);
+            --border-mid: rgba(22,163,74,0.22);
+            --text: #0f1a12;
+            --text2: #3b6347;
+            --text3: #9db8a2;
+            --sidebar-w: 240px;
+            --radius: 14px;
+            --shadow: 0 1px 12px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 28px rgba(22,163,74,0.12);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
-
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
@@ -40,905 +43,410 @@
             overflow-x: hidden;
         }
 
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: radial-gradient(circle, rgba(22,163,74,0.09) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none; z-index: 0;
+        }
+
         /* ── SIDEBAR ── */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--bg2);
             border-right: 1px solid var(--border);
-            height: 100vh;
-            padding: 28px 20px;
-            display: flex;
-            flex-direction: column;
-            position: sticky;
-            top: 0;
-            flex-shrink: 0;
+            height: 100vh; padding: 24px 16px;
+            display: flex; flex-direction: column;
+            position: sticky; top: 0; flex-shrink: 0; z-index: 10;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.04);
         }
 
         .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 36px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+            margin-bottom: 32px;
+            display: flex; align-items: center; gap: 10px; padding: 0 8px;
         }
-
         .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; box-shadow: 0 4px 14px var(--primary-glow);
         }
+        .logo-text { color: var(--primary); }
 
         .nav-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--text3);
-            padding: 0 12px;
-            margin-bottom: 6px;
-            margin-top: 20px;
+            font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+            text-transform: uppercase; color: var(--text3);
+            padding: 0 10px; margin-bottom: 6px; margin-top: 18px;
+            font-family: 'JetBrains Mono', monospace;
         }
-
-        .nav-label:first-of-type { margin-top: 0; }
-
         .nav a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text2);
-            text-decoration: none;
-            padding: 10px 12px;
-            border-radius: 10px;
-            margin-bottom: 2px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-            position: relative;
+            display: flex; align-items: center; gap: 9px;
+            color: var(--text2); text-decoration: none;
+            padding: 9px 10px; border-radius: 10px;
+            margin-bottom: 1px; font-size: 13.5px; font-weight: 500;
+            transition: all 0.18s;
         }
-
-        .nav a:hover {
-            background: rgba(255,255,255,0.05);
-            color: var(--text);
-        }
-
+        .nav a:hover { background: var(--primary-dim); color: var(--primary); }
         .nav a.active {
-            background: var(--primary-glow);
-            color: var(--primary-light);
-            border: 1px solid var(--border-active);
+            background: var(--primary-dim); color: var(--primary);
+            border: 1px solid var(--primary-border); font-weight: 600;
+        }
+        .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+        .badge {
+            margin-left: auto; background: var(--primary); color: #fff;
+            font-size: 10px; font-weight: 700; padding: 1px 6px;
+            border-radius: 20px; font-family: 'JetBrains Mono', monospace;
         }
 
-        .nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-        .nav a .badge {
-            margin-left: auto;
-            background: var(--primary);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 20px;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
+        .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
         .user-chip {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px; border-radius: 12px;
+            background: var(--bg3); border: 1px solid var(--border);
+            cursor: pointer; transition: 0.18s;
         }
-
+        .user-chip:hover { border-color: var(--primary-border); }
         .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            flex-shrink: 0;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
         }
-
-        .user-info { overflow: hidden; }
-
-        .user-name {
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-role {
-            font-size: 11px;
-            color: var(--text3);
-        }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+        .user-role { font-size: 11px; color: var(--text3); margin-top: 1px; }
 
         /* ── MAIN ── */
         .main {
-            flex: 1;
-            padding: 32px 36px;
+            flex: 1; padding: 32px 32px;
             overflow-y: auto;
             max-width: calc(100vw - var(--sidebar-w));
+            position: relative; z-index: 1;
         }
 
         /* ── HEADER ── */
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
-
-        .header-left h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .header-left p {
-            font-size: 14px;
-            color: var(--text2);
-            margin-top: 4px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 14px;
-            transition: 0.2s;
-        }
-
-        .search-bar:focus-within {
-            border-color: var(--border-active);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .search-bar input {
-            background: none;
-            border: none;
-            outline: none;
-            color: var(--text);
-            font-size: 13px;
-            width: 200px;
-        }
-
-        .search-bar input::placeholder { color: var(--text3); }
-
-        .search-icon { color: var(--text3); font-size: 14px; }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, var(--primary), #1d4ed8);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            font-family: inherit;
-            transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(37,99,235,0.35);
-            white-space: nowrap;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(37,99,235,0.45);
-        }
-
-        .btn:active { transform: translateY(0); }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.3);
-        }
-
-        .btn-ghost {
-            background: var(--bg3);
-            box-shadow: none;
-            border: 1px solid var(--border);
-            color: var(--text2);
-        }
-
-        .btn-ghost:hover {
-            background: rgba(255,255,255,0.06);
-            color: var(--text);
-            box-shadow: none;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #059669, #047857);
-            box-shadow: 0 2px 10px rgba(5,150,105,0.35);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #b91c1c);
-            box-shadow: 0 2px 10px rgba(239,68,68,0.3);
-        }
-
-        /* ── STATS ROW ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 28px;
         }
+        .header-left h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-left p { font-size: 13.5px; color: var(--text2); margin-top: 4px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
 
+        .search-bar {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg2); border: 1.5px solid var(--border);
+            border-radius: 11px; padding: 9px 14px;
+            transition: 0.2s; box-shadow: var(--shadow);
+        }
+        .search-bar:focus-within { border-color: var(--primary-border); box-shadow: 0 0 0 3px var(--primary-dim); }
+        .search-bar input { background: none; border: none; outline: none; color: var(--text); font-size: 13.5px; width: 200px; font-family: inherit; }
+        .search-bar input::placeholder { color: var(--text3); }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            border: none; padding: 9px 16px; border-radius: 10px;
+            cursor: pointer; font-weight: 600; font-size: 13px;
+            font-family: inherit; transition: all 0.18s; white-space: nowrap;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; box-shadow: 0 4px 14px var(--primary-glow);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.28); filter: brightness(1.06); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-ghost { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); box-shadow: none; }
+        .btn-ghost:hover { border-color: var(--primary-border); color: var(--primary); background: var(--primary-dim); }
+        .btn-success { background: linear-gradient(135deg, #15803d, #16a34a); color: #fff; box-shadow: 0 2px 10px rgba(22,163,74,0.25); }
+        .btn-success:hover { filter: brightness(1.06); transform: translateY(-1px); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #b91c1c); color: #fff; box-shadow: 0 2px 10px rgba(220,38,38,0.2); }
+        .btn-danger:hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+        /* ── STATS ── */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 14px; margin-bottom: 24px;
+        }
         .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: 0.2s;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(255,255,255,0.12);
-            transform: translateY(-1px);
-        }
-
-        .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .stat-icon.blue { background: var(--primary-glow); }
-        .stat-icon.green { background: var(--accent-glow); }
-        .stat-icon.orange { background: rgba(249,115,22,0.12); }
-        .stat-icon.purple { background: rgba(139,92,246,0.12); }
-
-        .stat-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text2);
-            margin-top: 3px;
-        }
-
-        /* ── GRID ── */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 22px 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-header h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-header h3 .icon { font-size: 16px; }
-
-        .card-body { padding: 18px 22px; }
-
-        /* ── CREATE POST FORM ── */
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text2);
-            margin-bottom: 6px;
-            display: block;
-            letter-spacing: 0.3px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            font-size: 13.5px;
-            font-family: inherit;
-            transition: 0.2s;
-            outline: none;
-        }
-
-        .form-input::placeholder { color: var(--text3); }
-
-        .form-input:focus {
-            border-color: var(--border-active);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        textarea.form-input { resize: none; }
-
-        .skill-input-wrap {
-            position: relative;
-        }
-
-        .skill-suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .skill-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            color: var(--text2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11.5px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-
-        .skill-chip:hover, .skill-chip.selected {
-            background: var(--primary-glow);
-            border-color: var(--border-active);
-            color: var(--primary-light);
-        }
-
-        .skill-chip .remove { font-size: 13px; opacity: 0.6; }
-
-        .post-type-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: transparent;
-            color: var(--text2);
-            font-size: 12.5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-
-        .toggle-btn.active {
-            background: var(--primary-glow);
-            border-color: var(--border-active);
-            color: var(--primary-light);
-        }
-
-        /* ── FILTER BAR ── */
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 5px 12px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: transparent;
-            color: var(--text2);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-
-        .filter-btn:hover { border-color: var(--text3); color: var(--text); }
-
-        .filter-btn.active {
-            background: var(--primary-glow);
-            border-color: var(--border-active);
-            color: var(--primary-light);
-        }
-
-        /* ── TEAMMATE CARD ── */
-        .teammate {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .teammate:last-child { border: none; padding-bottom: 0; }
-
-        .t-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            font-size: 15px;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .t-info { flex: 1; min-width: 0; }
-
-        .t-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-
-        .t-meta {
-            font-size: 12px;
-            color: var(--text2);
-            margin-bottom: 7px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .t-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-
-        .tag {
-            display: inline-block;
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 500;
-            background: var(--bg3);
-            color: var(--text2);
-            border: 1px solid var(--border);
-        }
-
-        .tag.green {
-            background: var(--accent-glow);
-            color: var(--accent);
-            border-color: rgba(6,214,160,0.25);
-        }
-
-        .tag.blue {
-            background: var(--primary-glow);
-            color: var(--primary-light);
-            border-color: var(--border-active);
-        }
-
-        .match-pill {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11.5px;
-            font-weight: 700;
-            color: var(--accent);
-            background: var(--accent-glow);
-            border: 1px solid rgba(6,214,160,0.2);
-            padding: 3px 9px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-
-        .match-bar-wrap {
-            flex-shrink: 0;
-            width: 44px;
-            text-align: center;
-        }
-
-        .match-bar {
-            position: relative;
-            width: 44px;
-            height: 44px;
-        }
-
-        .match-bar svg { transform: rotate(-90deg); }
-
-        .match-bar .pct {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 9px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .t-actions { display: flex; gap: 6px; margin-top: 10px; }
-
-        /* ── YOUR POSTS ── */
-        .post-item {
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .post-item:last-child { border: none; padding-bottom: 0; }
-
-        .post-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .post-desc {
-            font-size: 12.5px;
-            color: var(--text2);
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .post-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 11.5px;
-            color: var(--text3);
-        }
-
-        .post-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .post-status.open {
-            background: var(--accent-glow);
-            color: var(--accent);
-        }
-
-        .post-status.closed {
-            background: rgba(100,116,139,0.15);
-            color: var(--text3);
-        }
-
-        .post-status::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-
-        /* ── REQUESTS ── */
-        .request-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .request-item:last-child { border: none; padding-bottom: 0; }
-
-        .req-info { flex: 1; }
-
-        .req-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-
-        .req-text { font-size: 12.5px; color: var(--text2); margin-bottom: 4px; }
-
-        .req-post {
-            font-size: 11.5px;
-            color: var(--text3);
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            padding: 3px 9px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .req-actions { display: flex; gap: 8px; }
-
-        /* ── MODAL OVERLAY ── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(6px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
-            width: 500px;
-            max-width: 95vw;
-            transform: scale(0.96) translateY(10px);
-            transition: 0.2s;
-        }
-
-        .modal-overlay.open .modal {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-        }
-
-        .modal-header h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .close-btn {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            color: var(--text2);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.15s;
-        }
-
-        .close-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
-
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            text-align: center;
-            padding: 32px 20px;
-            color: var(--text3);
-        }
-
-        .empty-state .e-icon { font-size: 32px; margin-bottom: 10px; }
-
-        .empty-state p { font-size: 13px; }
-
-        /* ── DIVIDER ── */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 14px 0;
-        }
-
-        /* ── SCROLLBAR ── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
-
-        /* ── TOAST ── */
-        .toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 18px;
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: toastIn 0.3s ease;
-            max-width: 320px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-        }
-
-        @keyframes toastIn {
-            from { transform: translateX(40px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes toastOut {
-            to { transform: translateX(40px); opacity: 0; }
-        }
-
-        .toast.success { border-color: rgba(6,214,160,0.3); }
-        .toast.error { border-color: rgba(239,68,68,0.3); }
-
-        /* ── PROFILE PREVIEW DRAWER ── */
-        .profile-drawer {
-            position: fixed;
-            right: -380px;
-            top: 0;
-            bottom: 0;
-            width: 360px;
-            background: var(--bg2);
-            border-left: 1px solid var(--border);
-            z-index: 90;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            padding: 28px 24px;
-        }
-
-        .profile-drawer.open {
-            right: 0;
-        }
-
-        .drawer-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-        }
-
-        .profile-hero {
-            text-align: center;
-            padding: 20px 0 24px;
-        }
-
-        .profile-avatar-lg {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            font-size: 26px;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 14px;
-        }
-
-        .profile-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .profile-bio {
-            font-size: 13px;
-            color: var(--text2);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .profile-section-title {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: var(--text3);
-            margin-bottom: 10px;
-        }
-
-        .skill-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-bottom: 20px;
-        }
-
-        /* ── ANIMATIONS ── */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card { animation: fadeUp 0.4s ease both; }
-        .card:nth-child(1) { animation-delay: 0.05s; }
-        .card:nth-child(2) { animation-delay: 0.1s; }
-        .card:nth-child(3) { animation-delay: 0.15s; }
-        .card:nth-child(4) { animation-delay: 0.2s; }
-
-        .stat-card { animation: fadeUp 0.4s ease both; }
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 18px 20px;
+            display: flex; align-items: center; gap: 14px;
+            transition: 0.2s; box-shadow: var(--shadow);
+            animation: fadeUp 0.4s ease both;
+        }
+        .stat-card:hover { border-color: var(--primary-border); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
         .stat-card:nth-child(1) { animation-delay: 0.0s; }
         .stat-card:nth-child(2) { animation-delay: 0.06s; }
         .stat-card:nth-child(3) { animation-delay: 0.12s; }
         .stat-card:nth-child(4) { animation-delay: 0.18s; }
+
+        .stat-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .stat-icon.green { background: var(--primary-dim); }
+        .stat-icon.teal { background: rgba(5,150,105,0.10); }
+        .stat-icon.orange { background: rgba(217,119,6,0.10); }
+        .stat-icon.purple { background: rgba(124,58,237,0.09); }
+
+        .stat-value { font-size: 26px; font-weight: 800; line-height: 1; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+        .stat-label { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+        /* ── GRID ── */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden;
+            box-shadow: var(--shadow); animation: fadeUp 0.4s ease both;
+        }
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.10s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.20s; }
+
+        .card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-header h3 {
+            font-size: 14.5px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; color: var(--text);
+        }
+        .card-body { padding: 16px 20px; }
+
+        /* ── FORM ── */
+        .form-group { margin-bottom: 12px; }
+        .form-label { font-size: 11.5px; font-weight: 700; color: var(--text2); margin-bottom: 6px; display: block; letter-spacing: 0.3px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; }
+        .form-input {
+            width: 100%; padding: 9px 13px;
+            background: var(--bg3); border: 1.5px solid var(--border);
+            border-radius: 10px; color: var(--text);
+            font-size: 13.5px; font-family: inherit; transition: 0.2s; outline: none;
+        }
+        .form-input::placeholder { color: var(--text3); }
+        .form-input:focus { border-color: var(--primary-border); box-shadow: 0 0 0 3px var(--primary-dim); background: var(--bg2); }
+        textarea.form-input { resize: none; }
+
+        .skill-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .skill-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--bg3); border: 1px solid var(--border);
+            color: var(--text2); padding: 4px 10px; border-radius: 8px;
+            font-size: 11.5px; font-weight: 500; cursor: pointer; transition: 0.15s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .skill-chip:hover, .skill-chip.selected {
+            background: var(--primary-dim); border-color: var(--primary-border); color: var(--primary);
+        }
+
+        .post-type-toggle { display: flex; gap: 6px; margin-bottom: 14px; }
+        .toggle-btn {
+            flex: 1; padding: 7px 8px;
+            border: 1px solid var(--border); border-radius: 9px;
+            background: var(--bg3); color: var(--text2);
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.18s;
+            font-family: inherit;
+        }
+        .toggle-btn.active { background: var(--primary-dim); border-color: var(--primary-border); color: var(--primary); }
+        .toggle-btn:hover:not(.active) { border-color: var(--primary-border); color: var(--primary); }
+
+        /* ── FILTER BAR ── */
+        .filter-bar { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 5px 11px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg3); color: var(--text2);
+            font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.15s; font-family: inherit;
+        }
+        .filter-btn:hover { border-color: var(--primary-border); color: var(--primary); background: var(--primary-dim); }
+        .filter-btn.active { background: var(--primary-dim); border-color: var(--primary-border); color: var(--primary); font-weight: 600; }
+
+        /* ── TEAMMATE ── */
+        .teammate {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 13px 0; border-bottom: 1px solid var(--border);
+        }
+        .teammate:last-child { border: none; padding-bottom: 0; }
+
+        .t-avatar {
+            width: 40px; height: 40px; border-radius: 10px;
+            font-size: 14px; font-weight: 700; color: #fff;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .t-info { flex: 1; min-width: 0; }
+        .t-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+        .t-meta { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .t-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .t-actions { display: flex; gap: 6px; margin-top: 9px; }
+
+        .tag {
+            display: inline-block; padding: 3px 9px; border-radius: 6px;
+            font-size: 11px; font-weight: 500;
+            background: var(--bg3); color: var(--text2); border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .tag.green { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-border); }
+        .tag.blue { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-border); }
+
+        .match-bar-wrap { flex-shrink: 0; width: 44px; text-align: center; }
+        .match-bar { position: relative; width: 44px; height: 44px; }
+        .match-bar svg { transform: rotate(-90deg); }
+        .match-bar .pct {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 9px; font-weight: 700; color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── POSTS ── */
+        .post-item { padding: 13px 0; border-bottom: 1px solid var(--border); }
+        .post-item:last-child { border: none; padding-bottom: 0; }
+        .post-title { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+        .post-desc { font-size: 12.5px; color: var(--text2); margin-bottom: 8px; line-height: 1.55; }
+        .post-meta { display: flex; align-items: center; gap: 12px; font-size: 11.5px; color: var(--text3); }
+
+        .post-status {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 8px; border-radius: 6px;
+            font-size: 11px; font-weight: 600;
+        }
+        .post-status.open { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary-border); }
+        .post-status.closed { background: rgba(100,116,139,0.10); color: var(--text3); border: 1px solid var(--border); }
+        .post-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        /* ── REQUESTS ── */
+        .request-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 13px 0; border-bottom: 1px solid var(--border);
+        }
+        .request-item:last-child { border: none; padding-bottom: 0; }
+        .req-info { flex: 1; }
+        .req-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+        .req-text { font-size: 12.5px; color: var(--text2); margin-bottom: 4px; }
+        .req-post {
+            font-size: 11.5px; color: var(--text3);
+            background: var(--bg3); border: 1px solid var(--border);
+            padding: 3px 9px; border-radius: 6px;
+            display: inline-block; margin-bottom: 10px;
+        }
+        .req-actions { display: flex; gap: 8px; }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(10,20,12,0.35);
+            backdrop-filter: blur(6px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.2s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px; width: 500px; max-width: 95vw;
+            transform: scale(0.96) translateY(10px); transition: 0.2s;
+            box-shadow: 0 20px 60px rgba(22,163,74,0.12);
+        }
+        .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+        .modal-header h3 { font-size: 18px; font-weight: 800; }
+        .close-btn {
+            background: var(--bg3); border: 1px solid var(--border);
+            color: var(--text2); width: 30px; height: 30px;
+            border-radius: 8px; cursor: pointer; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; transition: 0.15s;
+        }
+        .close-btn:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-border); }
+
+        /* ── PROFILE DRAWER ── */
+        .drawer-overlay {
+            position: fixed; inset: 0; background: rgba(10,20,12,0.3);
+            backdrop-filter: blur(4px); z-index: 89;
+            opacity: 0; pointer-events: none; transition: opacity 0.28s;
+        }
+        .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+        .profile-drawer {
+            position: fixed; right: -400px; top: 0; bottom: 0; width: 370px;
+            background: var(--bg2); border-left: 1px solid var(--border);
+            z-index: 90; transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow-y: auto; padding: 24px 22px;
+            box-shadow: -8px 0 40px rgba(22,163,74,0.07);
+        }
+        .profile-drawer.open { right: 0; }
+
+        .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+
+        .profile-hero { text-align: center; padding-bottom: 22px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .profile-avatar-lg {
+            width: 72px; height: 72px; border-radius: 16px;
+            font-size: 26px; font-weight: 700; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 14px; box-shadow: 0 6px 20px var(--primary-glow);
+        }
+        .profile-name { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+        .profile-bio { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 16px; }
+        .profile-section-title { font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
+        .skill-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+
+        .match-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11.5px; font-weight: 700;
+            background: var(--primary-dim); border: 1px solid var(--primary-border);
+            color: var(--primary); padding: 3px 9px; border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── EMPTY ── */
+        .empty-state { text-align: center; padding: 28px 20px; color: var(--text3); }
+        .empty-state .e-icon { font-size: 30px; margin-bottom: 10px; opacity: 0.4; }
+        .empty-state p { font-size: 13px; line-height: 1.6; }
+
+        /* ── TOAST ── */
+        .toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+        .toast {
+            background: var(--bg2); border: 1px solid var(--primary-border);
+            border-radius: 11px; padding: 12px 16px;
+            font-size: 13px; font-weight: 500;
+            display: flex; align-items: center; gap: 9px;
+            animation: toastIn 0.28s ease; max-width: 300px;
+            box-shadow: 0 8px 24px rgba(22,163,74,0.12); color: var(--text);
+        }
+        .toast.error { border-color: rgba(220,38,38,0.25); }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        @keyframes toastIn  { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastOut { to   { transform: translateX(40px); opacity: 0; } }
+        @keyframes fadeUp   { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-
 <body>
 
-<!-- ── SIDEBAR ── -->
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">
         <div class="logo-icon">🔗</div>
-        TeamUp
+        <span class="logo-text">TeamUp</span>
     </div>
-
     <div class="nav-label">Menu</div>
     <div class="nav">
-        <a href="/dashboard" {% if current_page == 'dashboard' %}class="active"{% endif %}><span class="nav-icon">⚡</span> Dashboard</a>
-        <a href="/brow" {% if current_page == 'browse' %}class="active"{% endif %}><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
-        <a href="/post" {% if current_page == 'post' %}class="active"{% endif %}><span class="nav-icon">📋</span> My Posts</a>
-        <a href="/request" {% if current_page == 'request' %}class="active"{% endif %}><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+        <a href="/dashboard" class="active"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="/browse"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="/post"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="/request"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
     </div>
-
     <div class="nav-label">Account</div>
     <div class="nav">
-        <a href="/profile" {% if current_page == 'profile' %}class="active"{% endif %}><span class="nav-icon">👤</span> Profile</a>
-        <a href="/settings" {% if current_page == 'settings' %}class="active"{% endif %}><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/profile"><span class="nav-icon">👤</span> Profile</a>
+        <a href="/settings"><span class="nav-icon">⚙️</span> Settings</a>
         <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
-
     <div class="sidebar-footer">
         <div class="user-chip">
             <div class="user-avatar">A</div>
@@ -950,10 +458,9 @@
     </div>
 </div>
 
-<!-- ── MAIN ── -->
+<!-- MAIN -->
 <div class="main">
 
-    <!-- Header -->
     <div class="header">
         <div class="header-left">
             <h2>Welcome back, Aryan 👋</h2>
@@ -961,71 +468,59 @@
         </div>
         <div class="header-right">
             <div class="search-bar">
-                <span class="search-icon">🔍</span>
+                <span style="color:var(--text3);font-size:14px;">🔍</span>
                 <input type="text" id="searchInput" placeholder="Search by skill, name…" oninput="filterTeammates()">
             </div>
-            <button class="btn" onclick="openModal()">＋ New Post</button>
+            <button class="btn btn-primary" onclick="openModal()">＋ New Post</button>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- STATS -->
     <div class="stats-row">
         <div class="stat-card">
-            <div class="stat-icon blue">📝</div>
-            <div>
-                <div class="stat-value">3</div>
-                <div class="stat-label">Active Posts</div>
-            </div>
+            <div class="stat-icon green">📝</div>
+            <div><div class="stat-value">3</div><div class="stat-label">Active Posts</div></div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon green">🤝</div>
-            <div>
-                <div class="stat-value">12</div>
-                <div class="stat-label">Connections</div>
-            </div>
+            <div class="stat-icon teal">🤝</div>
+            <div><div class="stat-value">12</div><div class="stat-label">Connections</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-icon orange">📬</div>
-            <div>
-                <div class="stat-value">2</div>
-                <div class="stat-label">Pending Requests</div>
-            </div>
+            <div><div class="stat-value">2</div><div class="stat-label">Pending Requests</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-icon purple">👁️</div>
-            <div>
-                <div class="stat-value">47</div>
-                <div class="stat-label">Profile Views</div>
-            </div>
+            <div><div class="stat-value">47</div><div class="stat-label">Profile Views</div></div>
         </div>
     </div>
 
-    <!-- Grid -->
+    <!-- GRID -->
     <div class="grid">
 
         <!-- CREATE POST -->
         <div class="card">
             <div class="card-header">
-                <h3><span class="icon">✏️</span> Create Post</h3>
+                <h3>✏️ Create Post</h3>
             </div>
             <div class="card-body">
                 <div class="post-type-toggle">
-                    <button class="toggle-btn active" onclick="setType(this, 'looking-team')">Looking for Team</button>
-                    <button class="toggle-btn" onclick="setType(this, 'join-team')">Join a Team</button>
-                    <button class="toggle-btn" onclick="setType(this, 'hackathon')">Hackathon</button>
+                    <button class="toggle-btn active" onclick="setType(this)">Looking for Team</button>
+                    <button class="toggle-btn" onclick="setType(this)">Join a Team</button>
+                    <button class="toggle-btn" onclick="setType(this)">Hackathon</button>
                 </div>
-                <form action="#" method="POST" onsubmit="handlePost(event)">
+                <form onsubmit="handlePost(event)">
                     <div class="form-group">
                         <label class="form-label">Title</label>
-                        <input class="form-input" type="text" name="title" placeholder="e.g. Need a React developer for SaaS project">
+                        <input class="form-input" type="text" placeholder="e.g. Need a React developer for SaaS project">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Description</label>
-                        <textarea class="form-input" name="desc" rows="3" placeholder="What's your project about? What kind of team are you building?"></textarea>
+                        <textarea class="form-input" rows="3" placeholder="What's your project about?"></textarea>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Skills Required</label>
-                        <input class="form-input" id="skillsInput" type="text" name="skills" placeholder="Type and press Enter…" onkeydown="addSkillChip(event)">
+                        <input class="form-input" id="skillsInput" type="text" placeholder="Type and press Enter…" onkeydown="addSkillChip(event)">
                         <div class="skill-suggestions" id="selectedSkills"></div>
                         <div style="margin-top:10px;">
                             <span style="font-size:11px;color:var(--text3);margin-right:6px;">Quick add:</span>
@@ -1033,10 +528,9 @@
                             <span class="skill-chip" onclick="quickAdd('Python')">Python</span>
                             <span class="skill-chip" onclick="quickAdd('Node.js')">Node.js</span>
                             <span class="skill-chip" onclick="quickAdd('UI/UX')">UI/UX</span>
-                            <span class="skill-chip" onclick="quickAdd('Flutter')">Flutter</span>
                         </div>
                     </div>
-                    <button class="btn" type="submit" style="width:100%;justify-content:center;">Post</button>
+                    <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;">Post</button>
                 </form>
             </div>
         </div>
@@ -1044,7 +538,7 @@
         <!-- SUGGESTED TEAMMATES -->
         <div class="card">
             <div class="card-header">
-                <h3><span class="icon">✨</span> Suggested Teammates</h3>
+                <h3>✨ Suggested Teammates</h3>
                 <button class="btn btn-ghost btn-sm" onclick="refreshSuggestions()">↻ Refresh</button>
             </div>
             <div class="card-body" style="padding-top:12px;">
@@ -1056,66 +550,40 @@
                     <button class="filter-btn" onclick="filterBySkill('Mobile', this)">Mobile</button>
                     <button class="filter-btn" onclick="filterBySkill('AI/ML', this)">AI/ML</button>
                 </div>
-                <div id="teammatesList">
-                    <!-- injected by JS -->
-                </div>
+                <div id="teammatesList"></div>
             </div>
         </div>
 
         <!-- YOUR POSTS -->
         <div class="card">
             <div class="card-header">
-                <h3><span class="icon">📋</span> Your Posts</h3>
+                <h3>📋 Your Posts</h3>
                 <span style="font-size:12px;color:var(--text3);">3 active</span>
             </div>
             <div class="card-body">
                 <div class="post-item">
-                    <div class="post-title">
-                        Looking for Frontend Developer
-                        <span class="post-status open">Open</span>
-                    </div>
+                    <div class="post-title">Looking for Frontend Developer <span class="post-status open">Open</span></div>
                     <div class="post-desc">Need someone with React and Tailwind skills for a SaaS dashboard project.</div>
                     <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-                        <span class="tag blue">React</span>
-                        <span class="tag blue">Tailwind</span>
-                        <span class="tag blue">TypeScript</span>
+                        <span class="tag blue">React</span><span class="tag blue">Tailwind</span><span class="tag blue">TypeScript</span>
                     </div>
-                    <div class="post-meta">
-                        <span>👁 14 views</span>
-                        <span>📬 3 requests</span>
-                        <span>⏰ 2 days ago</span>
-                    </div>
+                    <div class="post-meta"><span>👁 14 views</span><span>📬 3 requests</span><span>⏰ 2 days ago</span></div>
                 </div>
                 <div class="post-item">
-                    <div class="post-title">
-                        Hackathon Team — Devhack 2025
-                        <span class="post-status open">Open</span>
-                    </div>
+                    <div class="post-title">Hackathon Team — Devhack 2025 <span class="post-status open">Open</span></div>
                     <div class="post-desc">Looking for a UI/UX designer and a backend dev for a 48h hackathon.</div>
                     <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-                        <span class="tag green">UI/UX</span>
-                        <span class="tag blue">Node.js</span>
+                        <span class="tag green">UI/UX</span><span class="tag blue">Node.js</span>
                     </div>
-                    <div class="post-meta">
-                        <span>👁 28 views</span>
-                        <span>📬 7 requests</span>
-                        <span>⏰ 5 days ago</span>
-                    </div>
+                    <div class="post-meta"><span>👁 28 views</span><span>📬 7 requests</span><span>⏰ 5 days ago</span></div>
                 </div>
                 <div class="post-item">
-                    <div class="post-title">
-                        Open-source CLI Tool
-                        <span class="post-status closed">Closed</span>
-                    </div>
+                    <div class="post-title">Open-source CLI Tool <span class="post-status closed">Closed</span></div>
                     <div class="post-desc">Need Python contributor for an open-source CLI project.</div>
                     <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
                         <span class="tag">Python</span>
                     </div>
-                    <div class="post-meta">
-                        <span>👁 9 views</span>
-                        <span>📬 1 request</span>
-                        <span>⏰ 2 weeks ago</span>
-                    </div>
+                    <div class="post-meta"><span>👁 9 views</span><span>📬 1 request</span><span>⏰ 2 weeks ago</span></div>
                 </div>
             </div>
         </div>
@@ -1123,18 +591,16 @@
         <!-- TEAM REQUESTS -->
         <div class="card">
             <div class="card-header">
-                <h3><span class="icon">📬</span> Team Requests</h3>
-                <span style="font-size:12px;background:var(--primary-glow);color:var(--primary-light);padding:2px 9px;border-radius:20px;border:1px solid var(--border-active);">2 new</span>
+                <h3>📬 Team Requests</h3>
+                <span style="font-size:12px;background:var(--primary-dim);color:var(--primary);padding:2px 9px;border-radius:20px;border:1px solid var(--primary-border);font-weight:600;">2 new</span>
             </div>
-            <div class="card-body" id="requestsList">
-                <!-- injected by JS -->
-            </div>
+            <div class="card-body" id="requestsList"></div>
         </div>
 
     </div>
 </div>
 
-<!-- ── NEW POST MODAL ── -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
     <div class="modal">
         <div class="modal-header">
@@ -1160,200 +626,103 @@
         </div>
         <div style="display:flex;gap:10px;margin-top:6px;">
             <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="closeModal()">Cancel</button>
-            <button class="btn" style="flex:1;justify-content:center;" onclick="submitModal()">Post</button>
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="submitModal()">Post</button>
         </div>
     </div>
 </div>
 
-<!-- ── PROFILE DRAWER ── -->
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- PROFILE DRAWER -->
 <div class="profile-drawer" id="profileDrawer">
-    <button class="close-btn drawer-close" onclick="closeDrawer()">✕</button>
-    <div class="profile-hero" id="drawerContent">
-        <!-- injected by JS -->
+    <div class="drawer-header">
+        <button class="close-btn" onclick="closeDrawer()">✕</button>
     </div>
+    <div id="drawerContent"></div>
 </div>
 
-<!-- ── TOASTS ── -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
 const teammates = [
-    {
-        id: 1,
-        name: "Rahul Sharma",
-        initials: "RS",
-        color: "#2563eb",
-        role: "Frontend Developer",
-        category: "Frontend",
-        skills: ["React", "TypeScript", "Tailwind"],
-        bio: "Passionate about building accessible and performant web apps. Open to hackathons and startups.",
-        match: 85,
-        location: "Bengaluru",
-    },
-    {
-        id: 2,
-        name: "Anjali Mehta",
-        initials: "AM",
-        color: "#06d6a0",
-        role: "Full-Stack Developer",
-        category: "Backend",
-        skills: ["Python", "Flask", "PostgreSQL"],
-        bio: "Love building REST APIs and data pipelines. Looking for a frontend partner for SaaS ideas.",
-        match: 78,
-        location: "Pune",
-    },
-    {
-        id: 3,
-        name: "Karan Singh",
-        initials: "KS",
-        color: "#f97316",
-        role: "UI/UX Designer",
-        category: "UI/UX",
-        skills: ["Figma", "UI/UX", "Prototyping"],
-        bio: "Design-focused thinker who codes. Loves turning complex problems into clean interfaces.",
-        match: 73,
-        location: "Delhi",
-    },
-    {
-        id: 4,
-        name: "Priya Nair",
-        initials: "PN",
-        color: "#8b5cf6",
-        role: "Mobile Developer",
-        category: "Mobile",
-        skills: ["Flutter", "Firebase", "Dart"],
-        bio: "Building mobile-first apps. Interested in health-tech and edtech projects.",
-        match: 68,
-        location: "Hyderabad",
-    },
-    {
-        id: 5,
-        name: "Dev Patel",
-        initials: "DP",
-        color: "#ec4899",
-        role: "ML Engineer",
-        category: "AI/ML",
-        skills: ["Python", "TensorFlow", "NLP"],
-        bio: "ML researcher who loves turning models into products. Hackathon enthusiast.",
-        match: 62,
-        location: "Ahmedabad",
-    },
+    { id:1, name:"Rahul Sharma",  initials:"RS", color:"linear-gradient(135deg,#16a34a,#22c55e)", role:"Frontend Developer",  category:"Frontend", skills:["React","TypeScript","Tailwind"], bio:"Passionate about building accessible and performant web apps. Open to hackathons and startups.", match:85, location:"Bengaluru" },
+    { id:2, name:"Anjali Mehta",  initials:"AM", color:"linear-gradient(135deg,#059669,#34d399)", role:"Full-Stack Developer", category:"Backend",  skills:["Python","Flask","PostgreSQL"],   bio:"Love building REST APIs and data pipelines. Looking for a frontend partner for SaaS ideas.", match:78, location:"Pune" },
+    { id:3, name:"Karan Singh",   initials:"KS", color:"linear-gradient(135deg,#d97706,#fbbf24)", role:"UI/UX Designer",       category:"UI/UX",    skills:["Figma","UI/UX","Prototyping"],   bio:"Design-focused thinker who codes. Loves turning complex problems into clean interfaces.", match:73, location:"Delhi" },
+    { id:4, name:"Priya Nair",    initials:"PN", color:"linear-gradient(135deg,#0891b2,#22d3ee)", role:"Mobile Developer",     category:"Mobile",   skills:["Flutter","Firebase","Dart"],     bio:"Building mobile-first apps. Interested in health-tech and edtech projects.", match:68, location:"Hyderabad" },
+    { id:5, name:"Dev Patel",     initials:"DP", color:"linear-gradient(135deg,#7c3aed,#a78bfa)", role:"ML Engineer",          category:"AI/ML",    skills:["Python","TensorFlow","NLP"],     bio:"ML researcher who loves turning models into products. Hackathon enthusiast.", match:62, location:"Ahmedabad" },
 ];
 
 const requests = [
-    {
-        id: 1,
-        name: "Rahul Sharma",
-        initials: "RS",
-        color: "#2563eb",
-        text: "wants to join your team",
-        post: "Looking for Frontend Developer",
-        skills: ["React", "TypeScript"],
-    },
-    {
-        id: 2,
-        name: "Meera Joshi",
-        initials: "MJ",
-        color: "#f97316",
-        text: "sent a collaboration request",
-        post: "Hackathon Team — Devhack 2025",
-        skills: ["UI/UX", "Figma"],
-    },
+    { id:1, name:"Rahul Sharma", initials:"RS", color:"linear-gradient(135deg,#16a34a,#22c55e)", text:"wants to join your team",         post:"Looking for Frontend Developer", skills:["React","TypeScript"] },
+    { id:2, name:"Meera Joshi",  initials:"MJ", color:"linear-gradient(135deg,#d97706,#fbbf24)", text:"sent a collaboration request", post:"Hackathon Team — Devhack 2025",   skills:["UI/UX","Figma"] },
 ];
 
 let currentFilter = "all";
 let searchQuery = "";
 let selectedSkills = [];
 
-// ─── RENDER ─────────────────────────────────────────────────────────────────
 function renderTeammates() {
     const list = document.getElementById('teammatesList');
     let filtered = teammates.filter(t => {
         const matchFilter = currentFilter === 'all' || t.category === currentFilter;
-        const matchSearch = searchQuery === '' ||
-            t.name.toLowerCase().includes(searchQuery) ||
-            t.skills.some(s => s.toLowerCase().includes(searchQuery)) ||
-            t.role.toLowerCase().includes(searchQuery);
+        const matchSearch = searchQuery === '' || t.name.toLowerCase().includes(searchQuery) || t.skills.some(s => s.toLowerCase().includes(searchQuery)) || t.role.toLowerCase().includes(searchQuery);
         return matchFilter && matchSearch;
     });
-
-    if (filtered.length === 0) {
-        list.innerHTML = `<div class="empty-state">
-            <div class="e-icon">🔍</div>
-            <p>No teammates match your filter.<br>Try adjusting your criteria.</p>
-        </div>`;
+    if (!filtered.length) {
+        list.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div><p>No teammates match your filter.</p></div>`;
         return;
     }
-
     list.innerHTML = filtered.map(t => `
         <div class="teammate" style="cursor:pointer;" onclick="openProfile(${t.id})">
             <div class="t-avatar" style="background:${t.color}">${t.initials}</div>
             <div class="t-info">
                 <div class="t-name">${t.name}</div>
-                <div class="t-meta">
-                    <span>${t.role}</span>
-                    <span style="color:var(--text3)">·</span>
-                    <span>📍 ${t.location}</span>
-                </div>
-                <div class="t-tags">
-                    ${t.skills.map(s => `<span class="tag">${s}</span>`).join('')}
-                </div>
+                <div class="t-meta"><span>${t.role}</span><span style="color:var(--text3)">·</span><span>📍 ${t.location}</span></div>
+                <div class="t-tags">${t.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
                 <div class="t-actions" onclick="event.stopPropagation()">
-                    <button class="btn btn-sm" onclick="sendRequest(${t.id}, '${t.name}')">Connect</button>
+                    <button class="btn btn-primary btn-sm" onclick="sendRequest(${t.id},'${t.name}')">Connect</button>
                     <button class="btn btn-ghost btn-sm" onclick="openProfile(${t.id})">Profile</button>
                 </div>
             </div>
-            <div class="match-bar-wrap">
-                ${renderMatchCircle(t.match)}
-            </div>
+            <div class="match-bar-wrap">${renderMatchCircle(t.match)}</div>
         </div>
     `).join('');
 }
 
 function renderMatchCircle(pct) {
-    const r = 18;
-    const circ = 2 * Math.PI * r;
-    const dash = (pct / 100) * circ;
-    const color = pct >= 80 ? '#06d6a0' : pct >= 65 ? '#3b82f6' : '#f97316';
-    return `
-        <div class="match-bar">
-            <svg width="44" height="44" viewBox="0 0 44 44">
-                <circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
-                <circle cx="22" cy="22" r="${r}" fill="none" stroke="${color}" stroke-width="4"
-                    stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
-                    stroke-linecap="round"/>
-            </svg>
-            <div class="pct">${pct}%</div>
-        </div>`;
+    const r = 18, circ = 2 * Math.PI * r, dash = (pct/100)*circ;
+    const color = pct >= 80 ? '#16a34a' : pct >= 65 ? '#059669' : '#d97706';
+    return `<div class="match-bar">
+        <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(22,163,74,0.12)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="${r}" fill="none" stroke="${color}" stroke-width="4"
+                stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/>
+        </svg>
+        <div class="pct">${pct}%</div>
+    </div>`;
 }
 
 function renderRequests() {
     const list = document.getElementById('requestsList');
-    if (requests.length === 0) {
-        list.innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><p>No pending requests right now.</p></div>`;
-        return;
-    }
+    if (!requests.length) { list.innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><p>No pending requests right now.</p></div>`; return; }
     list.innerHTML = requests.map(r => `
         <div class="request-item" id="req-${r.id}">
-            <div class="t-avatar" style="background:${r.color};width:40px;height:40px;border-radius:50%;font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${r.initials}</div>
+            <div class="t-avatar" style="background:${r.color};width:38px;height:38px;border-radius:10px;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${r.initials}</div>
             <div class="req-info">
                 <div class="req-name">${r.name}</div>
                 <div class="req-text">${r.text}</div>
                 <div class="req-post">📋 ${r.post}</div>
-                <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;">
-                    ${r.skills.map(s => `<span class="tag">${s}</span>`).join('')}
-                </div>
+                <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;">${r.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
                 <div class="req-actions">
-                    <button class="btn btn-success btn-sm" onclick="handleRequest(${r.id}, 'accept')">✓ Accept</button>
-                    <button class="btn btn-danger btn-sm" onclick="handleRequest(${r.id}, 'reject')">✕ Reject</button>
+                    <button class="btn btn-success btn-sm" onclick="handleRequest(${r.id},'accept')">✓ Accept</button>
+                    <button class="btn btn-danger btn-sm" onclick="handleRequest(${r.id},'reject')">✕ Reject</button>
                 </div>
             </div>
         </div>
     `).join('');
 }
 
-// ─── INTERACTIONS ────────────────────────────────────────────────────────────
 function filterBySkill(skill, btn) {
     currentFilter = skill;
     document.querySelectorAll('#filterBar .filter-btn').forEach(b => b.classList.remove('active'));
@@ -1366,14 +735,10 @@ function filterTeammates() {
     renderTeammates();
 }
 
-function refreshSuggestions() {
-    renderTeammates();
-    showToast('✨ Suggestions refreshed!', 'success');
-}
+function refreshSuggestions() { renderTeammates(); showToast('✨ Suggestions refreshed!'); }
 
 function setType(btn) {
-    btn.closest('.post-type-toggle').querySelectorAll('.toggle-btn')
-        .forEach(b => b.classList.remove('active'));
+    btn.closest('.post-type-toggle').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 }
 
@@ -1382,141 +747,83 @@ function addSkillChip(e) {
         e.preventDefault();
         const input = document.getElementById('skillsInput');
         const val = input.value.trim();
-        if (val && !selectedSkills.includes(val)) {
-            selectedSkills.push(val);
-            renderSelectedSkills();
-        }
+        if (val && !selectedSkills.includes(val)) { selectedSkills.push(val); renderSelectedSkills(); }
         input.value = '';
     }
 }
 
-function quickAdd(skill) {
-    if (!selectedSkills.includes(skill)) {
-        selectedSkills.push(skill);
-        renderSelectedSkills();
-    }
-}
-
-function removeSkill(skill) {
-    selectedSkills = selectedSkills.filter(s => s !== skill);
-    renderSelectedSkills();
-}
-
+function quickAdd(skill) { if (!selectedSkills.includes(skill)) { selectedSkills.push(skill); renderSelectedSkills(); } }
+function removeSkill(skill) { selectedSkills = selectedSkills.filter(s => s !== skill); renderSelectedSkills(); }
 function renderSelectedSkills() {
-    const container = document.getElementById('selectedSkills');
-    container.innerHTML = selectedSkills.map(s => `
-        <span class="skill-chip selected">
-            ${s}
-            <span class="remove" onclick="removeSkill('${s}')">✕</span>
-        </span>
-    `).join('');
+    document.getElementById('selectedSkills').innerHTML = selectedSkills.map(s =>
+        `<span class="skill-chip selected">${s} <span onclick="removeSkill('${s}')" style="opacity:0.6;cursor:pointer;">✕</span></span>`
+    ).join('');
 }
 
 function handlePost(e) {
     e.preventDefault();
-    showToast('🎉 Post published successfully!', 'success');
-    e.target.reset();
-    selectedSkills = [];
-    renderSelectedSkills();
+    showToast('🎉 Post published successfully!');
+    e.target.reset(); selectedSkills = []; renderSelectedSkills();
 }
 
 function handleRequest(id, action) {
     const el = document.getElementById(`req-${id}`);
     if (el) {
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(20px)';
-        el.style.transition = 'all 0.3s';
+        el.style.opacity='0'; el.style.transform='translateX(20px)'; el.style.transition='all 0.3s';
         setTimeout(() => {
             el.remove();
-            if (action === 'accept') {
-                showToast('✅ Request accepted! You\'re now connected.', 'success');
-            } else {
-                showToast('Request declined.', 'error');
-            }
-            // check if empty
-            if (document.getElementById('requestsList').children.length === 0) {
-                document.getElementById('requestsList').innerHTML =
-                    `<div class="empty-state"><div class="e-icon">📭</div><p>All caught up! No more requests.</p></div>`;
-            }
+            showToast(action === 'accept' ? "✅ Request accepted! You're now connected." : "Request declined.", action === 'accept' ? 'success' : 'error');
+            if (!document.getElementById('requestsList').children.length)
+                document.getElementById('requestsList').innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><p>All caught up!</p></div>`;
         }, 300);
     }
 }
 
-function sendRequest(id, name) {
-    showToast(`✉️ Request sent to ${name}!`, 'success');
-}
+function sendRequest(id, name) { showToast(`✉️ Request sent to ${name}!`); }
 
-// ─── MODAL ───────────────────────────────────────────────────────────────────
-function openModal() {
-    document.getElementById('modalOverlay').classList.add('open');
-}
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+function submitModal() { closeModal(); showToast('🎉 Post published successfully!'); }
 
-function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
-}
-
-function closeModalOutside(e) {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-
-function submitModal() {
-    closeModal();
-    showToast('🎉 Post published successfully!', 'success');
-}
-
-// ─── PROFILE DRAWER ──────────────────────────────────────────────────────────
 function openProfile(id) {
     const t = teammates.find(x => x.id === id);
     if (!t) return;
     document.getElementById('drawerContent').innerHTML = `
-        <div class="profile-avatar-lg" style="background:${t.color}">${t.initials}</div>
-        <div class="profile-name">${t.name}</div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:6px;">${t.role} · 📍 ${t.location}</div>
-        <div class="match-pill" style="display:inline-flex;margin-bottom:16px;">⚡ ${t.match}% match</div>
-        <p class="profile-bio">${t.bio}</p>
-        <div class="profile-section-title">Skills</div>
-        <div class="skill-grid">
-            ${t.skills.map(s => `<span class="tag blue">${s}</span>`).join('')}
+        <div class="profile-hero">
+            <div class="profile-avatar-lg" style="background:${t.color}">${t.initials}</div>
+            <div class="profile-name">${t.name}</div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:6px;">${t.role} · 📍 ${t.location}</div>
+            <div class="match-pill" style="margin-bottom:14px;">⚡ ${t.match}% match</div>
+            <p class="profile-bio">${t.bio}</p>
         </div>
+        <div class="profile-section-title">Skills</div>
+        <div class="skill-grid">${t.skills.map(s=>`<span class="tag blue">${s}</span>`).join('')}</div>
         <div style="display:flex;gap:10px;margin-top:8px;">
-            <button class="btn" style="flex:1;justify-content:center;" onclick="sendRequest(${t.id}, '${t.name}')">Connect</button>
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="sendRequest(${t.id},'${t.name}')">Connect</button>
             <button class="btn btn-ghost" style="flex:1;justify-content:center;">Message</button>
         </div>
     `;
     document.getElementById('profileDrawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('open');
 }
 
 function closeDrawer() {
     document.getElementById('profileDrawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
 }
 
-// ─── TOAST ───────────────────────────────────────────────────────────────────
-function showToast(msg, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = msg;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.animation = 'toastOut 0.3s ease forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+function showToast(msg, type='success') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<span>${type==='success'?'✅':'❌'}</span>${msg}`;
+    c.appendChild(t);
+    setTimeout(() => { t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); }, 3000);
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
 renderTeammates();
 renderRequests();
-function handleLogout(event) {
-    event.preventDefault();
-
-    // OPTIONAL: Clear frontend session (if using localStorage)
-    localStorage.clear();
-    sessionStorage.clear();
-
-    // Redirect to backend logout OR login page
-    window.location.href = "/login";
-}
 </script>
-
 </body>
 </html>

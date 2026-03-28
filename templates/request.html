@@ -3,133 +3,149 @@
 <head>
     <title>Requests – TeamUp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary:#2563eb; --primary-light:#3b82f6; --primary-glow:rgba(37,99,235,0.15);
-            --accent:#06d6a0; --accent-glow:rgba(6,214,160,0.15); --warn:#f97316;
-            --danger:#ef4444; --bg:#080c14; --bg2:#0d1220; --bg3:#111827;
-            --card:#0f172a; --border:rgba(255,255,255,0.07); --border-active:rgba(37,99,235,0.4);
-            --text:#f0f4ff; --text2:#94a3b8; --text3:#475569; --sidebar-w:256px;
+            --green:#1a7a4a;
+            --green-mid:#2d9e63;
+            --green-light:#e8f5ee;
+            --green-pale:#f2faf5;
+            --green-glow:rgba(26,122,74,0.12);
+            --green-border:rgba(26,122,74,0.2);
+            --warn:#e07d10;
+            --warn-bg:rgba(224,125,16,0.1);
+            --danger:#dc2626;
+            --danger-bg:rgba(220,38,38,0.08);
+            --white:#ffffff;
+            --bg:#f7faf8;
+            --bg2:#eef6f1;
+            --card:#ffffff;
+            --border:rgba(0,0,0,0.07);
+            --text:#0f1f15;
+            --text2:#3d6651;
+            --text3:#7aaa8e;
+            --shadow:0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-md:0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+            --sidebar-w:252px;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
 
-        .sidebar { width:var(--sidebar-w); background:var(--bg2); border-right:1px solid var(--border); height:100vh; padding:28px 20px; display:flex; flex-direction:column; position:sticky; top:0; flex-shrink:0; }
-        .logo { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; margin-bottom:36px; display:flex; align-items:center; gap:10px; }
-        .logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--primary),var(--accent)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-        .nav-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); padding:0 12px; margin-bottom:6px; margin-top:20px; }
-        .nav a { display:flex; align-items:center; gap:10px; color:var(--text2); text-decoration:none; padding:10px 12px; border-radius:10px; margin-bottom:2px; font-size:14px; font-weight:500; transition:all 0.2s; }
-        .nav a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
-        .nav a.active { background:var(--primary-glow); color:var(--primary-light); border:1px solid var(--border-active); }
-        .nav a .nav-icon { font-size:16px; width:20px; text-align:center; }
-        .nav a .badge { margin-left:auto; background:var(--primary); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
-        .sidebar-footer { margin-top:auto; padding-top:20px; border-top:1px solid var(--border); }
-        .user-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); }
-        .user-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; }
-        .user-name { font-size:13px; font-weight:600; }
+        /* SIDEBAR */
+        .sidebar { width:var(--sidebar-w); background:var(--white); border-right:1px solid var(--border); height:100vh; padding:28px 16px; display:flex; flex-direction:column; position:sticky; top:0; flex-shrink:0; box-shadow:2px 0 12px rgba(0,0,0,0.03); }
+        .logo { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--green); margin-bottom:32px; display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--green),var(--green-mid)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; color:#fff; box-shadow:0 3px 10px rgba(26,122,74,0.3); }
+        .nav-label { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); padding:0 10px; margin-bottom:4px; margin-top:18px; }
+        .nav a { display:flex; align-items:center; gap:10px; color:var(--text2); text-decoration:none; padding:9px 12px; border-radius:10px; margin-bottom:1px; font-size:13.5px; font-weight:500; transition:all 0.18s; }
+        .nav a:hover { background:var(--green-light); color:var(--green); }
+        .nav a.active { background:var(--green-light); color:var(--green); font-weight:600; border:1px solid var(--green-border); }
+        .nav a .nav-icon { font-size:15px; width:20px; text-align:center; }
+        .nav a .badge { margin-left:auto; background:var(--green); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
+        .sidebar-footer { margin-top:auto; padding-top:16px; border-top:1px solid var(--border); }
+        .user-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:var(--green-pale); border:1px solid var(--green-border); }
+        .user-avatar-sm { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--green-mid)); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; }
+        .user-name { font-size:13px; font-weight:600; color:var(--text); }
         .user-role { font-size:11px; color:var(--text3); }
 
+        /* MAIN */
         .main { flex:1; padding:32px 36px; overflow-y:auto; }
-        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
-        .header-left h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.5px; }
-        .header-left p { font-size:14px; color:var(--text2); margin-top:4px; }
+        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+        .header-left h2 { font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--text); }
+        .header-left p { font-size:13.5px; color:var(--text2); margin-top:4px; }
 
-        /* STATS */
-        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
-        .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; display:flex; align-items:center; gap:14px; }
-        .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; }
-        .stat-icon.blue { background:var(--primary-glow); }
-        .stat-icon.green { background:var(--accent-glow); }
-        .stat-icon.orange { background:rgba(249,115,22,0.12); }
-        .stat-icon.red { background:rgba(239,68,68,0.12); }
-        .stat-value { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; line-height:1; }
-        .stat-label { font-size:12px; color:var(--text2); margin-top:3px; }
+        /* STATS ROW */
+        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+        .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; align-items:center; gap:13px; box-shadow:var(--shadow); }
+        .stat-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:19px; }
+        .stat-icon.orange { background:var(--warn-bg); }
+        .stat-icon.green { background:var(--green-glow); }
+        .stat-icon.red { background:var(--danger-bg); }
+        .stat-icon.blue { background:var(--green-light); }
+        .stat-value { font-family:'Fraunces',serif; font-size:23px; font-weight:700; line-height:1; color:var(--text); }
+        .stat-label { font-size:12px; color:var(--text3); margin-top:2px; }
 
         /* LAYOUT */
-        .layout { display:grid; grid-template-columns:1fr 340px; gap:20px; }
+        .layout { display:grid; grid-template-columns:1fr 300px; gap:18px; }
 
         /* TABS */
-        .tabs { display:flex; gap:4px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:5px; margin-bottom:20px; width:fit-content; }
-        .tab { padding:8px 18px; border-radius:9px; border:none; background:transparent; color:var(--text2); font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; font-family:inherit; position:relative; }
-        .tab.active { background:var(--primary-glow); color:var(--primary-light); border:1px solid var(--border-active); }
-        .tab .count { background:var(--primary); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:5px; vertical-align:middle; }
-        .tab.active .count { background:var(--primary-light); }
+        .tabs { display:flex; gap:3px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:5px; margin-bottom:18px; width:fit-content; box-shadow:var(--shadow); }
+        .tab { padding:7px 16px; border-radius:9px; border:none; background:transparent; color:var(--text2); font-size:13px; font-weight:600; cursor:pointer; transition:0.18s; font-family:inherit; }
+        .tab:hover { background:var(--green-pale); color:var(--green); }
+        .tab.active { background:var(--green-light); color:var(--green); border:1px solid var(--green-border); }
+        .tab .count { background:var(--green); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:5px; vertical-align:middle; }
+        .tab.active .count { background:var(--green-mid); }
 
         /* CARD */
-        .card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
-        .card-header { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--border); }
-        .card-header h3 { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600; }
-        .card-body { padding:6px 22px 18px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); }
+        .card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border); background:var(--bg); }
+        .card-header h3 { font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:var(--text); }
+        .card-body { padding:4px 20px 16px; }
 
         /* REQUEST ITEM */
-        .req-item { display:flex; align-items:flex-start; gap:14px; padding:16px 0; border-bottom:1px solid var(--border); transition:0.3s; animation:fadeUp 0.4s ease both; }
-        .req-item:last-child { border:none; padding-bottom:0; }
-        .req-avatar { width:46px; height:46px; border-radius:50%; font-size:16px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .req-item { display:flex; align-items:flex-start; gap:13px; padding:16px 0; border-bottom:1px solid var(--border); transition:all 0.3s; animation:fadeUp 0.4s ease both; }
+        .req-item:last-child { border:none; padding-bottom:2px; }
+        .req-avatar { width:44px; height:44px; border-radius:50%; font-size:14px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
         .req-info { flex:1; min-width:0; }
-        .req-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
-        .req-name { font-size:14.5px; font-weight:700; }
+        .req-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+        .req-name { font-size:14px; font-weight:700; color:var(--text); }
         .req-time { font-size:11.5px; color:var(--text3); }
         .req-action-text { font-size:13px; color:var(--text2); margin-bottom:6px; }
-        .req-post { font-size:12px; color:var(--text3); background:var(--bg3); border:1px solid var(--border); padding:4px 10px; border-radius:7px; display:inline-block; margin-bottom:10px; }
-        .tag { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:500; background:var(--bg3); color:var(--text2); border:1px solid var(--border); }
-        .tag.blue { background:var(--primary-glow); color:var(--primary-light); border-color:var(--border-active); }
-        .tag.green { background:var(--accent-glow); color:var(--accent); border-color:rgba(6,214,160,0.25); }
-        .tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
-        .req-note { font-size:12.5px; color:var(--text2); background:var(--bg3); border-left:2px solid var(--primary); padding:8px 12px; border-radius:0 8px 8px 0; margin-bottom:12px; font-style:italic; line-height:1.5; }
-        .req-actions { display:flex; gap:8px; }
-        .btn { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--primary),#1d4ed8); color:white; border:none; padding:8px 16px; border-radius:9px; cursor:pointer; font-weight:600; font-size:12.5px; font-family:inherit; transition:all 0.2s; box-shadow:0 3px 10px rgba(37,99,235,0.3); white-space:nowrap; }
-        .btn:hover { transform:translateY(-1px); }
-        .btn-ghost { background:var(--bg3); box-shadow:none; border:1px solid var(--border); color:var(--text2); }
-        .btn-ghost:hover { background:rgba(255,255,255,0.06); color:var(--text); transform:none; }
-        .btn-success { background:linear-gradient(135deg,#059669,#047857); box-shadow:0 2px 8px rgba(5,150,105,0.3); }
-        .btn-success:hover { box-shadow:0 4px 14px rgba(5,150,105,0.4); }
-        .btn-danger { background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 2px 8px rgba(239,68,68,0.25); }
+        .req-post { font-size:11.5px; color:var(--text2); background:var(--green-pale); border:1px solid var(--green-border); padding:3px 10px; border-radius:7px; display:inline-block; margin-bottom:9px; }
+        .tag { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:500; background:var(--bg2); color:var(--text2); border:1px solid var(--border); }
+        .tag.green { background:var(--green-light); color:var(--green); border-color:var(--green-border); }
+        .tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+        .req-note { font-size:12.5px; color:var(--text2); background:var(--green-pale); border-left:2px solid var(--green); padding:8px 12px; border-radius:0 8px 8px 0; margin-bottom:11px; font-style:italic; line-height:1.55; }
+        .req-actions { display:flex; gap:7px; }
 
-        /* STATUS BADGE */
+        /* BUTTONS */
+        .btn { display:inline-flex; align-items:center; gap:5px; background:var(--green); color:white; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-weight:600; font-size:12.5px; font-family:inherit; transition:all 0.18s; box-shadow:0 2px 8px rgba(26,122,74,0.2); white-space:nowrap; }
+        .btn:hover { background:#16693e; transform:translateY(-1px); }
+        .btn-ghost { background:var(--white); box-shadow:none; border:1px solid var(--border); color:var(--text2); }
+        .btn-ghost:hover { background:var(--green-pale); color:var(--green); transform:none; border-color:var(--green-border); }
+        .btn-success { background:var(--green); box-shadow:0 2px 8px rgba(26,122,74,0.25); }
+        .btn-success:hover { background:#16693e; }
+        .btn-danger { background:var(--white); border:1px solid rgba(220,38,38,0.3); color:var(--danger); box-shadow:none; }
+        .btn-danger:hover { background:var(--danger-bg); transform:none; box-shadow:none; }
+
+        /* STATUS */
         .req-status { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
         .req-status::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
-        .req-status.pending { background:rgba(249,115,22,0.12); color:var(--warn); }
-        .req-status.accepted { background:var(--accent-glow); color:var(--accent); }
-        .req-status.declined { background:rgba(239,68,68,0.1); color:var(--danger); }
+        .req-status.pending { background:var(--warn-bg); color:var(--warn); }
+        .req-status.accepted { background:var(--green-light); color:var(--green); }
+        .req-status.declined { background:var(--danger-bg); color:var(--danger); }
 
-        /* SIDEBAR PANEL */
-        .panel-section { margin-bottom:20px; }
-        .panel-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:12px; }
+        /* SENT ITEMS */
+        .sent-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); animation:fadeUp 0.35s ease both; }
+        .sent-item:last-child { border:none; }
+        .sent-avatar { width:34px; height:34px; border-radius:50%; font-size:12px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .sent-info { flex:1; }
+        .sent-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+        .sent-sub { font-size:11.5px; color:var(--text3); }
+
+        /* EMPTY */
+        .empty-state { text-align:center; padding:48px 20px; color:var(--text3); }
+        .empty-state .e-icon { font-size:38px; margin-bottom:10px; }
+        .empty-state p { font-size:14px; }
 
         /* ACTIVITY */
         .activity-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
         .activity-item:last-child { border:none; }
         .act-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
-        .act-dot.green { background:var(--accent); }
-        .act-dot.blue { background:var(--primary-light); }
+        .act-dot.green { background:var(--green-mid); }
+        .act-dot.blue { background:#3b82f6; }
         .act-dot.red { background:var(--danger); }
         .act-dot.orange { background:var(--warn); }
         .act-text { font-size:12.5px; color:var(--text2); line-height:1.5; }
         .act-time { font-size:11px; color:var(--text3); margin-top:2px; }
 
-        /* SENT REQUESTS */
-        .sent-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
-        .sent-item:last-child { border:none; }
-        .sent-avatar { width:36px; height:36px; border-radius:50%; font-size:13px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .sent-info { flex:1; }
-        .sent-name { font-size:13px; font-weight:600; margin-bottom:2px; }
-        .sent-sub { font-size:11.5px; color:var(--text3); }
-
-        /* EMPTY */
-        .empty-state { text-align:center; padding:50px 20px; color:var(--text3); }
-        .empty-state .e-icon { font-size:40px; margin-bottom:12px; }
-        .empty-state p { font-size:14px; }
-
         /* TOAST */
-        .toast-container { position:fixed; bottom:24px; right:24px; z-index:200; display:flex; flex-direction:column; gap:10px; }
-        .toast { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:12px 18px; font-size:13px; font-weight:500; animation:toastIn 0.3s ease; box-shadow:0 8px 30px rgba(0,0,0,0.4); }
-        .toast.success { border-color:rgba(6,214,160,0.3); }
-        .toast.error { border-color:rgba(239,68,68,0.3); }
+        .toast-container { position:fixed; bottom:24px; right:24px; z-index:200; display:flex; flex-direction:column; gap:8px; }
+        .toast { background:var(--white); border:1px solid var(--green-border); border-left:3px solid var(--green); border-radius:10px; padding:11px 16px; font-size:13px; font-weight:500; color:var(--text); animation:toastIn 0.3s ease; box-shadow:var(--shadow-md); }
+        .toast.error { border-left-color:var(--danger); border-color:rgba(220,38,38,0.2); }
         @keyframes toastIn { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
         @keyframes toastOut { to{transform:translateX(40px);opacity:0} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar { width:5px; }
         ::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
     </style>
 </head>
@@ -139,21 +155,21 @@
     <div class="logo"><div class="logo-icon">🔗</div> TeamUp</div>
     <div class="nav-label">Menu</div>
     <div class="nav">
-        <a href="/dashboard" {% if current_page == 'dashboard' %}class="active"{% endif %}><span class="nav-icon">⚡</span> Dashboard</a>
-        <a href="/brow" {% if current_page == 'browse' %}class="active"{% endif %}><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
-        <a href="/post" {% if current_page == 'post' %}class="active"{% endif %}><span class="nav-icon">📋</span> My Posts</a>
-        <a href="/request" {% if current_page == 'request' %}class="active"{% endif %}><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+        <a href="/dashboard"><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="/browse"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="/post"><span class="nav-icon">📋</span> My Posts</a>
+        <a href="/request" class="active"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
     </div>
     <div class="nav-label">Account</div>
     <div class="nav">
-        <a href="/profile" {% if current_page == 'profile' %}class="active"{% endif %}><span class="nav-icon">👤</span> Profile</a>
-        <a href="/settings" {% if current_page == 'settings' %}class="active"{% endif %}><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/profile"><span class="nav-icon">👤</span> Profile</a>
+        <a href="/settings"><span class="nav-icon">⚙️</span> Settings</a>
         <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
     <div class="sidebar-footer">
         <div class="user-chip">
-            <div class="user-avatar">A</div>
-            <div class="user-info"><div class="user-name">Aryan Kumar</div><div class="user-role">Frontend Dev</div></div>
+            <div class="user-avatar-sm">A</div>
+            <div><div class="user-name">Aryan Kumar</div><div class="user-role">Frontend Dev</div></div>
         </div>
     </div>
 </div>
@@ -175,7 +191,7 @@
     </div>
 
     <div class="layout">
-        <!-- LEFT: REQUESTS -->
+        <!-- LEFT -->
         <div>
             <div class="tabs">
                 <button class="tab active" onclick="setTab('pending',this)">Pending <span class="count" id="pendingBadge">2</span></button>
@@ -183,7 +199,6 @@
                 <button class="tab" onclick="setTab('declined',this)">Declined</button>
                 <button class="tab" onclick="setTab('sent',this)">Sent by Me</button>
             </div>
-
             <div class="card">
                 <div class="card-header">
                     <h3 id="cardTitle">📬 Incoming Requests</h3>
@@ -193,45 +208,39 @@
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
-            <!-- ACTIVITY -->
+        <!-- RIGHT -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
             <div class="card">
                 <div class="card-header"><h3>📊 Recent Activity</h3></div>
-                <div class="card-body" style="padding-top:8px;">
-                    <div class="activity-item">
-                        <div class="act-dot green"></div>
-                        <div><div class="act-text">Rahul Sharma accepted your connection request</div><div class="act-time">2 hours ago</div></div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-dot blue"></div>
-                        <div><div class="act-text">New request on "Looking for Frontend Developer"</div><div class="act-time">5 hours ago</div></div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-dot orange"></div>
-                        <div><div class="act-text">Meera Joshi sent you a collaboration request</div><div class="act-time">1 day ago</div></div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-dot green"></div>
-                        <div><div class="act-text">You accepted Anjali Mehta's request</div><div class="act-time">2 days ago</div></div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-dot red"></div>
-                        <div><div class="act-text">You declined a request from Vikram D.</div><div class="act-time">3 days ago</div></div>
-                    </div>
+                <div class="card-body" style="padding-top:6px;">
+                    <div class="activity-item"><div class="act-dot green"></div><div><div class="act-text">Rahul Sharma accepted your connection request</div><div class="act-time">2 hours ago</div></div></div>
+                    <div class="activity-item"><div class="act-dot blue"></div><div><div class="act-text">New request on "Looking for Frontend Developer"</div><div class="act-time">5 hours ago</div></div></div>
+                    <div class="activity-item"><div class="act-dot orange"></div><div><div class="act-text">Meera Joshi sent you a collaboration request</div><div class="act-time">1 day ago</div></div></div>
+                    <div class="activity-item"><div class="act-dot green"></div><div><div class="act-text">You accepted Anjali Mehta's request</div><div class="act-time">2 days ago</div></div></div>
+                    <div class="activity-item"><div class="act-dot red"></div><div><div class="act-text">You declined a request from Vikram D.</div><div class="act-time">3 days ago</div></div></div>
                 </div>
             </div>
 
-            <!-- QUICK STATS CARD -->
             <div class="card">
                 <div class="card-header"><h3>🎯 Your Stats</h3></div>
-                <div class="card-body" style="padding-top:14px;">
-                    <div style="display:flex;flex-direction:column;gap:12px;">
-                        ${[['Acceptance Rate','75%','var(--accent)'],['Response Time','< 2h','var(--primary-light)'],['Active Posts','2','var(--warn)'],['Total Connections','12','var(--text2)']].map(([label,val,color])=>`
+                <div class="card-body" style="padding-top:12px;">
+                    <div style="display:flex;flex-direction:column;gap:11px;">
                         <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <span style="font-size:13px;color:var(--text2)">${label}</span>
-                            <span style="font-size:14px;font-weight:700;color:${color}">${val}</span>
-                        </div>`).join('')}
+                            <span style="font-size:13px;color:var(--text2)">Acceptance Rate</span>
+                            <span style="font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--green)">75%</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:13px;color:var(--text2)">Response Time</span>
+                            <span style="font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--green-mid)">&lt; 2h</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:13px;color:var(--text2)">Active Posts</span>
+                            <span style="font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--warn)">2</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:13px;color:var(--text2)">Total Connections</span>
+                            <span style="font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--text)">12</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -243,18 +252,18 @@
 
 <script>
 let requests = [
-    { id:1, name:"Rahul Sharma", initials:"RS", color:"#2563eb", time:"3h ago", actionText:"wants to join your team", post:"Looking for Frontend Developer", skills:["React","TypeScript"], note:"Hey Aryan! I saw your post and I'd love to help. I have 2 years of React experience and currently building a similar SaaS dashboard.", status:"pending" },
-    { id:2, name:"Meera Joshi", initials:"MJ", color:"#f97316", time:"1d ago", actionText:"sent a collaboration request", post:"Hackathon Team — Devhack 2025", skills:["UI/UX","Figma"], note:"I'm super excited about this hackathon! I specialize in rapid prototyping and have won 3 previous hackathons. Would love to design for your team.", status:"pending" },
-    { id:3, name:"Anjali Mehta", initials:"AM", color:"#06d6a0", time:"2d ago", actionText:"joined your team", post:"Looking for Frontend Developer", skills:["Python","Flask"], note:"Thanks for accepting! Can't wait to start building.", status:"accepted" },
+    { id:1, name:"Rahul Sharma", initials:"RS", color:"#1a7a4a", time:"3h ago", actionText:"wants to join your team", post:"Looking for Frontend Developer", skills:["React","TypeScript"], note:"Hey Aryan! I saw your post and I'd love to help. I have 2 years of React experience and currently building a similar SaaS dashboard.", status:"pending" },
+    { id:2, name:"Meera Joshi", initials:"MJ", color:"#e07d10", time:"1d ago", actionText:"sent a collaboration request", post:"Hackathon Team — Devhack 2025", skills:["UI/UX","Figma"], note:"I'm super excited about this hackathon! I specialize in rapid prototyping and have won 3 previous hackathons. Would love to design for your team.", status:"pending" },
+    { id:3, name:"Anjali Mehta", initials:"AM", color:"#2d9e63", time:"2d ago", actionText:"joined your team", post:"Looking for Frontend Developer", skills:["Python","Flask"], note:"Thanks for accepting! Can't wait to start building.", status:"accepted" },
     { id:4, name:"Priya Nair", initials:"PN", color:"#8b5cf6", time:"3d ago", actionText:"requested to collaborate", post:"Hackathon Team — Devhack 2025", skills:["Flutter","Firebase"], note:"I'd bring strong mobile skills to the team.", status:"accepted" },
     { id:5, name:"Dev Patel", initials:"DP", color:"#ec4899", time:"4d ago", actionText:"requested to join", post:"Open-source CLI Tool", skills:["Python","NLP"], note:"", status:"accepted" },
-    { id:6, name:"Vikram D.", initials:"VD", color:"#64748b", time:"5d ago", actionText:"requested to join", post:"Looking for Frontend Developer", skills:["Angular","CSS"], note:"Looking for a frontend role in your project.", status:"declined" },
+    { id:6, name:"Vikram D.", initials:"VD", color:"#94a3b8", time:"5d ago", actionText:"requested to join", post:"Looking for Frontend Developer", skills:["Angular","CSS"], note:"Looking for a frontend role in your project.", status:"declined" },
 ];
 
 const sentRequests = [
     { id:1, name:"Rohan Verma", initials:"RV", color:"#f43f5e", post:"DevOps Help Needed", status:"pending", time:"1d ago" },
-    { id:2, name:"Sneha Gupta", initials:"SG", color:"#a78bfa", post:"AI Hackathon Team", status:"accepted", time:"2d ago" },
-    { id:3, name:"Karan Singh", initials:"KS", color:"#f97316", post:"Open-source Design", status:"pending", time:"3d ago" },
+    { id:2, name:"Sneha Gupta", initials:"SG", color:"#8b5cf6", post:"AI Hackathon Team", status:"accepted", time:"2d ago" },
+    { id:3, name:"Karan Singh", initials:"KS", color:"#e07d10", post:"Open-source Design", status:"pending", time:"3d ago" },
     { id:4, name:"Dev Patel", initials:"DP", color:"#ec4899", post:"ML Project", status:"declined", time:"5d ago" },
 ];
 
@@ -274,8 +283,9 @@ function updateCounts() {
     document.getElementById('pendingCount').textContent = pending;
     document.getElementById('acceptedCount').textContent = accepted;
     document.getElementById('declinedCount').textContent = declined;
-    document.getElementById('pendingBadge').textContent = pending;
-    document.getElementById('pendingBadge').style.display = pending > 0 ? '' : 'none';
+    const badge = document.getElementById('pendingBadge');
+    badge.textContent = pending;
+    badge.style.display = pending > 0 ? '' : 'none';
 }
 
 function renderRequests() {
@@ -300,9 +310,9 @@ function renderRequests() {
     }
 
     const filtered = requests.filter(r => r.status === currentTab);
-    const tabTitles = { pending:'📬 Incoming Requests', accepted:'✅ Accepted Requests', declined:'✕ Declined Requests' };
+    const tabTitles = { pending:'📬 Incoming Requests', accepted:'✅ Accepted Requests', declined:'Declined Requests' };
     titleEl.textContent = tabTitles[currentTab];
-    countEl.textContent = `${filtered.length} request${filtered.length!==1?'s':''}`;
+    countEl.textContent = `${filtered.length} request${filtered.length !== 1 ? 's' : ''}`;
 
     if (!filtered.length) {
         const msgs = { pending:'No pending requests right now.', accepted:'No accepted requests yet.', declined:'No declined requests.' };
@@ -321,17 +331,17 @@ function renderRequests() {
                 </div>
                 <div class="req-action-text">${r.actionText}</div>
                 <div class="req-post">📋 ${r.post}</div>
-                <div class="tags">${r.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+                <div class="tags">${r.skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
                 ${r.note ? `<div class="req-note">"${r.note}"</div>` : ''}
                 ${currentTab === 'pending' ? `
                 <div class="req-actions">
                     <button class="btn btn-success" onclick="handleReq(${r.id},'accepted')">✓ Accept</button>
                     <button class="btn btn-danger" onclick="handleReq(${r.id},'declined')">✕ Decline</button>
-                    <button class="btn btn-ghost" onclick="viewProfile('${r.name}')">View Profile</button>
+                    <button class="btn btn-ghost" onclick="showToast('👤 Opening ${r.name}\'s profile…')">View Profile</button>
                 </div>` : `
                 <div style="display:flex;align-items:center;gap:8px;">
-                    <span class="req-status ${r.status}">${r.status==='accepted'?'Accepted':'Declined'}</span>
-                    ${r.status==='accepted'?`<button class="btn btn-ghost" style="font-size:11.5px;padding:5px 12px;">💬 Message</button>`:''}
+                    <span class="req-status ${r.status}">${r.status === 'accepted' ? 'Accepted' : 'Declined'}</span>
+                    ${r.status === 'accepted' ? `<button class="btn btn-ghost" style="font-size:11.5px;padding:5px 12px;">💬 Message</button>` : ''}
                 </div>`}
             </div>
         </div>
@@ -349,34 +359,25 @@ function handleReq(id, action) {
             if (req) req.status = action;
             updateCounts();
             renderRequests();
-            showToast(action==='accepted' ? '✅ Request accepted! You\'re now connected.' : '✕ Request declined.', action==='accepted'?'success':'error');
+            showToast(
+                action === 'accepted' ? '✅ Request accepted! You\'re now connected.' : '✕ Request declined.',
+                action === 'accepted' ? 'success' : 'error'
+            );
         }, 300);
     }
 }
 
-function viewProfile(name) { showToast(`👤 Opening ${name}'s profile…`, 'success'); }
-
-function showToast(msg, type='success') {
+function showToast(msg, type = 'success') {
     const c = document.getElementById('toastContainer');
     const t = document.createElement('div');
     t.className = `toast ${type}`;
-    t.innerHTML = msg;
+    t.textContent = msg;
     c.appendChild(t);
-    setTimeout(()=>{ t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); },3000);
+    setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 updateCounts();
 renderRequests();
-function handleLogout(event) {
-    event.preventDefault();
-
-    // OPTIONAL: Clear frontend session (if using localStorage)
-    localStorage.clear();
-    sessionStorage.clear();
-
-    // Redirect to backend logout OR login page
-    window.location.href = "/login";
-}
 </script>
 </body>
 </html>
