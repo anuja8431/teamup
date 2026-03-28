@@ -368,6 +368,12 @@
             <p>Enter your credentials to access your workspace</p>
         </div>
 
+        {% if error %}
+        <div style="background: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 6px; font-size: 13px; margin-bottom: 16px;">
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+
         <form action="/login" method="POST">
             <div class="field">
                 <label for="username">Username</label>
@@ -387,8 +393,8 @@
                     <a href="#" class="forgot-link">Forgot password?</a>
                 </div>
             </div>
-            <form action="/login" method="POST"></form>
-            <button type="submit" class="btn-login">Sign In →</button>
+
+            <button type="submit" class="btn-login" href="/dashboard">Sign In →</button>
         </form>
 
         <div class="divider">or</div>

@@ -139,15 +139,15 @@
     <div class="logo"><div class="logo-icon">🔗</div> TeamUp</div>
     <div class="nav-label">Menu</div>
     <div class="nav">
-        <a href="dashboard.html"><span class="nav-icon">⚡</span> Dashboard</a>
-        <a href="browse-users.html"><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
-        <a href="my-posts.html"><span class="nav-icon">📋</span> My Posts</a>
-        <a href="requests.html" class="active"><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
+        <a href="/dashboard" {% if current_page == 'dashboard' %}class="active"{% endif %}><span class="nav-icon">⚡</span> Dashboard</a>
+        <a href="/brow" {% if current_page == 'browse' %}class="active"{% endif %}><span class="nav-icon">🔍</span> Browse Users <span class="badge">24</span></a>
+        <a href="/post" {% if current_page == 'post' %}class="active"{% endif %}><span class="nav-icon">📋</span> My Posts</a>
+        <a href="/request" {% if current_page == 'request' %}class="active"{% endif %}><span class="nav-icon">📬</span> Requests <span class="badge">2</span></a>
     </div>
     <div class="nav-label">Account</div>
     <div class="nav">
-        <a href="profile.html"><span class="nav-icon">👤</span> Profile</a>
-        <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="/profile" {% if current_page == 'profile' %}class="active"{% endif %}><span class="nav-icon">👤</span> Profile</a>
+        <a href="/settings" {% if current_page == 'settings' %}class="active"{% endif %}><span class="nav-icon">⚙️</span> Settings</a>
         <a href="/logout"><span class="nav-icon">🚪</span> Logout</a>
     </div>
     <div class="sidebar-footer">
